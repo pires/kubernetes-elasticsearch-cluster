@@ -1,0 +1,33 @@
+cluster:
+  name: elasticsearch-k8s
+
+# You want this node to be neither master nor data node, but
+# to act as a "search load balancer" (fetching data from nodes,
+# aggregating results, etc.)
+node:
+  master: false
+  data: false
+
+cloud:
+  k8s:
+    selector: component=elasticsearch
+discovery:
+  type: io.fabric8.elasticsearch.discovery.k8s.K8sDiscoveryModule
+
+path:
+  data: /data/data
+  logs: /data/log
+  plugins: /elasticsearch/plugins
+  work: /data/work
+
+bootstrap:
+  mlockall: true
+
+http:
+  enabled: true
+
+discovery:
+  zen:
+    ping:
+      multicast:
+        enabled: false
