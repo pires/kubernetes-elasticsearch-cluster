@@ -1,0 +1,32 @@
+cluster:
+  name: elasticsearch-k8s
+
+# You want this node to never become a master node, only to hold data.
+# This will be the "workhorse" of your cluster.
+node:
+  master: false
+  data: true
+
+cloud:
+  k8s:
+    selector: component=elasticsearch
+discovery:
+  type: io.fabric8.elasticsearch.discovery.k8s.K8sDiscoveryModule
+
+path:
+  data: /data/data
+  logs: /data/log
+  plugins: /elasticsearch/plugins
+  work: /data/work
+
+bootstrap:
+  mlockall: true
+
+http:
+  enabled: false
+
+discovery:
+  zen:
+    ping:
+      multicast:
+        enabled: false
