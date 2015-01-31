@@ -1,5 +1,14 @@
-# elasticsearch-kubernetes
+# kubernetes-elasticsearch-cluster
 Elasticsearch cluster on top of Kubernetes made easy.
+
+Elasticsearch best-practices recommend to separate nodes in three roles:
+* ```Master``` nodes - intended for clustering management only, no data, no HTTP API
+* ```Load-balancer``` nodes - intended for client usage, no data, with HTTP API
+* ```Data``` nodes - intended for storing and indexing your data, no HTTP API
+
+Given this, I'm hereby making possible for you to scale as needed. For instance, a good strong scenario could be 3 Masters, 3 Load-balancers, 5 data-nodes.
+
+*Attention:* As of the moment, Kubernetes pod descriptors use an ```emptyDir``` for storing data in each data node container. This is meant to be for the sake of simplicity.
 
 ## Pre-requisites
 
@@ -9,34 +18,40 @@ Elasticsearch cluster on top of Kubernetes made easy.
 
 ## Build images (optional)
 
-Providing your own version of [the images build automatically from this repository](https://registry.hub.docker.com/u/pires/elasticsearch-kubernetes) will not be supported. This is an *optional* step. You have been warned.
+Providing your own version of [the images build automatically from this repository](https://registry.hub.docker.com/u/pires/elasticsearch) will not be supported. This is an *optional* step. You have been warned.
 
 ### Clone repository
 
 ```
-git clone https://github.com/pires/elasticsearch-kubernetes.git
-cd elasticsearch-kubernetes
+git clone https://github.com/pires/kubernetes-elasticsearch-cluster.git
+cd kubernetes-elasticsearch-cluster
+```
+
+### Base image
+
+```
+docker build -t pires/elasticsearch:base .
 ```
 
 ### Master
 
 ```
 cd node-master
-docker build -t pires/elasticsearch-kubernetes-master .
+docker build -t pires/elasticsearch:master .
 ```
 
 ### Load-balancer
 
 ```
 cd node-lb
-docker build -t pires/elasticsearch-kubernetes-lb .
+docker build -t pires/elasticsearch:lb .
 ```
 
 ### Data-node
 
 ```
 cd node-data
-docker build -t pires/elasticsearch-kubernetes-data .
+docker build -t pires/elasticsearch:data .
 ```
 
 ## Test
