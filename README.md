@@ -18,7 +18,7 @@ Given this, I'm hereby making possible for you to scale as needed. For instance,
 
 ## Build images (optional)
 
-Providing your own version of [the images build automatically from this repository](https://registry.hub.docker.com/u/pires/elasticsearch) will not be supported. This is an *optional* step. You have been warned.
+Providing your own version of [the images automatically built from this repository](https://registry.hub.docker.com/u/pires/elasticsearch) will not be supported. This is an *optional* step. You have been warned.
 
 ### Clone repository
 

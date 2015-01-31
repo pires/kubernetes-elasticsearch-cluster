@@ -6,7 +6,7 @@ MAINTAINER pjpires@gmail.com
 # Export HTTP & Transport
 EXPOSE 9200 9300
 
-# Installrunit
+# Install runit
 RUN echo "deb http://archive.ubuntu.com/ubuntu trusty main universe" > /etc/apt/sources.list && \
   apt-get update && \
   apt-get upgrade -y && \
