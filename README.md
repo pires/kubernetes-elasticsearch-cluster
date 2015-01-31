@@ -77,9 +77,9 @@ You should see something like this:
 
 ```
 POD                                    IP                  CONTAINER(S)           IMAGE(S)                                       HOST                LABELS                                       STATUS
-6d8ed69a-a7ec-11e4-ac85-0800272d7481   10.244.31.2         elasticsearch-master   pires/elasticsearch-kubernetes:master-latest   172.17.8.102/       component=elasticsearch,role=master          Running
-60cd5145-a7ed-11e4-ac85-0800272d7481   10.244.23.2         elasticsearch-lb       pires/elasticsearch-kubernetes:lb-latest       172.17.8.103/       component=elasticsearch,role=load-balancer   Running
-73df38d5-a7ef-11e4-ac85-0800272d7481   10.244.23.3         elasticsearch-data     pires/elasticsearch-kubernetes:data-latest     172.17.8.103/       component=elasticsearch,role=data            Running
+6d8ed69a-a7ec-11e4-ac85-0800272d7481   10.244.31.2         elasticsearch-master   pires/elasticsearch:master   172.17.8.102/       component=elasticsearch,role=master          Running
+60cd5145-a7ed-11e4-ac85-0800272d7481   10.244.23.2         elasticsearch-lb       pires/elasticsearch:lb       172.17.8.103/       component=elasticsearch,role=load-balancer   Running
+73df38d5-a7ef-11e4-ac85-0800272d7481   10.244.23.3         elasticsearch-data     pires/elasticsearch:data     172.17.8.103/       component=elasticsearch,role=data            Running
 ```
 
 Copy master pod identifier and check the logs:
