@@ -16,7 +16,7 @@
           "containers":[
             {
               "name":"elasticsearch-master",
-              "image":"pires/elasticsearch-kubernetes:master-latest",
+              "image":"pires/elasticsearch:master",
               "ports":[
                 {
                   "name":"transport",
@@ -36,7 +36,6 @@
               "name":"es-persistent-storage",
               "source":{
                 "emptyDir":{
-
                 }
               }
             }

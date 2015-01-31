@@ -16,7 +16,7 @@
           "containers":[
             {
               "name":"elasticsearch-data",
-              "image":"pires/elasticsearch-kubernetes:data-latest",
+              "image":"pires/elasticsearch:data",
               "ports":[
                 {
                   "name":"transport",
@@ -36,7 +36,6 @@
               "name":"es-persistent-storage",
               "source":{
                 "emptyDir":{
-
                 }
               }
             }

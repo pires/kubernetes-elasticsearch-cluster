@@ -16,7 +16,7 @@
           "containers":[
             {
               "name":"elasticsearch-lb",
-              "image":"pires/elasticsearch-kubernetes:lb-latest",
+              "image":"pires/elasticsearch:lb",
               "ports":[
                 {
                   "name":"http",
@@ -40,7 +40,6 @@
               "name":"es-persistent-storage",
               "source":{
                 "emptyDir":{
-
                 }
               }
             }
