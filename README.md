@@ -59,10 +59,10 @@ docker build -t pires/elasticsearch:data .
 ### Deploy
 
 ```
-kubectl create -f elasticsearch-service.json
-kubectl create -f elasticsearch-master-controller.json
-kubectl create -f elasticsearch-lb-controller.json
-kubectl create -f elasticsearch-data-controller.json
+kubectl create -f elasticsearch-service.yaml
+kubectl create -f elasticsearch-master-controller.yaml
+kubectl create -f elasticsearch-lb-controller.yaml
+kubectl create -f elasticsearch-data-controller.yaml
 ```
 
 ### Validate
