@@ -18,7 +18,7 @@ RUN echo "deb http://archive.ubuntu.com/ubuntu trusty main universe" > /etc/apt/
 ADD elasticsearch.yml /elasticsearch/config/elasticsearch.yml
 
 # Install Kubernetes discovery plug-in
-RUN /elasticsearch/bin/plugin --install io.fabric8/elasticsearch-cloud-kubernetes/1.0.1 --verbose
+RUN /elasticsearch/bin/plugin --install io.fabric8/elasticsearch-cloud-kubernetes/1.0.3 --verbose
 
 ADD run-elasticsearch.sh /etc/service/elasticsearch/run
 RUN chmod u+x /etc/service/elasticsearch/run
