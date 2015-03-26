@@ -1,6 +1,3 @@
 # Used only for plug-in install
 path:
-  data: /data/data
-  logs: /data/log
   plugins: /elasticsearch/plugins
-  work: /data/work
