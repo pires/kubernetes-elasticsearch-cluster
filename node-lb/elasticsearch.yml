@@ -13,6 +13,10 @@ cloud:
     selector: component=elasticsearch
 discovery:
   type: io.fabric8.elasticsearch.discovery.k8s.K8sDiscoveryModule
+  zen:
+    ping:
+      multicast:
+        enabled: false
 
 path:
   data: /data/data
@@ -25,9 +29,3 @@ bootstrap:
 
 http:
   enabled: true
-
-discovery:
-  zen:
-    ping:
-      multicast:
-        enabled: false
