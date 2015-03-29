@@ -1,4 +1,4 @@
-FROM docker pires/docker-elasticsearch
+FROM pires/docker-elasticsearch
 
 MAINTAINER pjpires@gmail.com
 
