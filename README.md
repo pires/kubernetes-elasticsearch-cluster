@@ -1,5 +1,5 @@
 # kubernetes-elasticsearch-cluster
-Elasticsearch cluster on top of Kubernetes made easy.
+Elasticsearch (1.5.1) cluster on top of Kubernetes made easy.
 
 Elasticsearch best-practices recommend to separate nodes in three roles:
 * ```Master``` nodes - intended for clustering management only, no data, no HTTP API
@@ -13,7 +13,7 @@ Given this, I'm hereby making possible for you to scale as needed. For instance,
 ## Pre-requisites
 
 * Docker (test with boot2docker v1.5.0)
-* Kubernetes cluster (tested with v0.9.3 on top of [Vagrant + CoreOS](https://github.com/pires/kubernetes-vagrant-coreos-cluster))
+* Kubernetes cluster (tested with v0.15.0 on top of [Vagrant + CoreOS](https://github.com/pires/kubernetes-vagrant-coreos-cluster))
 * ```kubectl``` configured to access your cluster master API Server
 
 ## Build images (optional)
