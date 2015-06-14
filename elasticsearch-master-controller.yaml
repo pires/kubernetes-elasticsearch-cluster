@@ -1,29 +1,37 @@
-id: elasticsearch-master
+apiVersion: v1
 kind: ReplicationController
-apiVersion: v1beta1
-desiredState:
-  replicas: 1
-  replicaSelector:
+metadata:
+  name: elasticsearch-master
+  namespace: default
+  labels:
     component: elasticsearch
     role: master
-  podTemplate:
-    desiredState:
-      manifest:
-        version: v1beta1
-        id: elasticsearch-master
-        containers:
-          - name: elasticsearch-master
-            image: pires/elasticsearch:master
-            ports:
-              - name: transport
-                containerPort: 9300
-            volumeMounts:
-              - name: es-persistent-storage
-                mountPath: /data
-        volumes:
-          - name: es-persistent-storage
-            source:
-              emptyDir: {}
-    labels:
-      component: elasticsearch
-      role: master
+spec:
+  replicas: 1
+  selector:
+    component: elasticsearch
+    role: master
+  template:
+    metadata:
+      labels:
+        component: elasticsearch
+        role: master
+    spec:
+      serviceAccount: elasticsearch
+      containers:
+      - name: elasticsearch-master
+        image: pires/elasticsearch:master
+        env:
+        - name: KUBERNETES_TRUST_CERT
+          value: "true"
+        ports:
+        - containerPort: 9300
+          name: transport
+          protocol: TCP
+        volumeMounts:
+        - mountPath: /data
+          name: storage
+      volumes:
+      - name: storage
+        source:
+          emptyDir: {}

@@ -1,29 +1,34 @@
-id: elasticsearch-data
+apiVersion: v1
 kind: ReplicationController
-apiVersion: v1beta1
-desiredState:
-  replicas: 1
-  replicaSelector:
+metadata:
+  name: elasticsearch-data
+  namespace: default
+  labels:
     component: elasticsearch
     role: data
-  podTemplate:
-    desiredState:
-      manifest:
-        version: v1beta1
-        id: elasticsearch-data
-        containers:
-          - name: elasticsearch-data
-            image: pires/elasticsearch:data
-            ports:
-              - name: transport
-                containerPort: 9300
-            volumeMounts:
-              - name: es-persistent-storage
-                mountPath: /data
-        volumes:
-          - name: es-persistent-storage
-            source:
-              emptyDir: {}
-    labels:
-      component: elasticsearch
-      role: data
+spec:
+  serviceAccount: elasticsearch
+  replicas: 1
+  selector:
+    component: elasticsearch
+    role: data
+  template:
+    metadata:
+      labels:
+        component: elasticsearch
+        role: data
+    spec:
+      containers:
+      - name: elasticsearch-data
+        image: pires/elasticsearch:data
+        ports:
+        - containerPort: 9300
+          name: transport
+          protocol: TCP
+        volumeMounts:
+        - mountPath: /data
+          name: storage
+      volumes:
+      - name: storage
+        source:
+          emptyDir: {}

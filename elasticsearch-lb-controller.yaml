@@ -1,31 +1,37 @@
-id: elasticsearch-lb
+apiVersion: v1
 kind: ReplicationController
-apiVersion: v1beta1
-desiredState:
-  replicas: 1
-  replicaSelector:
+metadata:
+  name: elasticsearch-lb
+  namespace: default
+  labels:
     component: elasticsearch
     role: load-balancer
-  podTemplate:
-    desiredState:
-      manifest:
-        version: v1beta1
-        id: elasticsearch-lb
-        containers:
-          - name: elasticsearch-lb
-            image: pires/elasticsearch:lb
-            ports:
-              - name: http
-                containerPort: 9200
-              - name: transport
-                containerPort: 9300
-            volumeMounts:
-              - name: es-persistent-storage
-                mountPath: /data
-        volumes:
-          - name: es-persistent-storage
-            source:
-              emptyDir: {}
-    labels:
-      component: elasticsearch
-      role: load-balancer
+spec:
+  serviceAccount: elasticsearch
+  replicas: 1
+  selector:
+    component: elasticsearch
+    role: load-balancer
+  template:
+    metadata:
+      labels:
+        component: elasticsearch
+        role: load-balancer
+    spec:
+      containers:
+      - name: elasticsearch-lb
+        image: pires/elasticsearch:lb
+        ports:
+        - containerPort: 9200
+          name: http
+          protocol: TCP
+        - containerPort: 9300
+          name: transport
+          protocol: TCP
+        volumeMounts:
+        - mountPath: /data
+          name: storage
+      volumes:
+      - name: storage
+        source:
+          emptyDir: {}
