@@ -7,4 +7,4 @@ ADD elasticsearch.yml /elasticsearch/config/elasticsearch.yml
 ADD logging.yml /elasticsearch/config/logging.yml
 
 # Install Kubernetes discovery plug-in
-RUN /elasticsearch/bin/plugin --install io.fabric8/elasticsearch-cloud-kubernetes/1.2.0 --verbose
+RUN /elasticsearch/bin/plugin --install io.fabric8/elasticsearch-cloud-kubernetes/1.2.1 --verbose

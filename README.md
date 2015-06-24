@@ -1,5 +1,5 @@
 # kubernetes-elasticsearch-cluster
-Elasticsearch (1.5.2) cluster on top of Kubernetes made easy.
+Elasticsearch (1.6.0) cluster on top of Kubernetes made easy.
 
 Elasticsearch best-practices recommend to separate nodes in three roles:
 * `Master` nodes - intended for clustering management only, no data, no HTTP API
@@ -13,7 +13,7 @@ Given this, I'm hereby making possible for you to scale as needed. For instance,
 ## Pre-requisites
 
 * Docker 1.5+
-* Kubernetes cluster (tested with v0.18.0 on top of [Vagrant + CoreOS](https://github.com/pires/kubernetes-vagrant-coreos-cluster))
+* Kubernetes cluster (tested with v0.19.0 on top of [Vagrant + CoreOS](https://github.com/pires/kubernetes-vagrant-coreos-cluster))
 * `kubectl` configured to access your cluster master API Server
 
 ## Build images (optional)
@@ -43,19 +43,16 @@ You should see something like this:
 
 ```
 $ kubectl get pods
-POD                          IP            CONTAINER(S)           IMAGE(S)                                         HOST                        LABELS                                                STATUS    CREATED          MESSAGE
-elasticsearch-data-vqkyz     10.244.85.3                                                                           172.17.8.102/172.17.8.102   component=elasticsearch,role=data                     Running   About a minute
-                                           elasticsearch-data     pires/elasticsearch:data                                                                                                           Running   18 seconds
-elasticsearch-lb-z6vd4       10.244.74.3                                                                           172.17.8.103/172.17.8.103   component=elasticsearch,role=load-balancer            Running   2 minutes
-                                           elasticsearch-lb       pires/elasticsearch:lb                                                                                                             Running   About a minute
-elasticsearch-master-i0x8d   10.244.74.2                                                                           172.17.8.103/172.17.8.103   component=elasticsearch,role=master                   Running   10 minutes
-                                           elasticsearch-master   pires/elasticsearch:master                                                                                                         Running   7 minutes
+NAME                         READY     REASON    RESTARTS   AGE
+elasticsearch-data-3206h     1/1       Running   0          5m
+elasticsearch-lb-ti80z       1/1       Running   0          1m
+elasticsearch-master-l4xc8   1/1       Running   0          7m
 ```
 
 Copy master pod identifier and check the logs:
 
 ```
-kubectl logs elasticsearch-master-i0x8d elasticsearch-master
+kubectl logs elasticsearch-master-l4xc8 elasticsearch-master
 ```
 
 You should see something like this:
