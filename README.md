@@ -25,9 +25,19 @@ Providing your own version of [the images automatically built from this reposito
 ### Deploy
 
 ```
+kubectl create -f service-account.yaml
+kubectl create -f elasticsearch-discovery-service.yaml
 kubectl create -f elasticsearch-service.yaml
 kubectl create -f elasticsearch-master-controller.yaml
+```
+
+Wait until `elasticsearch-master-controller` is provisioned, and
+```
 kubectl create -f elasticsearch-lb-controller.yaml
+```
+
+Wait until `elasticsearch-data-controller` is provisioned, and
+```
 kubectl create -f elasticsearch-data-controller.yaml
 ```
 
