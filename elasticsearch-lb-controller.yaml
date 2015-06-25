@@ -7,7 +7,6 @@ metadata:
     component: elasticsearch
     role: load-balancer
 spec:
-  serviceAccount: elasticsearch
   replicas: 1
   selector:
     component: elasticsearch
@@ -18,9 +17,13 @@ spec:
         component: elasticsearch
         role: load-balancer
     spec:
+      serviceAccount: elasticsearch
       containers:
       - name: elasticsearch-lb
         image: pires/elasticsearch:lb
+        env:
+        - name: KUBERNETES_TRUST_CERT
+          value: "true"
         ports:
         - containerPort: 9200
           name: http

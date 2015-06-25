@@ -72,19 +72,20 @@ $ kubectl logs elasticsearch-master-i0x8d elasticsearch-master
 log4j:WARN No such property [maxBackupIndex] in org.apache.log4j.DailyRollingFileAppender.
 log4j:WARN No such property [maxBackupIndex] in org.apache.log4j.DailyRollingFileAppender.
 log4j:WARN No such property [maxBackupIndex] in org.apache.log4j.DailyRollingFileAppender.
-[2015-06-05 10:59:41,319][WARN ][common.jna               ] Unable to lock JVM memory (ENOMEM). This can result in part of the JVM being swapped out. Increase RLIMIT_MEMLOCK (ulimit).
-[2015-06-05 10:59:41,457][INFO ][node                     ] [Rancor] version[1.5.2], pid[1], build[62ff986/2015-04-27T09:21:06Z]
-[2015-06-05 10:59:41,457][INFO ][node                     ] [Rancor] initializing ...
-[2015-06-05 10:59:41,515][INFO ][plugins                  ] [Rancor] loaded [cloud-kubernetes], sites []
-[2015-06-05 10:59:44,602][INFO ][node                     ] [Rancor] initialized
-[2015-06-05 10:59:44,603][INFO ][node                     ] [Rancor] starting ...
-[2015-06-05 10:59:44,679][INFO ][transport                ] [Rancor] bound_address {inet[/0:0:0:0:0:0:0:0:9300]}, publish_address {inet[/10.244.74.2:9300]}
-[2015-06-05 10:59:44,724][INFO ][discovery                ] [Rancor] elasticsearch-k8s/bch3o_HyR9aTAXwQLmwZrg
-[2015-06-05 10:59:55,023][INFO ][cluster.service          ] [Rancor] new_master [Rancor][bch3o_HyR9aTAXwQLmwZrg][elasticsearch-master-i0x8d][inet[/10.244.74.2:9300]]{data=false, master=true}, reason: zen-disco-join (elected_as_master)
-[2015-06-05 10:59:55,035][INFO ][node                     ] [Rancor] started
-[2015-06-05 10:59:55,071][INFO ][gateway                  ] [Rancor] recovered [0] indices into cluster_state
-[2015-06-05 11:04:56,930][INFO ][cluster.service          ] [Rancor] added {[Mary Zero][EXkSeIMFTpazlO9fER8o7A][elasticsearch-lb-z6vd4][inet[/10.244.74.3:9300]]{data=false, master=false},}, reason: zen-disco-receive(join from node[[Mary Zero][EXkSeIMFTpazlO9fER8o7A][elasticsearch-lb-z6vd4][inet[/10.244.74.3:9300]]{data=false, master=false}])
-[2015-06-05 11:06:32,179][INFO ][cluster.service          ] [Rancor] added {[Y'Garon][pHDxPFYOQAGSyEJu1apjOg][elasticsearch-data-vqkyz][inet[/10.244.85.3:9300]]{master=false},}, reason: zen-disco-receive(join from node[[Y'Garon][pHDxPFYOQAGSyEJu1apjOg][elasticsearch-data-vqkyz][inet[/10.244.85.3:9300]]{master=false}])
+[2015-06-24 23:59:14,009][WARN ][bootstrap                ] Unable to lock JVM memory (ENOMEM). This can result in part of the JVM being swapped out. Increase RLIMIT_MEMLOCK (ulimit).
+[2015-06-24 23:59:14,108][INFO ][node                     ] [Red Ghost] version[1.6.0], pid[1], build[cdd3ac4/2015-06-09T13:36:34Z]
+[2015-06-24 23:59:14,111][INFO ][node                     ] [Red Ghost] initializing ...
+[2015-06-24 23:59:14,160][INFO ][plugins                  ] [Red Ghost] loaded [cloud-kubernetes], sites []
+[2015-06-24 23:59:14,219][INFO ][env                      ] [Red Ghost] using [1] data paths, mounts [[/data (/dev/sda9)]], net usable_space [14.3gb], net total_space [15.5gb], types [ext4]
+[2015-06-24 23:59:17,584][INFO ][node                     ] [Red Ghost] initialized
+[2015-06-24 23:59:17,584][INFO ][node                     ] [Red Ghost] starting ...
+[2015-06-24 23:59:17,762][INFO ][transport                ] [Red Ghost] bound_address {inet[/0:0:0:0:0:0:0:0:9300]}, publish_address {inet[/10.244.51.3:9300]}
+[2015-06-24 23:59:17,774][INFO ][discovery                ] [Red Ghost] elasticsearch-k8s/aZnBnidATKKxQ7G2LBabng
+[2015-06-24 23:59:23,208][INFO ][cluster.service          ] [Red Ghost] new_master [Red Ghost][aZnBnidATKKxQ7G2LBabng][elasticsearch-master-70p0s][inet[/10.244.51.3:9300]]{data=false, master=true}, reason: zen-disco-join (elected_as_master)
+[2015-06-24 23:59:23,217][INFO ][node                     ] [Red Ghost] started
+[2015-06-24 23:59:23,253][INFO ][gateway                  ] [Red Ghost] recovered [0] indices into cluster_state
+[2015-06-25 00:07:39,631][INFO ][cluster.service          ] [Red Ghost] added {[Termagaira][GFoS_4c0Rj2R25q1y6qNGw][elasticsearch-lb-usmg3][inet[/10.244.51.4:9300]]{data=false, master=false},}, reason: zen-disco-receive(join from node[[Termagaira][GFoS_4c0Rj2R25q1y6qNGw][elasticsearch-lb-usmg3][inet[/10.244.51.4:9300]]{data=false, master=false}])
+[2015-06-25 00:08:23,421][INFO ][cluster.service          ] [Red Ghost] added {[Juggernaut][m-8dg7yuTw-Bfmna3TNarA][elasticsearch-data-56u6c][inet[/10.244.51.5:9300]]{master=false},}, reason: zen-disco-receive(join from node[[Juggernaut][m-8dg7yuTw-Bfmna3TNarA][elasticsearch-data-56u6c][inet[/10.244.51.5:9300]]{master=false}])
 ```
 
 As you can assert, the cluster is up and running. Easy, wasn't it?
@@ -111,14 +112,14 @@ You should see something like this:
 
 ```
 $ kubectl get service elasticsearch
-NAME            LABELS    SELECTOR                                     IP(S)           PORT(S)
-elasticsearch   <none>    component=elasticsearch,role=load-balancer   10.100.10.240   9200/TCP
+NAME            LABELS                                       SELECTOR                                     IP(S)           PORT(S)
+elasticsearch   component=elasticsearch,role=load-balancer   component=elasticsearch,role=load-balancer   10.100.235.91   9200/TCP
 ```
 
 From any host on your cluster (that's running `kube-proxy`):
 
 ```
-curl http://10.100.10.240:9200
+curl http://10.100.235.91:9200
 ```
 
 This should be what you see:
@@ -126,12 +127,12 @@ This should be what you see:
 ```json
 {
   "status" : 200,
-  "name" : "Mary Zero",
+  "name" : "Termagaira",
   "cluster_name" : "elasticsearch-k8s",
   "version" : {
-    "number" : "1.5.2",
-    "build_hash" : "62ff9868b4c8a0c45860bebb259e21980778ab1c",
-    "build_timestamp" : "2015-04-27T09:21:06Z",
+    "number" : "1.6.0",
+    "build_hash" : "cdd3ac4dde4f69524ec0a14de3828cb95bbb86d0",
+    "build_timestamp" : "2015-06-09T13:36:34Z",
     "build_snapshot" : false,
     "lucene_version" : "4.10.4"
   },
@@ -142,7 +143,7 @@ This should be what you see:
 Or if you want to see cluster information:
 
 ```
-curl http://10.100.10.240:9200/_cluster/health?pretty
+curl http://10.100.235.91:9200/_cluster/health?pretty
 ```
 
 This should be what you see:
@@ -159,6 +160,7 @@ This should be what you see:
   "relocating_shards" : 0,
   "initializing_shards" : 0,
   "unassigned_shards" : 0,
-  "number_of_pending_tasks" : 0
+  "number_of_pending_tasks" : 0,
+  "number_of_in_flight_fetch" : 0
 }
 ```
