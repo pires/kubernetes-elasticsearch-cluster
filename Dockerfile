@@ -1,4 +1,4 @@
-FROM quay.io/pires/docker-elasticsearch-kubernetes:1.7.0
+FROM quay.io/pires/docker-elasticsearch-kubernetes:1.7.1
 
 MAINTAINER pjpires@gmail.com
 
