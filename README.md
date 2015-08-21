@@ -3,22 +3,22 @@ Elasticsearch (1.7.1) cluster on top of Kubernetes made easy.
 
 Elasticsearch best-practices recommend to separate nodes in three roles:
 * `Master` nodes - intended for clustering management only, no data, no HTTP API
-* `Load-balancer` nodes - intended for client usage, no data, with HTTP API
+* `Client` nodes - intended for client usage, no data, with HTTP API
 * `Data` nodes - intended for storing and indexing your data, no HTTP API
 
-Given this, I'm hereby making possible for you to scale as needed. For instance, a good strong scenario could be 3 Masters, 3 Load-balancers, 5 data-nodes.
+Given this, I'm hereby making possible for you to scale as needed. For instance, a good strong scenario could be 3 master, 2 client, 5 data nodes.
 
 *Attention:* As of the moment, Kubernetes pod descriptors use an `emptyDir` for storing data in each data node container. This is meant to be for the sake of simplicity and should be adapted according to your storage needs.
 
 ## Pre-requisites
 
-* Docker 1.5+
-* Kubernetes cluster (tested with v1.0.1 on top of [Vagrant + CoreOS](https://github.com/pires/kubernetes-vagrant-coreos-cluster))
+* Docker 1.7.0+
+* Kubernetes cluster (tested with v1.0.3 on top of [Vagrant + CoreOS](https://github.com/pires/kubernetes-vagrant-coreos-cluster))
 * `kubectl` configured to access your cluster master API Server
 
 ## Build images (optional)
 
-Providing your own version of [the images automatically built from this repository](https://registry.hub.docker.com/u/pires/elasticsearch) will not be supported. This is an *optional* step. You have been warned.
+Providing your own version of [the images automatically built from this repository](https://github.com/pires/docker-elasticseearch-kubernetes) will not be supported. This is an *optional* step. You have been warned.
 
 ## Test
 
@@ -26,60 +26,52 @@ Providing your own version of [the images automatically built from this reposito
 
 ```
 kubectl create -f service-account.yaml
-kubectl create -f elasticsearch-discovery-service.yaml
-kubectl create -f elasticsearch-service.yaml
-kubectl create -f elasticsearch-master-controller.yaml
+kubectl create -f es-discovery-svc.yaml
+kubectl create -f es-svc.yaml
+kubectl create -f es-master-rc.yaml
 ```
 
-Wait until `elasticsearch-master-controller` is provisioned, and
+Wait until `es-master` is provisioned, and
 ```
-kubectl create -f elasticsearch-lb-controller.yaml
-```
-
-Wait until `elasticsearch-data-controller` is provisioned, and
-```
-kubectl create -f elasticsearch-data-controller.yaml
+kubectl create -f es-client-rc.yaml
 ```
 
-### Validate
-
-I leave to you the steps to validate the provisioned pods, but first step is to wait for containers to be in ```RUNNING``` state and check the logs of the master (as in Elasticsearch):
-
+Wait until `es-client` is provisioned, and
 ```
-kubectl get pods
+kubectl create -f es-data-rc.yaml
 ```
 
-You should see something like this:
+Wait until `es-data` is provisioned.
+
+Now, I leave up to you how to validate the cluster, but a first step is to wait for containers to be in ```RUNNING``` state and check the Elasticsearch master logs:
 
 ```
 $ kubectl get pods
-NAME                         READY     STATUS    RESTARTS   AGE
-elasticsearch-data-881wf     1/1       Running   0          47s
-elasticsearch-lb-tujlb       1/1       Running   0          1m
-elasticsearch-master-hh4gw   1/1       Running   0          2m
+NAME              READY     STATUS    RESTARTS   AGE
+es-client-2ep9o   1/1       Running   0          2m
+es-data-r9tgv     1/1       Running   0          1m
+es-master-vxl6c   1/1       Running   0          6m
 ```
 
-Copy master pod identifier and check the logs:
-
 ```
-kubectl logs elasticsearch-master-hh4gw
+$ kubectl logs es-master-vxl6c
 log4j:WARN No such property [maxBackupIndex] in org.apache.log4j.DailyRollingFileAppender.
 log4j:WARN No such property [maxBackupIndex] in org.apache.log4j.DailyRollingFileAppender.
 log4j:WARN No such property [maxBackupIndex] in org.apache.log4j.DailyRollingFileAppender.
-[2015-07-22 13:53:12,234][WARN ][bootstrap                ] Unable to lock JVM memory (ENOMEM). This can result in part of the JVM being swapped out. Increase RLIMIT_MEMLOCK (ulimit).
-[2015-07-22 13:53:12,375][INFO ][node                     ] [American Samurai] version[1.7.0], pid[1], build[929b973/2015-07-16T14:31:07Z]
-[2015-07-22 13:53:12,377][INFO ][node                     ] [American Samurai] initializing ...
-[2015-07-22 13:53:12,513][INFO ][plugins                  ] [American Samurai] loaded [cloud-kubernetes], sites []
-[2015-07-22 13:53:12,551][INFO ][env                      ] [American Samurai] using [1] data paths, mounts [[/data (/dev/sda9)]], net usable_space [14.4gb], net total_space [15.5gb], types [ext4]
-[2015-07-22 13:53:16,445][INFO ][node                     ] [American Samurai] initialized
-[2015-07-22 13:53:16,446][INFO ][node                     ] [American Samurai] starting ...
-[2015-07-22 13:53:16,676][INFO ][transport                ] [American Samurai] bound_address {inet[/0:0:0:0:0:0:0:0:9300]}, publish_address {inet[/10.244.78.4:9300]}
-[2015-07-22 13:53:16,709][INFO ][discovery                ] [American Samurai] elasticsearch-k8s/dlkCkOJaQ4SkfUPfAPNubQ
-[2015-07-22 13:53:22,631][INFO ][cluster.service          ] [American Samurai] new_master [American Samurai][dlkCkOJaQ4SkfUPfAPNubQ][elasticsearch-master-hh4gw][inet[/10.244.78.4:9300]]{data=false, master=true}, reason: zen-disco-join (elected_as_master)
-[2015-07-22 13:53:22,666][INFO ][node                     ] [American Samurai] started
-[2015-07-22 13:53:22,704][INFO ][gateway                  ] [American Samurai] recovered [0] indices into cluster_state
-[2015-07-22 13:54:24,682][INFO ][cluster.service          ] [American Samurai] added {[Warlock][zvGs3UQ8QE-uxBaqXF5Prw][elasticsearch-lb-tujlb][inet[/10.244.78.5:9300]]{data=false, master=false},}, reason: zen-disco-receive(join from node[[Warlock][zvGs3UQ8QE-uxBaqXF5Prw][elasticsearch-lb-tujlb][inet[/10.244.78.5:9300]]{data=false, master=false}])
-[2015-07-22 13:54:54,744][INFO ][cluster.service          ] [American Samurai] added {[Mastermind of the UK][fpkffLbzTTy0P4ox10xJxg][elasticsearch-data-881wf][inet[/10.244.78.6:9300]]{master=false},}, reason: zen-disco-receive(join from node[[Mastermind of the UK][fpkffLbzTTy0P4ox10xJxg][elasticsearch-data-881wf][inet[/10.244.78.6:9300]]{master=false}])
+[2015-08-21 10:58:51,095][WARN ][bootstrap                ] Unable to lock JVM memory (ENOMEM). This can result in part of the JVM being swapped out. Increase RLIMIT_MEMLOCK (ulimit).
+[2015-08-21 10:58:51,324][INFO ][node                     ] [Arc] version[1.7.1], pid[8], build[b88f43f/2015-07-29T09:54:16Z]
+[2015-08-21 10:58:51,328][INFO ][node                     ] [Arc] initializing ...
+[2015-08-21 10:58:51,542][INFO ][plugins                  ] [Arc] loaded [cloud-kubernetes], sites []
+[2015-08-21 10:58:51,624][INFO ][env                      ] [Arc] using [1] data paths, mounts [[/data (/dev/sda9)]], net usable_space [14.4gb], net total_space [15.5gb], types [ext4]
+[2015-08-21 10:58:57,439][INFO ][node                     ] [Arc] initialized
+[2015-08-21 10:58:57,439][INFO ][node                     ] [Arc] starting ...
+[2015-08-21 10:58:57,782][INFO ][transport                ] [Arc] bound_address {inet[/0:0:0:0:0:0:0:0:9300]}, publish_address {inet[/10.244.15.2:9300]}
+[2015-08-21 10:58:57,847][INFO ][discovery                ] [Arc] myesdb/-x16XFUzTCC8xYqWoeEOYQ
+[2015-08-21 10:59:05,167][INFO ][cluster.service          ] [Arc] new_master [Arc][-x16XFUzTCC8xYqWoeEOYQ][es-master-vxl6c][inet[/10.244.15.2:9300]]{data=false, master=true}, reason: zen-disco-join (elected_as_master)
+[2015-08-21 10:59:05,202][INFO ][node                     ] [Arc] started
+[2015-08-21 10:59:05,238][INFO ][gateway                  ] [Arc] recovered [0] indices into cluster_state
+[2015-08-21 11:02:28,797][INFO ][cluster.service          ] [Arc] added {[Gideon][4EfhWSqaTqikbK4tI7bODA][es-data-r9tgv][inet[/10.244.59.4:9300]]{master=false},}, reason: zen-disco-receive(join from node[[Gideon][4EfhWSqaTqikbK4tI7bODA][es-data-r9tgv][inet[/10.244.59.4:9300]]{master=false}])
+[2015-08-21 11:03:16,822][INFO ][cluster.service          ] [Arc] added {[Venomm][tFYxwgqGSpOejHLG4umRqg][es-client-2ep9o][inet[/10.244.53.2:9300]]{data=false, master=false},}, reason: zen-disco-receive(join from node[[Venomm][tFYxwgqGSpOejHLG4umRqg][es-client-2ep9o][inet[/10.244.53.2:9300]]{data=false, master=false}])
 ```
 
 As you can assert, the cluster is up and running. Easy, wasn't it?
@@ -89,44 +81,78 @@ As you can assert, the cluster is up and running. Easy, wasn't it?
 Scaling each type of node to handle your cluster is as easy as:
 
 ```
-kubectl scale --replicas=3 rc elasticsearch-master
-kubectl scale --replicas=2 rc elasticsearch-lb
-kubectl scale --replicas=5 rc elasticsearch-data
+kubectl scale --replicas=3 rc es-master
+kubectl scale --replicas=2 rc es-client
+kubectl scale --replicas=2 rc es-data
+```
+
+Did it work?
+
+```
+$ kubectl get pods
+NAME              READY     STATUS    RESTARTS   AGE
+es-client-2ep9o   1/1       Running   0          4m
+es-client-ye5s1   1/1       Running   0          50s
+es-data-8az22     1/1       Running   0          47s
+es-data-r9tgv     1/1       Running   0          3m
+es-master-57h7k   1/1       Running   0          52s
+es-master-kuwse   1/1       Running   0          52s
+es-master-vxl6c   1/1       Running   0          8m
+```
+
+Let's take another look of the Elasticsearch master logs:
+```
+$ kubectl logs es-master-vxl6c
+log4j:WARN No such property [maxBackupIndex] in org.apache.log4j.DailyRollingFileAppender.
+log4j:WARN No such property [maxBackupIndex] in org.apache.log4j.DailyRollingFileAppender.
+log4j:WARN No such property [maxBackupIndex] in org.apache.log4j.DailyRollingFileAppender.
+[2015-08-21 10:58:51,095][WARN ][bootstrap                ] Unable to lock JVM memory (ENOMEM). This can result in part of the JVM being swapped out. Increase RLIMIT_MEMLOCK (ulimit).
+[2015-08-21 10:58:51,324][INFO ][node                     ] [Arc] version[1.7.1], pid[8], build[b88f43f/2015-07-29T09:54:16Z]
+[2015-08-21 10:58:51,328][INFO ][node                     ] [Arc] initializing ...
+[2015-08-21 10:58:51,542][INFO ][plugins                  ] [Arc] loaded [cloud-kubernetes], sites []
+[2015-08-21 10:58:51,624][INFO ][env                      ] [Arc] using [1] data paths, mounts [[/data (/dev/sda9)]], net usable_space [14.4gb], net total_space [15.5gb], types [ext4]
+[2015-08-21 10:58:57,439][INFO ][node                     ] [Arc] initialized
+[2015-08-21 10:58:57,439][INFO ][node                     ] [Arc] starting ...
+[2015-08-21 10:58:57,782][INFO ][transport                ] [Arc] bound_address {inet[/0:0:0:0:0:0:0:0:9300]}, publish_address {inet[/10.244.15.2:9300]}
+[2015-08-21 10:58:57,847][INFO ][discovery                ] [Arc] myesdb/-x16XFUzTCC8xYqWoeEOYQ
+[2015-08-21 10:59:05,167][INFO ][cluster.service          ] [Arc] new_master [Arc][-x16XFUzTCC8xYqWoeEOYQ][es-master-vxl6c][inet[/10.244.15.2:9300]]{data=false, master=true}, reason: zen-disco-join (elected_as_master)
+[2015-08-21 10:59:05,202][INFO ][node                     ] [Arc] started
+[2015-08-21 10:59:05,238][INFO ][gateway                  ] [Arc] recovered [0] indices into cluster_state
+[2015-08-21 11:02:28,797][INFO ][cluster.service          ] [Arc] added {[Gideon][4EfhWSqaTqikbK4tI7bODA][es-data-r9tgv][inet[/10.244.59.4:9300]]{master=false},}, reason: zen-disco-receive(join from node[[Gideon][4EfhWSqaTqikbK4tI7bODA][es-data-r9tgv][inet[/10.244.59.4:9300]]{master=false}])
+[2015-08-21 11:03:16,822][INFO ][cluster.service          ] [Arc] added {[Venomm][tFYxwgqGSpOejHLG4umRqg][es-client-2ep9o][inet[/10.244.53.2:9300]]{data=false, master=false},}, reason: zen-disco-receive(join from node[[Venomm][tFYxwgqGSpOejHLG4umRqg][es-client-2ep9o][inet[/10.244.53.2:9300]]{data=false, master=false}])
+[2015-08-21 11:04:40,781][INFO ][cluster.service          ] [Arc] added {[Erik Josten][QUJlahfLTi-MsxzM6_Da0g][es-master-kuwse][inet[/10.244.59.5:9300]]{data=false, master=true},}, reason: zen-disco-receive(join from node[[Erik Josten][QUJlahfLTi-MsxzM6_Da0g][es-master-kuwse][inet[/10.244.59.5:9300]]{data=false, master=true}])
+[2015-08-21 11:04:41,076][INFO ][cluster.service          ] [Arc] added {[Power Princess][V4qnR-6jQOS5ovXQsPgo7g][es-master-57h7k][inet[/10.244.53.3:9300]]{data=false, master=true},}, reason: zen-disco-receive(join from node[[Power Princess][V4qnR-6jQOS5ovXQsPgo7g][es-master-57h7k][inet[/10.244.53.3:9300]]{data=false, master=true}])
+[2015-08-21 11:04:53,966][INFO ][cluster.service          ] [Arc] added {[Cagliostro][Wpfx5fkBRiG2qCEWd8laaQ][es-client-ye5s1][inet[/10.244.15.3:9300]]{data=false, master=false},}, reason: zen-disco-receive(join from node[[Cagliostro][Wpfx5fkBRiG2qCEWd8laaQ][es-client-ye5s1][inet[/10.244.15.3:9300]]{data=false, master=false}])
+[2015-08-21 11:04:56,803][INFO ][cluster.service          ] [Arc] added {[Thog][vkdEtX3ESfWmhXXf-Wi0_Q][es-data-8az22][inet[/10.244.15.4:9300]]{master=false},}, reason: zen-disco-receive(join from node[[Thog][vkdEtX3ESfWmhXXf-Wi0_Q][es-data-8az22][inet[/10.244.15.4:9300]]{master=false}])
 ```
 
 ### Access the service
 
-*Don't forget* that services in Kubernetes are only acessible from containers in the cluster. For different behavior you should configure the creation of an external-loadbalancer, in your service. That's out of scope of this document, for now.
-
-```
-kubectl get service elasticsearch
-```
-
-You should see something like this:
+*Don't forget* that services in Kubernetes are only acessible from containers in the cluster. For different behavior you should configure the creation of an external load-balancer (in your service descriptor). That's out of scope of this document, for now.
 
 ```
 $ kubectl get service elasticsearch
-NAME            LABELS                                       SELECTOR                                     IP(S)           PORT(S)
-elasticsearch   component=elasticsearch,role=load-balancer   component=elasticsearch,role=load-balancer   10.100.251.16   9200/TCP
+NAME            LABELS                                SELECTOR                              IP(S)          PORT(S)
+elasticsearch   component=elasticsearch,role=client   component=elasticsearch,role=client   10.100.134.2   9200/TCP
 ```
 
-From any host on your cluster (that's running `kube-proxy`):
+From any host on your cluster (that's running `kube-proxy`), run:
 
 ```
-curl http://10.100.251.16:9200
+curl http://10.100.134.2:9200
 ```
 
-This should be what you see:
+You should see something similar to the following:
 
 ```json
 {
   "status" : 200,
-  "name" : "Warlock",
-  "cluster_name" : "elasticsearch-k8s",
+  "name" : "Cagliostro",
+  "cluster_name" : "myesdb",
   "version" : {
-    "number" : "1.7.0",
-    "build_hash" : "929b9739cae115e73c346cb5f9a6f24ba735a743",
-    "build_timestamp" : "2015-07-16T14:31:07Z",
+    "number" : "1.7.1",
+    "build_hash" : "b88f43fc40b0bcd7f173a1f9ee2e97816de80b19",
+    "build_timestamp" : "2015-07-29T09:54:16Z",
     "build_snapshot" : false,
     "lucene_version" : "4.10.4"
   },
@@ -137,18 +163,18 @@ This should be what you see:
 Or if you want to see cluster information:
 
 ```
-curl http://10.100.251.16:9200/_cluster/health?pretty
+curl http://10.100.134.2:9200/_cluster/health?pretty
 ```
 
-This should be what you see:
+You should see something similar to the following:
 
 ```json
 {
-  "cluster_name" : "elasticsearch-k8s",
+  "cluster_name" : "myesdb",
   "status" : "green",
   "timed_out" : false,
-  "number_of_nodes" : 3,
-  "number_of_data_nodes" : 1,
+  "number_of_nodes" : 7,
+  "number_of_data_nodes" : 2,
   "active_primary_shards" : 0,
   "active_shards" : 0,
   "relocating_shards" : 0,

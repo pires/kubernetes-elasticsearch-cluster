@@ -1,33 +1,38 @@
 apiVersion: v1
 kind: ReplicationController
 metadata:
-  name: elasticsearch-lb
+  name: es-data
   namespace: default
   labels:
     component: elasticsearch
-    role: load-balancer
+    role: data
 spec:
   replicas: 1
   selector:
     component: elasticsearch
-    role: load-balancer
+    role: data
   template:
     metadata:
       labels:
         component: elasticsearch
-        role: load-balancer
+        role: data
     spec:
       serviceAccount: elasticsearch
       containers:
-      - name: elasticsearch-lb
-        image: pires/elasticsearch:lb
+      - name: es-data
+        image: quay.io/pires/docker-elasticsearch-kubernetes:1.7.1-4
         env:
         - name: KUBERNETES_TRUST_CERT
           value: "true"
+        - name: NAMESPACE
+          value: "default"
+        - name: "CLUSTER_NAME"
+          value: "myesdb"
+        - name: NODE_MASTER
+          value: "false"
+        - name: HTTP_ENABLE
+          value: "false"
         ports:
-        - containerPort: 9200
-          name: http
-          protocol: TCP
         - containerPort: 9300
           name: transport
           protocol: TCP

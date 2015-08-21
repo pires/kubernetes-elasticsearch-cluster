@@ -5,11 +5,11 @@ metadata:
   namespace: default
   labels:
     component: elasticsearch
-    role: load-balancer
+    role: client
 spec:
   selector:
     component: elasticsearch
-    role: load-balancer
+    role: client
   ports:
   - name: http
     port: 9200
