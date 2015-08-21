@@ -18,7 +18,7 @@ Given this, I'm hereby making possible for you to scale as needed. For instance,
 
 ## Build images (optional)
 
-Providing your own version of [the images automatically built from this repository](https://github.com/pires/docker-elasticseearch-kubernetes) will not be supported. This is an *optional* step. You have been warned.
+Providing your own version of [the images automatically built from this repository](https://github.com/pires/docker-elasticsearch-kubernetes) will not be supported. This is an *optional* step. You have been warned.
 
 ## Test
 
