@@ -2,7 +2,6 @@ apiVersion: v1
 kind: ReplicationController
 metadata:
   name: es-data
-  namespace: default
   labels:
     component: elasticsearch
     role: data
@@ -20,12 +19,18 @@ spec:
       serviceAccount: elasticsearch
       containers:
       - name: es-data
+        securityContext:
+          capabilities:
+            add:
+              - IPC_LOCK
         image: quay.io/pires/docker-elasticsearch-kubernetes:1.7.1-4
         env:
-        - name: KUBERNETES_TRUST_CERT
-          value: "true"
+        - name: KUBERNETES_CA_CERTIFICATE_FILE
+          value: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
         - name: NAMESPACE
-          value: "default"
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
         - name: "CLUSTER_NAME"
           value: "myesdb"
         - name: NODE_MASTER
