@@ -1,5 +1,5 @@
 # kubernetes-elasticsearch-cluster
-Elasticsearch (1.7.1) cluster on top of Kubernetes made easy.
+Elasticsearch (1.7.2) cluster on top of Kubernetes made easy.
 
 Elasticsearch best-practices recommend to separate nodes in three roles:
 * `Master` nodes - intended for clustering management only, no data, no HTTP API
@@ -12,8 +12,7 @@ Given this, I'm hereby making possible for you to scale as needed. For instance,
 
 ## Pre-requisites
 
-* Docker 1.7.0+
-* Kubernetes cluster (tested with v1.0.3 on top of [Vagrant + CoreOS](https://github.com/pires/kubernetes-vagrant-coreos-cluster))
+* Kubernetes cluster (tested with v1.0.6 on top of [Vagrant + CoreOS](https://github.com/pires/kubernetes-vagrant-coreos-cluster))
 * `kubectl` configured to access your cluster master API Server
 
 ## Build images (optional)
@@ -58,7 +57,7 @@ $ kubectl logs es-master-vxl6c
 log4j:WARN No such property [maxBackupIndex] in org.apache.log4j.DailyRollingFileAppender.
 log4j:WARN No such property [maxBackupIndex] in org.apache.log4j.DailyRollingFileAppender.
 log4j:WARN No such property [maxBackupIndex] in org.apache.log4j.DailyRollingFileAppender.
-[2015-08-21 10:58:51,324][INFO ][node                     ] [Arc] version[1.7.1], pid[8], build[b88f43f/2015-07-29T09:54:16Z]
+[2015-08-21 10:58:51,324][INFO ][node                     ] [Arc] version[1.7.2], pid[8], build[b88f43f/2015-07-29T09:54:16Z]
 [2015-08-21 10:58:51,328][INFO ][node                     ] [Arc] initializing ...
 [2015-08-21 10:58:51,542][INFO ][plugins                  ] [Arc] loaded [cloud-kubernetes], sites []
 [2015-08-21 10:58:51,624][INFO ][env                      ] [Arc] using [1] data paths, mounts [[/data (/dev/sda9)]], net usable_space [14.4gb], net total_space [15.5gb], types [ext4]
@@ -105,7 +104,7 @@ $ kubectl logs es-master-vxl6c
 log4j:WARN No such property [maxBackupIndex] in org.apache.log4j.DailyRollingFileAppender.
 log4j:WARN No such property [maxBackupIndex] in org.apache.log4j.DailyRollingFileAppender.
 log4j:WARN No such property [maxBackupIndex] in org.apache.log4j.DailyRollingFileAppender.
-[2015-08-21 10:58:51,324][INFO ][node                     ] [Arc] version[1.7.1], pid[8], build[b88f43f/2015-07-29T09:54:16Z]
+[2015-08-21 10:58:51,324][INFO ][node                     ] [Arc] version[1.7.2], pid[8], build[b88f43f/2015-07-29T09:54:16Z]
 [2015-08-21 10:58:51,328][INFO ][node                     ] [Arc] initializing ...
 [2015-08-21 10:58:51,542][INFO ][plugins                  ] [Arc] loaded [cloud-kubernetes], sites []
 [2015-08-21 10:58:51,624][INFO ][env                      ] [Arc] using [1] data paths, mounts [[/data (/dev/sda9)]], net usable_space [14.4gb], net total_space [15.5gb], types [ext4]
@@ -148,7 +147,7 @@ You should see something similar to the following:
   "name" : "Cagliostro",
   "cluster_name" : "myesdb",
   "version" : {
-    "number" : "1.7.1",
+    "number" : "1.7.2",
     "build_hash" : "b88f43fc40b0bcd7f173a1f9ee2e97816de80b19",
     "build_timestamp" : "2015-07-29T09:54:16Z",
     "build_snapshot" : false,
