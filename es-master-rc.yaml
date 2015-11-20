@@ -20,10 +20,11 @@ spec:
       containers:
       - name: es-master
         securityContext:
+          privileged: true
           capabilities:
             add:
               - IPC_LOCK
-        image: quay.io/pires/docker-elasticsearch-kubernetes:1.7.2
+        image: quay.io/pires/docker-elasticsearch-kubernetes:2.0.0
         env:
         - name: KUBERNETES_CA_CERTIFICATE_FILE
           value: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
@@ -47,5 +48,6 @@ spec:
         - mountPath: /data
           name: storage
       volumes:
-      - name: storage
-        emptyDir: {}
+          - emptyDir:
+              medium: ""
+            name: "storage"
