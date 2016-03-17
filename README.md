@@ -1,5 +1,5 @@
 # kubernetes-elasticsearch-cluster
-Elasticsearch (2.2.0) cluster on top of Kubernetes made easy.
+Elasticsearch (2.2.1) cluster on top of Kubernetes made easy.
 
 Elasticsearch best-practices recommend to separate nodes in three roles:
 * `Master` nodes - intended for clustering management only, no data, no HTTP API
@@ -46,56 +46,36 @@ Now, I leave up to you how to validate the cluster, but a first step is to wait 
 
 ```
 $ kubectl get svc,rc,pods
-NAME                      CLUSTER_IP       EXTERNAL_IP   PORT(S)    SELECTOR                              AGE
-elasticsearch             10.100.172.134                 9200/TCP   component=elasticsearch,role=client   3m
-elasticsearch-discovery   10.100.248.2     <none>        9300/TCP   component=elasticsearch,role=master   3m
-kubernetes                10.100.0.1       <none>        443/TCP    <none>                                18m
-CONTROLLER   CONTAINER(S)   IMAGE(S)                                              SELECTOR                              REPLICAS   AGE
-es-client    es-client      quay.io/pires/docker-elasticsearch-kubernetes:2.2.0   component=elasticsearch,role=client   1          2m
-es-data      es-data        quay.io/pires/docker-elasticsearch-kubernetes:2.2.0   component=elasticsearch,role=data     1          2m
-es-master    es-master      quay.io/pires/docker-elasticsearch-kubernetes:2.2.0   component=elasticsearch,role=master   1          3m
-NAME              READY     STATUS    RESTARTS   AGE
-es-client-h3u53   1/1       Running   0          2m
-es-data-p2kia     1/1       Running   0          2m
-es-master-14i22   1/1       Running   0          3m
+NAME                      CLUSTER-IP      EXTERNAL-IP   PORT(S)    AGE
+elasticsearch             10.100.45.242                 9200/TCP   2m
+elasticsearch-discovery   10.100.32.42    <none>        9300/TCP   2m
+kubernetes                10.100.0.1      <none>        443/TCP    16m
+NAME                      DESIRED         CURRENT       AGE
+es-client                 1               1             1m
+es-data                   1               1             1m
+es-master                 1               1             2m
+NAME                      READY           STATUS        RESTARTS   AGE
+es-client-faz0j           1/1             Running       0          1m
+es-data-ggcnf             1/1             Running       0          1m
+es-master-ngb67           1/1             Running       0          2m
 ```
 
 ```
-$ kubectl logs es-master-14i22
-[s6-init] making user provided files available at /var/run/s6/etc...exited 0.
-[s6-init] ensuring user provided files have correct perms...exited 0.
-[fix-attrs.d] applying ownership & permissions fixes...
-[fix-attrs.d] done.
-[cont-init.d] executing container initialization scripts...
-[cont-init.d] done.
-[services.d] starting services
-level=info msg="Starting go-dnsmasq server 0.9.8 ..."
-level=info msg="Search domains in use: [default.svc.cluster.local. svc.cluster.local. cluster.local.]"
-level=info msg="Ready for queries on tcp://127.0.0.1:53 - Nameservers: [10.100.0.10:53 10.0.2.3:53]"
-level=info msg="Ready for queries on udp://127.0.0.1:53 - Nameservers: [10.100.0.10:53 10.0.2.3:53]"
-[services.d] done.
-log4j:WARN No such property [maxBackupIndex] in org.apache.log4j.DailyRollingFileAppender.
-log4j:WARN No such property [maxBackupIndex] in org.apache.log4j.DailyRollingFileAppender.
-log4j:WARN No such property [maxBackupIndex] in org.apache.log4j.DailyRollingFileAppender.
-[2016-02-09 16:57:53,483][INFO ][node                     ] [New Goblin] version[2.2.0], pid[172], build[8ff36d1/2016-01-27T13:32:39Z]
-[2016-02-09 16:57:53,483][INFO ][node                     ] [New Goblin] initializing ...
-[2016-02-09 16:57:54,172][INFO ][plugins                  ] [New Goblin] modules [lang-expression, lang-groovy], plugins [cloud-kubernetes], sites []
-[2016-02-09 16:57:54,194][INFO ][env                      ] [New Goblin] using [1] data paths, mounts [[/data (/dev/sda9)]], net usable_space [14.2gb], net total_space [15.5gb], spins? [possibly], types [ext4]
-[2016-02-09 16:57:54,194][INFO ][env                      ] [New Goblin] heap size [1015.6mb], compressed ordinary object pointers [true]
-[2016-02-09 16:57:57,508][INFO ][node                     ] [New Goblin] initialized
-[2016-02-09 16:57:57,513][INFO ][node                     ] [New Goblin] starting ...
-[2016-02-09 16:57:57,589][WARN ][common.network           ] [New Goblin] _non_loopback_ is deprecated as it picks an arbitrary interface. specify explicit scope(s), interface(s), address(es), or hostname(s) instead
-[2016-02-09 16:57:57,666][WARN ][common.network           ] [New Goblin] _non_loopback_ is deprecated as it picks an arbitrary interface. specify explicit scope(s), interface(s), address(es), or hostname(s) instead
-[2016-02-09 16:57:57,679][INFO ][transport                ] [New Goblin] publish_address {10.244.12.2:9300}, bound_addresses {10.244.12.2:9300}
-[2016-02-09 16:57:57,686][INFO ][discovery                ] [New Goblin] myesdb/7tXPp-tqSdu8qZ_ZUcm7pg
-[2016-02-09 16:57:57,695][WARN ][common.network           ] [New Goblin] _non_loopback_ is deprecated as it picks an arbitrary interface. specify explicit scope(s), interface(s), address(es), or hostname(s) instead
-[2016-02-09 16:58:00,536][WARN ][common.network           ] [New Goblin] _non_loopback_ is deprecated as it picks an arbitrary interface. specify explicit scope(s), interface(s), address(es), or hostname(s) instead
-[2016-02-09 16:58:02,066][WARN ][common.network           ] [New Goblin] _non_loopback_ is deprecated as it picks an arbitrary interface. specify explicit scope(s), interface(s), address(es), or hostname(s) instead
-[2016-02-09 16:58:02,090][INFO ][cluster.service          ] [New Goblin] new_master {New Goblin}{7tXPp-tqSdu8qZ_ZUcm7pg}{10.244.12.2}{10.244.12.2:9300}{data=false, master=true}, reason: zen-disco-join(elected_as_master, [0] joins received)
-[2016-02-09 16:58:02,093][INFO ][node                     ] [New Goblin] started
-[2016-02-09 16:58:02,150][INFO ][gateway                  ] [New Goblin] recovered [0] indices into cluster_state
-[2016-02-09 16:58:39,353][INFO ][cluster.service          ] [New Goblin] added {{Coach}{SHRr7XACQsuyHKP3rSxCOw}{10.244.14.2}{10.244.14.2:9300}{data=false, master=false},}, reason: zen-disco-join(join from node[{Coach}{SHRr7XACQsuyHKP3rSxCOw}{10.244.14.2}{10.244.14.2:9300}{data=false, master=false}])
-[2016-02-09 16:59:16,448][INFO ][cluster.service          ] [New Goblin] added {{Ghaur}{vcNdokVgSPeYALQ5jtMOKw}{10.244.75.2}{10.244.75.2:9300}{master=false},}, reason: zen-disco-join(join from node[{Ghaur}{vcNdokVgSPeYALQ5jtMOKw}{10.244.75.2}{10.244.75.2:9300}{master=false}])
+$ kubectl logs es-master-ngb67
+[2016-03-17 18:13:18,220][INFO ][node                     ] [Ms. Steed] version[2.2.1], pid[173], build[d045fc2/2016-03-09T09:38:54Z]
+[2016-03-17 18:13:18,222][INFO ][node                     ] [Ms. Steed] initializing ...
+[2016-03-17 18:13:19,160][INFO ][plugins                  ] [Ms. Steed] modules [lang-expression, lang-groovy], plugins [cloud-kubernetes], sites []
+[2016-03-17 18:13:19,198][INFO ][env                      ] [Ms. Steed] using [1] data paths, mounts [[/data (/dev/sda9)]], net usable_space [14.1gb], net total_space [15.5gb], spins? [possibly], types [ext4]
+[2016-03-17 18:13:19,199][INFO ][env                      ] [Ms. Steed] heap size [1015.6mb], compressed ordinary object pointers [true]
+[2016-03-17 18:13:23,317][INFO ][node                     ] [Ms. Steed] initialized
+[2016-03-17 18:13:23,322][INFO ][node                     ] [Ms. Steed] starting ...
+[2016-03-17 18:13:23,437][INFO ][transport                ] [Ms. Steed] publish_address {10.244.66.2:9300}, bound_addresses {10.244.66.2:9300}
+[2016-03-17 18:13:23,453][INFO ][discovery                ] [Ms. Steed] myesdb/sCP2pgSJT4iP4CyUlfZ_nQ
+[2016-03-17 18:13:27,982][INFO ][cluster.service          ] [Ms. Steed] new_master {Ms. Steed}{sCP2pgSJT4iP4CyUlfZ_nQ}{10.244.66.2}{10.244.66.2:9300}{data=false, master=true}, reason: zen-disco-join(elected_as_master, [0] joins received)
+[2016-03-17 18:13:27,991][INFO ][node                     ] [Ms. Steed] started
+[2016-03-17 18:13:28,059][INFO ][gateway                  ] [Ms. Steed] recovered [0] indices into cluster_state
+[2016-03-17 18:14:20,690][INFO ][cluster.service          ] [Ms. Steed] added {{Stinger}{-AUBFBNAQ5W9ywX3dJQ1Ow}{10.244.23.2}{10.244.23.2:9300}{data=false, master=false},}, reason: zen-disco-join(join from node[{Stinger}{-AUBFBNAQ5W9ywX3dJQ1Ow}{10.244.23.2}{10.244.23.2:9300}{data=false, master=false}])
+[2016-03-17 18:14:27,816][INFO ][cluster.service          ] [Ms. Steed] added {{Scarecrow}{_L8Vlz6iTiaxxRVeMis-8Q}{10.244.29.2}{10.244.29.2:9300}{master=false},}, reason: zen-disco-join(join from node[{Scarecrow}{_L8Vlz6iTiaxxRVeMis-8Q}{10.244.29.2}{10.244.29.2:9300}{master=false}])
 ```
 
 As you can assert, the cluster is up and running. Easy, wasn't it?
@@ -105,66 +85,50 @@ As you can assert, the cluster is up and running. Easy, wasn't it?
 Scaling each type of node to handle your cluster is as easy as:
 
 ```
-kubectl scale --replicas=3 rc es-master
-kubectl scale --replicas=2 rc es-client
-kubectl scale --replicas=2 rc es-data
+kubectl scale --replicas 3 rc/es-master
+kubectl scale --replicas 2 rc/es-client
+kubectl scale --replicas 2 rc/es-data
 ```
 
 Did it work?
 
 ```
-$ kubectl get pods
-NAME              READY     STATUS    RESTARTS   AGE
-es-client-1tumx   1/1       Running   0          21s
-es-client-h3u53   1/1       Running   0          4m
-es-data-16wii     1/1       Running   0          15s
-es-data-p2kia     1/1       Running   0          3m
-es-master-14i22   1/1       Running   0          4m
-es-master-cov7v   1/1       Running   0          41s
-es-master-hskr3   1/1       Running   0          41s
+$ kubectl get rc,pods
+NAME                      DESIRED         CURRENT       AGE
+es-client                 2               2             3m
+es-data                   2               2             3m
+es-master                 3               3             4m
+NAME                      READY           STATUS        RESTARTS   AGE
+es-client-a1fgb           1/1             Running       0          39s
+es-client-faz0j           1/1             Running       0          3m
+es-data-ggcnf             1/1             Running       0          3m
+es-data-quklg             1/1             Running       0          22s
+es-master-2axzd           1/1             Running       0          1m
+es-master-j8n2v           1/1             Running       0          1m
+es-master-ngb67           1/1             Running       0          3m
 ```
 
-Let's take another look of the Elasticsearch master logs:
+Let's take another look at the logs of one of the Elasticsearch `master` nodes:
 ```
-$ kubectl logs es-master-r1ed8
-[s6-init] making user provided files available at /var/run/s6/etc...exited 0.
-[s6-init] ensuring user provided files have correct perms...exited 0.
-[fix-attrs.d] applying ownership & permissions fixes...
-[fix-attrs.d] done.
-[cont-init.d] executing container initialization scripts...
-[cont-init.d] done.
-[services.d] starting services
-level=info msg="Starting go-dnsmasq server 0.9.8 ..."
-level=info msg="Search domains in use: [default.svc.cluster.local. svc.cluster.local. cluster.local.]"
-level=info msg="Ready for queries on tcp://127.0.0.1:53 - Nameservers: [10.100.0.10:53 10.0.2.3:53]"
-level=info msg="Ready for queries on udp://127.0.0.1:53 - Nameservers: [10.100.0.10:53 10.0.2.3:53]"
-[services.d] done.
-log4j:WARN No such property [maxBackupIndex] in org.apache.log4j.DailyRollingFileAppender.
-log4j:WARN No such property [maxBackupIndex] in org.apache.log4j.DailyRollingFileAppender.
-log4j:WARN No such property [maxBackupIndex] in org.apache.log4j.DailyRollingFileAppender.
-[2016-02-09 16:57:53,483][INFO ][node                     ] [New Goblin] version[2.2.0], pid[172], build[8ff36d1/2016-01-27T13:32:39Z]
-[2016-02-09 16:57:53,483][INFO ][node                     ] [New Goblin] initializing ...
-[2016-02-09 16:57:54,172][INFO ][plugins                  ] [New Goblin] modules [lang-expression, lang-groovy], plugins [cloud-kubernetes], sites []
-[2016-02-09 16:57:54,194][INFO ][env                      ] [New Goblin] using [1] data paths, mounts [[/data (/dev/sda9)]], net usable_space [14.2gb], net total_space [15.5gb], spins? [possibly], types [ext4]
-[2016-02-09 16:57:54,194][INFO ][env                      ] [New Goblin] heap size [1015.6mb], compressed ordinary object pointers [true]
-[2016-02-09 16:57:57,508][INFO ][node                     ] [New Goblin] initialized
-[2016-02-09 16:57:57,513][INFO ][node                     ] [New Goblin] starting ...
-[2016-02-09 16:57:57,589][WARN ][common.network           ] [New Goblin] _non_loopback_ is deprecated as it picks an arbitrary interface. specify explicit scope(s), interface(s), address(es), or hostname(s) instead
-[2016-02-09 16:57:57,666][WARN ][common.network           ] [New Goblin] _non_loopback_ is deprecated as it picks an arbitrary interface. specify explicit scope(s), interface(s), address(es), or hostname(s) instead
-[2016-02-09 16:57:57,679][INFO ][transport                ] [New Goblin] publish_address {10.244.12.2:9300}, bound_addresses {10.244.12.2:9300}
-[2016-02-09 16:57:57,686][INFO ][discovery                ] [New Goblin] myesdb/7tXPp-tqSdu8qZ_ZUcm7pg
-[2016-02-09 16:57:57,695][WARN ][common.network           ] [New Goblin] _non_loopback_ is deprecated as it picks an arbitrary interface. specify explicit scope(s), interface(s), address(es), or hostname(s) instead
-[2016-02-09 16:58:00,536][WARN ][common.network           ] [New Goblin] _non_loopback_ is deprecated as it picks an arbitrary interface. specify explicit scope(s), interface(s), address(es), or hostname(s) instead
-[2016-02-09 16:58:02,066][WARN ][common.network           ] [New Goblin] _non_loopback_ is deprecated as it picks an arbitrary interface. specify explicit scope(s), interface(s), address(es), or hostname(s) instead
-[2016-02-09 16:58:02,090][INFO ][cluster.service          ] [New Goblin] new_master {New Goblin}{7tXPp-tqSdu8qZ_ZUcm7pg}{10.244.12.2}{10.244.12.2:9300}{data=false, master=true}, reason: zen-disco-join(elected_as_master, [0] joins received)
-[2016-02-09 16:58:02,093][INFO ][node                     ] [New Goblin] started
-[2016-02-09 16:58:02,150][INFO ][gateway                  ] [New Goblin] recovered [0] indices into cluster_state
-[2016-02-09 16:58:39,353][INFO ][cluster.service          ] [New Goblin] added {{Coach}{SHRr7XACQsuyHKP3rSxCOw}{10.244.14.2}{10.244.14.2:9300}{data=false, master=false},}, reason: zen-disco-join(join from node[{Coach}{SHRr7XACQsuyHKP3rSxCOw}{10.244.14.2}{10.244.14.2:9300}{data=false, master=false}])
-[2016-02-09 16:59:16,448][INFO ][cluster.service          ] [New Goblin] added {{Ghaur}{vcNdokVgSPeYALQ5jtMOKw}{10.244.75.2}{10.244.75.2:9300}{master=false},}, reason: zen-disco-join(join from node[{Ghaur}{vcNdokVgSPeYALQ5jtMOKw}{10.244.75.2}{10.244.75.2:9300}{master=false}])
-[2016-02-09 17:01:42,936][INFO ][cluster.service          ] [New Goblin] added {{Brain Drain}{T_m5o4MBRXuGXr1WYS2ADg}{10.244.75.3}{10.244.75.3:9300}{data=false, master=true},}, reason: zen-disco-join(join from node[{Brain Drain}{T_m5o4MBRXuGXr1WYS2ADg}{10.244.75.3}{10.244.75.3:9300}{data=false, master=true}])
-[2016-02-09 17:01:43,308][INFO ][cluster.service          ] [New Goblin] added {{Smasher}{ThswtxIrSa6oNKRXQo0TCg}{10.244.14.3}{10.244.14.3:9300}{data=false, master=true},}, reason: zen-disco-join(join from node[{Smasher}{ThswtxIrSa6oNKRXQo0TCg}{10.244.14.3}{10.244.14.3:9300}{data=false, master=true}])
-[2016-02-09 17:02:04,303][INFO ][cluster.service          ] [New Goblin] added {{Tzabaoth}{qenlK1gNTAWf76-XLK4wyw}{10.244.12.3}{10.244.12.3:9300}{data=false, master=false},}, reason: zen-disco-join(join from node[{Tzabaoth}{qenlK1gNTAWf76-XLK4wyw}{10.244.12.3}{10.244.12.3:9300}{data=false, master=false}])
-[2016-02-09 17:02:10,601][INFO ][cluster.service          ] [New Goblin] added {{Urthona}{XsdnXJC1SuecU-iPC9lssw}{10.244.12.4}{10.244.12.4:9300}{master=false},}, reason: zen-disco-join(join from node[{Urthona}{XsdnXJC1SuecU-iPC9lssw}{10.244.12.4}{10.244.12.4:9300}{master=false}])
+$ kubectl logs es-master-ngb67
+[2016-03-17 18:13:18,220][INFO ][node                     ] [Ms. Steed] version[2.2.1], pid[173], build[d045fc2/2016-03-09T09:38:54Z]
+[2016-03-17 18:13:18,222][INFO ][node                     ] [Ms. Steed] initializing ...
+[2016-03-17 18:13:19,160][INFO ][plugins                  ] [Ms. Steed] modules [lang-expression, lang-groovy], plugins [cloud-kubernetes], sites []
+[2016-03-17 18:13:19,198][INFO ][env                      ] [Ms. Steed] using [1] data paths, mounts [[/data (/dev/sda9)]], net usable_space [14.1gb], net total_space [15.5gb], spins? [possibly], types [ext4]
+[2016-03-17 18:13:19,199][INFO ][env                      ] [Ms. Steed] heap size [1015.6mb], compressed ordinary object pointers [true]
+[2016-03-17 18:13:23,317][INFO ][node                     ] [Ms. Steed] initialized
+[2016-03-17 18:13:23,322][INFO ][node                     ] [Ms. Steed] starting ...
+[2016-03-17 18:13:23,437][INFO ][transport                ] [Ms. Steed] publish_address {10.244.66.2:9300}, bound_addresses {10.244.66.2:9300}
+[2016-03-17 18:13:23,453][INFO ][discovery                ] [Ms. Steed] myesdb/sCP2pgSJT4iP4CyUlfZ_nQ
+[2016-03-17 18:13:27,982][INFO ][cluster.service          ] [Ms. Steed] new_master {Ms. Steed}{sCP2pgSJT4iP4CyUlfZ_nQ}{10.244.66.2}{10.244.66.2:9300}{data=false, master=true}, reason: zen-disco-join(elected_as_master, [0] joins received)
+[2016-03-17 18:13:27,991][INFO ][node                     ] [Ms. Steed] started
+[2016-03-17 18:13:28,059][INFO ][gateway                  ] [Ms. Steed] recovered [0] indices into cluster_state
+[2016-03-17 18:14:20,690][INFO ][cluster.service          ] [Ms. Steed] added {{Stinger}{-AUBFBNAQ5W9ywX3dJQ1Ow}{10.244.23.2}{10.244.23.2:9300}{data=false, master=false},}, reason: zen-disco-join(join from node[{Stinger}{-AUBFBNAQ5W9ywX3dJQ1Ow}{10.244.23.2}{10.244.23.2:9300}{data=false, master=false}])
+[2016-03-17 18:14:27,816][INFO ][cluster.service          ] [Ms. Steed] added {{Scarecrow}{_L8Vlz6iTiaxxRVeMis-8Q}{10.244.29.2}{10.244.29.2:9300}{master=false},}, reason: zen-disco-join(join from node[{Scarecrow}{_L8Vlz6iTiaxxRVeMis-8Q}{10.244.29.2}{10.244.29.2:9300}{master=false}])
+[2016-03-17 18:15:46,712][INFO ][cluster.service          ] [Ms. Steed] added {{Lament}{h8iIs5pDS66OwvNgcvAhxw}{10.244.29.3}{10.244.29.3:9300}{data=false, master=true},}, reason: zen-disco-join(join from node[{Lament}{h8iIs5pDS66OwvNgcvAhxw}{10.244.29.3}{10.244.29.3:9300}{data=false, master=true}])
+[2016-03-17 18:15:46,923][INFO ][cluster.service          ] [Ms. Steed] added {{Ghost Girl}{XdV8zMZTQuyte6LrFBYDEA}{10.244.23.3}{10.244.23.3:9300}{data=false, master=true},}, reason: zen-disco-join(join from node[{Ghost Girl}{XdV8zMZTQuyte6LrFBYDEA}{10.244.23.3}{10.244.23.3:9300}{data=false, master=true}])
+[2016-03-17 18:16:20,864][INFO ][cluster.service          ] [Ms. Steed] added {{Brian Braddock}{1lN4WhErRW2GHBEUtlqtLQ}{10.244.66.3}{10.244.66.3:9300}{data=false, master=false},}, reason: zen-disco-join(join from node[{Brian Braddock}{1lN4WhErRW2GHBEUtlqtLQ}{10.244.66.3}{10.244.66.3:9300}{data=false, master=false}])
+[2016-03-17 18:16:38,127][INFO ][cluster.service          ] [Ms. Steed] added {{Shiva}{DggeYkKvQQGid0dG5cd_Yg}{10.244.66.4}{10.244.66.4:9300}{master=false},}, reason: zen-disco-join(join from node[{Shiva}{DggeYkKvQQGid0dG5cd_Yg}{10.244.66.4}{10.244.66.4:9300}{master=false}])
 ```
 
 ### Access the service
@@ -173,26 +137,26 @@ log4j:WARN No such property [maxBackupIndex] in org.apache.log4j.DailyRollingFil
 
 ```
 $ kubectl get service elasticsearch
-NAME            CLUSTER_IP       EXTERNAL_IP   PORT(S)    SELECTOR                              AGE
-elasticsearch   10.100.172.134                 9200/TCP   component=elasticsearch,role=client   5m
+NAME                      CLUSTER-IP      EXTERNAL-IP   PORT(S)    AGE
+elasticsearch             10.100.45.242                 9200/TCP   5m
 ```
 
 From any host on your cluster (that's running `kube-proxy`), run:
 
 ```
-curl http://10.100.172.134:9200
+curl http://10.100.45.242:9200
 ```
 
 You should see something similar to the following:
 
 ```json
 {
-  "name" : "Tzabaoth",
+  "name" : "Stinger",
   "cluster_name" : "myesdb",
   "version" : {
-    "number" : "2.2.0",
-    "build_hash" : "8ff36d139e16f8720f2947ef62c8167a888992fe",
-    "build_timestamp" : "2016-01-27T13:32:39Z",
+    "number" : "2.2.1",
+    "build_hash" : "d045fc29d1932bce18b2e65ab8b297fbf6cd41a1",
+    "build_timestamp" : "2016-03-09T09:38:54Z",
     "build_snapshot" : false,
     "lucene_version" : "5.4.1"
   },
@@ -203,7 +167,7 @@ You should see something similar to the following:
 Or if you want to see cluster information:
 
 ```
-curl http://10.100.172.134:9200/_cluster/health?pretty
+curl http://10.100.45.242:9200/_cluster/health?pretty
 ```
 
 You should see something similar to the following:
