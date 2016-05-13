@@ -1,5 +1,5 @@
 # kubernetes-elasticsearch-cluster
-Elasticsearch (2.3.1) cluster on top of Kubernetes made easy.
+Elasticsearch (2.3.2) cluster on top of Kubernetes made easy.
 
 Elasticsearch best-practices recommend to separate nodes in three roles:
 * `Master` nodes - intended for clustering management only, no data, no HTTP API
@@ -12,7 +12,7 @@ Given this, I'm hereby making possible for you to scale as needed. For instance,
 
 ## Pre-requisites
 
-* Kubernetes cluster (tested with v1.2.2 on top of [Vagrant + CoreOS](https://github.com/pires/kubernetes-vagrant-coreos-cluster))
+* Kubernetes cluster (tested with v1.2.4 on top of [Vagrant + CoreOS](https://github.com/pires/kubernetes-vagrant-coreos-cluster))
 * `kubectl` configured to access your cluster master API Server
 
 ## Build images (optional)
@@ -47,36 +47,36 @@ Now, I leave up to you how to validate the cluster, but a first step is to wait 
 ```
 $ kubectl get svc,rc,pods
 NAME                      CLUSTER-IP       EXTERNAL-IP   PORT(S)    AGE
-elasticsearch             10.100.146.186                 9200/TCP   4m
-elasticsearch-discovery   10.100.248.172   <none>        9300/TCP   4m
-kubernetes                10.100.0.1       <none>        443/TCP    17m
+elasticsearch             10.100.202.107                 9200/TCP   10m
+elasticsearch-discovery   10.100.99.125    <none>        9300/TCP   10m
+kubernetes                10.100.0.1       <none>        443/TCP    21h
 NAME                      DESIRED          CURRENT       AGE
-es-client                 1                1             2m
-es-data                   1                1             1m
-es-master                 1                1             4m
+es-client                 1                1             5m
+es-data                   1                1             4m
+es-master                 1                1             7m
 NAME                      READY            STATUS        RESTARTS   AGE
-es-client-ztaj2           1/1              Running       0          2m
-es-data-7jfd8             1/1              Running       0          1m
-es-master-q1rgy           1/1              Running       0          4m
+es-client-5b1oc           1/1              Running       0          5m
+es-data-0s6eg             1/1              Running       0          4m
+es-master-tile7           1/1              Running       0          7m
 ```
 
 ```
-$ kubectl logs es-master-q1rgy
-[2016-04-21 15:21:32,388][INFO ][node                     ] [Fin Fang Foom] version[2.3.1], pid[172], build[bd98092/2016-04-04T12:25:05Z]
-[2016-04-21 15:21:32,392][INFO ][node                     ] [Fin Fang Foom] initializing ...
-[2016-04-21 15:21:33,454][INFO ][plugins                  ] [Fin Fang Foom] modules [reindex, lang-expression, lang-groovy], plugins [cloud-kubernetes], sites []
-[2016-04-21 15:21:33,501][INFO ][env                      ] [Fin Fang Foom] using [1] data paths, mounts [[/data (/dev/sda9)]], net usable_space [14.3gb], net total_space [15.5gb], spins? [possibly], types [ext4]
-[2016-04-21 15:21:33,503][INFO ][env                      ] [Fin Fang Foom] heap size [1015.6mb], compressed ordinary object pointers [true]
-[2016-04-21 15:21:38,178][INFO ][node                     ] [Fin Fang Foom] initialized
-[2016-04-21 15:21:38,180][INFO ][node                     ] [Fin Fang Foom] starting ...
-[2016-04-21 15:21:38,289][INFO ][transport                ] [Fin Fang Foom] publish_address {10.244.23.2:9300}, bound_addresses {10.244.23.2:9300}
-[2016-04-21 15:21:38,299][INFO ][discovery                ] [Fin Fang Foom] myesdb/LbWPedczQZen3MASM6RAfg
-[2016-04-21 15:21:42,788][INFO ][cluster.service          ] [Fin Fang Foom] new_master {Fin Fang Foom}{LbWPedczQZen3MASM6RAfg}{10.244.23.2}{10.244.23.2:9300}{data=false, master=true}, reason: zen-disco-join(elected_as_master, [0] joins received)
-[2016-04-21 15:21:42,796][INFO ][node                     ] [Fin Fang Foom] started
-[2016-04-21 15:21:42,833][INFO ][gateway                  ] [Fin Fang Foom] recovered [0] indices into cluster_state
-[2016-04-21 15:23:04,980][INFO ][cluster.service          ] [Fin Fang Foom] added {{Logan}{FtB17iiOQDmV4A1AZJO0yA}{10.244.50.2}{10.244.50.2:9300}{data=false, master=false},}, reason: zen-disco-join(join from node[{Logan}{FtB17iiOQDmV4A1AZJO0yA}{10.244.50.2}{10.244.50.2:9300}{data=false, master=false}])
-[2016-04-21 15:24:25,732][INFO ][cluster.service          ] [Fin Fang Foom] added {{Hoder}{mLKMmHjNQm-4CTpsdMcl7w}{10.244.80.2}{10.244.80.2:9300}{master=false},}, reason: zen-disco-join(join from node[{Hoder}{mLKMmHjNQm-4CTpsdMcl7w}{10.244.80.2}{10.244.80.2:9300}{master=false}])
-```
+$ kubectl logs -f es-master-tile7
+(...)
+[2016-05-13 15:07:22,363][INFO ][node                     ] [Stranger] version[2.3.2], pid[172], build[b9e4a6a/2016-04-21T16:03:47Z]
+[2016-05-13 15:07:22,370][INFO ][node                     ] [Stranger] initializing ...
+[2016-05-13 15:07:23,373][INFO ][plugins                  ] [Stranger] modules [reindex, lang-expression, lang-groovy], plugins [cloud-kubernetes], sites []
+[2016-05-13 15:07:23,452][INFO ][env                      ] [Stranger] using [1] data paths, mounts [[/data (/dev/sda9)]], net usable_space [14.1gb], net total_space [15.5gb], spins? [possibly], types [ext4]
+[2016-05-13 15:07:23,455][INFO ][env                      ] [Stranger] heap size [1015.6mb], compressed ordinary object pointers [true]
+[2016-05-13 15:07:28,088][INFO ][node                     ] [Stranger] initialized
+[2016-05-13 15:07:28,089][INFO ][node                     ] [Stranger] starting ...
+[2016-05-13 15:07:28,233][INFO ][transport                ] [Stranger] publish_address {10.244.101.2:9300}, bound_addresses {10.244.101.2:9300}
+[2016-05-13 15:07:28,239][INFO ][discovery                ] [Stranger] myesdb/6c9o-8CyStefdhCfmsGkIg
+[2016-05-13 15:07:32,714][INFO ][cluster.service          ] [Stranger] new_master {Stranger}{6c9o-8CyStefdhCfmsGkIg}{10.244.101.2}{10.244.101.2:9300}{data=false, master=true}, reason: zen-disco-join(elected_as_master, [0] joins received)
+[2016-05-13 15:07:32,721][INFO ][node                     ] [Stranger] started
+[2016-05-13 15:07:32,763][INFO ][gateway                  ] [Stranger] recovered [0] indices into cluster_state
+[2016-05-13 15:09:16,291][INFO ][cluster.service          ] [Stranger] added {{Tower}{Er6hmt5yTlO3N4HhpWl-Tg}{10.244.19.2}{10.244.19.2:9300}{data=false, master=false},}, reason: zen-disco-join(join from node[{Tower}{Er6hmt5yTlO3N4HhpWl-Tg}{10.244.19.2}{10.244.19.2:9300}{data=false, master=false}])
+[2016-05-13 15:10:39,119][INFO ][cluster.service          ] [Stranger] added {{Skywalker}{bY9BsKYmRhqcXpcqMDFKvw}{10.244.64.2}{10.244.64.2:9300}{master=false},}, reason: zen-disco-join(join from node[{Skywalker}{bY9BsKYmRhqcXpcqMDFKvw}{10.244.64.2}{10.244.64.2:9300}{master=false}])```
 
 As you can assert, the cluster is up and running. Easy, wasn't it?
 
@@ -94,69 +94,69 @@ Did it work?
 
 ```
 $ kubectl get rc,pods
-NAME                      DESIRED          CURRENT       AGE
-es-client                 2                2             5m
-es-data                   2                2             3m
-es-master                 3                3             6m
-NAME                      READY            STATUS        RESTARTS   AGE
-es-client-lp6rp           1/1              Running       0          1m
-es-client-ztaj2           1/1              Running       0          5m
-es-data-03iqm             1/1              Running       0          20s
-es-data-7jfd8             1/1              Running       0          3m
-es-master-genz7           1/1              Running       0          1m
-es-master-q1rgy           1/1              Running       0          6m
-es-master-v4toi           1/1              Running       0          1m
+NAME              DESIRED   CURRENT   AGE
+es-client         2         2         7m
+es-data           2         2         6m
+es-master         3         3         9m
+NAME              READY     STATUS    RESTARTS   AGE
+es-client-5b1oc   1/1       Running   0          7m
+es-client-t44y2   1/1       Running   0          29s
+es-data-0s6eg     1/1       Running   0          6m
+es-data-3i5kh     1/1       Running   0          15s
+es-master-ctfjz   1/1       Running   0          1m
+es-master-tile7   1/1       Running   0          9m
+es-master-tk14l   1/1       Running   0          1m
 ```
 
 Let's take another look at the logs of one of the Elasticsearch `master` nodes:
 ```
-$ kubectl logs es-master-q1rgy
-[2016-04-21 15:21:32,388][INFO ][node                     ] [Fin Fang Foom] version[2.3.1], pid[172], build[bd98092/2016-04-04T12:25:05Z]
-[2016-04-21 15:21:32,392][INFO ][node                     ] [Fin Fang Foom] initializing ...
-[2016-04-21 15:21:33,454][INFO ][plugins                  ] [Fin Fang Foom] modules [reindex, lang-expression, lang-groovy], plugins [cloud-kubernetes], sites []
-[2016-04-21 15:21:33,501][INFO ][env                      ] [Fin Fang Foom] using [1] data paths, mounts [[/data (/dev/sda9)]], net usable_space [14.3gb], net total_space [15.5gb], spins? [possibly], types [ext4]
-[2016-04-21 15:21:33,503][INFO ][env                      ] [Fin Fang Foom] heap size [1015.6mb], compressed ordinary object pointers [true]
-[2016-04-21 15:21:38,178][INFO ][node                     ] [Fin Fang Foom] initialized
-[2016-04-21 15:21:38,180][INFO ][node                     ] [Fin Fang Foom] starting ...
-[2016-04-21 15:21:38,289][INFO ][transport                ] [Fin Fang Foom] publish_address {10.244.23.2:9300}, bound_addresses {10.244.23.2:9300}
-[2016-04-21 15:21:38,299][INFO ][discovery                ] [Fin Fang Foom] myesdb/LbWPedczQZen3MASM6RAfg
-[2016-04-21 15:21:42,788][INFO ][cluster.service          ] [Fin Fang Foom] new_master {Fin Fang Foom}{LbWPedczQZen3MASM6RAfg}{10.244.23.2}{10.244.23.2:9300}{data=false, master=true}, reason: zen-disco-join(elected_as_master, [0] joins received)
-[2016-04-21 15:21:42,796][INFO ][node                     ] [Fin Fang Foom] started
-[2016-04-21 15:21:42,833][INFO ][gateway                  ] [Fin Fang Foom] recovered [0] indices into cluster_state
-[2016-04-21 15:23:04,980][INFO ][cluster.service          ] [Fin Fang Foom] added {{Logan}{FtB17iiOQDmV4A1AZJO0yA}{10.244.50.2}{10.244.50.2:9300}{data=false, master=false},}, reason: zen-disco-join(join from node[{Logan}{FtB17iiOQDmV4A1AZJO0yA}{10.244.50.2}{10.244.50.2:9300}{data=false, master=false}])
-[2016-04-21 15:24:25,732][INFO ][cluster.service          ] [Fin Fang Foom] added {{Hoder}{mLKMmHjNQm-4CTpsdMcl7w}{10.244.80.2}{10.244.80.2:9300}{master=false},}, reason: zen-disco-join(join from node[{Hoder}{mLKMmHjNQm-4CTpsdMcl7w}{10.244.80.2}{10.244.80.2:9300}{master=false}])
-[2016-04-21 15:25:47,015][INFO ][cluster.service          ] [Fin Fang Foom] added {{Black King}{YCb01N39Simcop6p4iUryw}{10.244.50.3}{10.244.50.3:9300}{data=false, master=true},}, reason: zen-disco-join(join from node[{Black King}{YCb01N39Simcop6p4iUryw}{10.244.50.3}{10.244.50.3:9300}{data=false, master=true}])
-[2016-04-21 15:25:47,250][INFO ][cluster.service          ] [Fin Fang Foom] added {{May "Mayday" Parker}{wbSTBy7xSDCYHCF_nV6-qg}{10.244.80.3}{10.244.80.3:9300}{data=false, master=true},}, reason: zen-disco-join(join from node[{May "Mayday" Parker}{wbSTBy7xSDCYHCF_nV6-qg}{10.244.80.3}{10.244.80.3:9300}{data=false, master=true}])
-[2016-04-21 15:26:19,744][INFO ][cluster.service          ] [Fin Fang Foom] added {{Baron Blood}{F9JbdF1sTcWwT70skUsJ2Q}{10.244.23.3}{10.244.23.3:9300}{data=false, master=false},}, reason: zen-disco-join(join from node[{Baron Blood}{F9JbdF1sTcWwT70skUsJ2Q}{10.244.23.3}{10.244.23.3:9300}{data=false, master=false}])
-[2016-04-21 15:27:15,024][INFO ][cluster.service          ] [Fin Fang Foom] added {{Morpheus}{orXM2EuMSzqyNN1Lx-LZ1g}{10.244.23.4}{10.244.23.4:9300}{master=false},}, reason: zen-disco-join(join from node[{Morpheus}{orXM2EuMSzqyNN1Lx-LZ1g}{10.244.23.4}{10.244.23.4:9300}{master=false}])
-```
+$ kubectl logs -f es-master-tile7
+(...)
+[2016-05-13 15:07:22,363][INFO ][node                     ] [Stranger] version[2.3.2], pid[172], build[b9e4a6a/2016-04-21T16:03:47Z]
+[2016-05-13 15:07:22,370][INFO ][node                     ] [Stranger] initializing ...
+[2016-05-13 15:07:23,373][INFO ][plugins                  ] [Stranger] modules [reindex, lang-expression, lang-groovy], plugins [cloud-kubernetes], sites []
+[2016-05-13 15:07:23,452][INFO ][env                      ] [Stranger] using [1] data paths, mounts [[/data (/dev/sda9)]], net usable_space [14.1gb], net total_space [15.5gb], spins? [possibly], types [ext4]
+[2016-05-13 15:07:23,455][INFO ][env                      ] [Stranger] heap size [1015.6mb], compressed ordinary object pointers [true]
+[2016-05-13 15:07:28,088][INFO ][node                     ] [Stranger] initialized
+[2016-05-13 15:07:28,089][INFO ][node                     ] [Stranger] starting ...
+[2016-05-13 15:07:28,233][INFO ][transport                ] [Stranger] publish_address {10.244.101.2:9300}, bound_addresses {10.244.101.2:9300}
+[2016-05-13 15:07:28,239][INFO ][discovery                ] [Stranger] myesdb/6c9o-8CyStefdhCfmsGkIg
+[2016-05-13 15:07:32,714][INFO ][cluster.service          ] [Stranger] new_master {Stranger}{6c9o-8CyStefdhCfmsGkIg}{10.244.101.2}{10.244.101.2:9300}{data=false, master=true}, reason: zen-disco-join(elected_as_master, [0] joins received)
+[2016-05-13 15:07:32,721][INFO ][node                     ] [Stranger] started
+[2016-05-13 15:07:32,763][INFO ][gateway                  ] [Stranger] recovered [0] indices into cluster_state
+[2016-05-13 15:09:16,291][INFO ][cluster.service          ] [Stranger] added {{Tower}{Er6hmt5yTlO3N4HhpWl-Tg}{10.244.19.2}{10.244.19.2:9300}{data=false, master=false},}, reason: zen-disco-join(join from node[{Tower}{Er6hmt5yTlO3N4HhpWl-Tg}{10.244.19.2}{10.244.19.2:9300}{data=false, master=false}])
+[2016-05-13 15:10:39,119][INFO ][cluster.service          ] [Stranger] added {{Skywalker}{bY9BsKYmRhqcXpcqMDFKvw}{10.244.64.2}{10.244.64.2:9300}{master=false},}, reason: zen-disco-join(join from node[{Skywalker}{bY9BsKYmRhqcXpcqMDFKvw}{10.244.64.2}{10.244.64.2:9300}{master=false}])
+[2016-05-13 15:15:46,512][INFO ][cluster.service          ] [Stranger] added {{Norman Osborn}{Mxptb3y3Qp6R6xq9eddEzg}{10.244.19.3}{10.244.19.3:9300}{data=false, master=true},}, reason: zen-disco-join(join from node[{Norman Osborn}{Mxptb3y3Qp6R6xq9eddEzg}{10.244.19.3}{10.244.19.3:9300}{data=false, master=true}])
+[2016-05-13 15:15:47,184][INFO ][cluster.service          ] [Stranger] added {{Deathlok}{OQEV0LTSQh2Q1k7WVNCUBw}{10.244.64.3}{10.244.64.3:9300}{data=false, master=true},}, reason: zen-disco-join(join from node[{Deathlok}{OQEV0LTSQh2Q1k7WVNCUBw}{10.244.64.3}{10.244.64.3:9300}{data=false, master=true}])
+[2016-05-13 15:16:12,750][INFO ][cluster.service          ] [Stranger] added {{Hitman}{KW69CqVrQwyFbB1mbndK5w}{10.244.101.3}{10.244.101.3:9300}{data=false, master=false},}, reason: zen-disco-join(join from node[{Hitman}{KW69CqVrQwyFbB1mbndK5w}{10.244.101.3}{10.244.101.3:9300}{data=false, master=false}])
+[2016-05-13 15:16:34,865][INFO ][cluster.service          ] [Stranger] added {{Trapster}{vXWqivMrRKefxWaf_FJW6g}{10.244.19.4}{10.244.19.4:9300}{master=false},}, reason: zen-disco-join(join from node[{Trapster}{vXWqivMrRKefxWaf_FJW6g}{10.244.19.4}{10.244.19.4:9300}{master=false}])```
 
 ### Access the service
 
 *Don't forget* that services in Kubernetes are only acessible from containers in the cluster. For different behavior you should [configure the creation of an external load-balancer](http://kubernetes.io/v1.1/docs/user-guide/services.html#type-loadbalancer). While it's supported within this example service descriptor, its usage is out of scope of this document, for now.
 
 ```
-$ kubectl get svc/elasticsearch
+$ kubectl get svc elasticsearch
 NAME            CLUSTER-IP       EXTERNAL-IP   PORT(S)    AGE
-elasticsearch   10.100.146.186                 9200/TCP   7m
+elasticsearch   10.100.202.107                 9200/TCP   13m
 ```
 
 From any host on your cluster (that's running `kube-proxy`), run:
 
 ```
-curl http://10.100.146.186:9200
+curl http://10.100.202.107:9200
 ```
 
 You should see something similar to the following:
 
 ```json
 {
-  "name" : "Baron Blood",
+  "name" : "Hitman",
   "cluster_name" : "myesdb",
   "version" : {
-    "number" : "2.3.1",
-    "build_hash" : "bd980929010aef404e7cb0843e61d0665269fc39",
-    "build_timestamp" : "2016-04-04T12:25:05Z",
+    "number" : "2.3.2",
+    "build_hash" : "b9e4a6acad4008027e4038f6abed7f7dba346f94",
+    "build_timestamp" : "2016-04-21T16:03:47Z",
     "build_snapshot" : false,
     "lucene_version" : "5.5.0"
   },
@@ -167,7 +167,7 @@ You should see something similar to the following:
 Or if you want to see cluster information:
 
 ```
-curl http://10.100.146.186:9200/_cluster/health?pretty
+curl http://10.100.202.107:9200/_cluster/health?pretty
 ```
 
 You should see something similar to the following:
