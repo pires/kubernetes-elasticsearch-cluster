@@ -196,3 +196,5 @@ You should see something similar to the following:
   "active_shards_percent_as_number" : 100.0
 }
 ```
+
+*Note:* If you are running Elasticsearch in a non-default namespace then you need to create two service accounts for both the default namespace and the custom one; this is especially important if the ability to scale data nodes is a requirement!
