@@ -1,5 +1,5 @@
 # kubernetes-elasticsearch-cluster
-Elasticsearch (2.3.2) cluster on top of Kubernetes made easy.
+Elasticsearch (2.3.3) cluster on top of Kubernetes made easy.
 
 Elasticsearch best-practices recommend to separate nodes in three roles:
 * `Master` nodes - intended for clustering management only, no data, no HTTP API
@@ -65,20 +65,20 @@ es-master-tile7           1/1              Running       0          7m
 ```
 $ kubectl logs -f es-master-tile7
 (...)
-[2016-05-13 15:07:22,363][INFO ][node                     ] [Stranger] version[2.3.2], pid[172], build[b9e4a6a/2016-04-21T16:03:47Z]
-[2016-05-13 15:07:22,370][INFO ][node                     ] [Stranger] initializing ...
-[2016-05-13 15:07:23,373][INFO ][plugins                  ] [Stranger] modules [reindex, lang-expression, lang-groovy], plugins [cloud-kubernetes], sites []
-[2016-05-13 15:07:23,452][INFO ][env                      ] [Stranger] using [1] data paths, mounts [[/data (/dev/sda9)]], net usable_space [14.1gb], net total_space [15.5gb], spins? [possibly], types [ext4]
-[2016-05-13 15:07:23,455][INFO ][env                      ] [Stranger] heap size [1015.6mb], compressed ordinary object pointers [true]
-[2016-05-13 15:07:28,088][INFO ][node                     ] [Stranger] initialized
-[2016-05-13 15:07:28,089][INFO ][node                     ] [Stranger] starting ...
-[2016-05-13 15:07:28,233][INFO ][transport                ] [Stranger] publish_address {10.244.101.2:9300}, bound_addresses {10.244.101.2:9300}
-[2016-05-13 15:07:28,239][INFO ][discovery                ] [Stranger] myesdb/6c9o-8CyStefdhCfmsGkIg
-[2016-05-13 15:07:32,714][INFO ][cluster.service          ] [Stranger] new_master {Stranger}{6c9o-8CyStefdhCfmsGkIg}{10.244.101.2}{10.244.101.2:9300}{data=false, master=true}, reason: zen-disco-join(elected_as_master, [0] joins received)
-[2016-05-13 15:07:32,721][INFO ][node                     ] [Stranger] started
-[2016-05-13 15:07:32,763][INFO ][gateway                  ] [Stranger] recovered [0] indices into cluster_state
-[2016-05-13 15:09:16,291][INFO ][cluster.service          ] [Stranger] added {{Tower}{Er6hmt5yTlO3N4HhpWl-Tg}{10.244.19.2}{10.244.19.2:9300}{data=false, master=false},}, reason: zen-disco-join(join from node[{Tower}{Er6hmt5yTlO3N4HhpWl-Tg}{10.244.19.2}{10.244.19.2:9300}{data=false, master=false}])
-[2016-05-13 15:10:39,119][INFO ][cluster.service          ] [Stranger] added {{Skywalker}{bY9BsKYmRhqcXpcqMDFKvw}{10.244.64.2}{10.244.64.2:9300}{master=false},}, reason: zen-disco-join(join from node[{Skywalker}{bY9BsKYmRhqcXpcqMDFKvw}{10.244.64.2}{10.244.64.2:9300}{master=false}])
+[2016-06-08 15:07:22,363][INFO ][node                     ] [Stranger] version[2.3.3], pid[172], build[b9e4a6a/2016-04-21T16:03:47Z]
+[2016-06-08 15:07:22,370][INFO ][node                     ] [Stranger] initializing ...
+[2016-06-08 15:07:23,373][INFO ][plugins                  ] [Stranger] modules [reindex, lang-expression, lang-groovy], plugins [cloud-kubernetes], sites []
+[2016-06-08 15:07:23,452][INFO ][env                      ] [Stranger] using [1] data paths, mounts [[/data (/dev/sda9)]], net usable_space [14.1gb], net total_space [15.5gb], spins? [possibly], types [ext4]
+[2016-06-08 15:07:23,455][INFO ][env                      ] [Stranger] heap size [1015.6mb], compressed ordinary object pointers [true]
+[2016-06-08 15:07:28,088][INFO ][node                     ] [Stranger] initialized
+[2016-06-08 15:07:28,089][INFO ][node                     ] [Stranger] starting ...
+[2016-06-08 15:07:28,233][INFO ][transport                ] [Stranger] publish_address {10.244.101.2:9300}, bound_addresses {10.244.101.2:9300}
+[2016-06-08 15:07:28,239][INFO ][discovery                ] [Stranger] myesdb/6c9o-8CyStefdhCfmsGkIg
+[2016-06-08 15:07:32,714][INFO ][cluster.service          ] [Stranger] new_master {Stranger}{6c9o-8CyStefdhCfmsGkIg}{10.244.101.2}{10.244.101.2:9300}{data=false, master=true}, reason: zen-disco-join(elected_as_master, [0] joins received)
+[2016-06-08 15:07:32,721][INFO ][node                     ] [Stranger] started
+[2016-06-08 15:07:32,763][INFO ][gateway                  ] [Stranger] recovered [0] indices into cluster_state
+[2016-06-08 15:09:16,291][INFO ][cluster.service          ] [Stranger] added {{Tower}{Er6hmt5yTlO3N4HhpWl-Tg}{10.244.19.2}{10.244.19.2:9300}{data=false, master=false},}, reason: zen-disco-join(join from node[{Tower}{Er6hmt5yTlO3N4HhpWl-Tg}{10.244.19.2}{10.244.19.2:9300}{data=false, master=false}])
+[2016-06-08 15:10:39,119][INFO ][cluster.service          ] [Stranger] added {{Skywalker}{bY9BsKYmRhqcXpcqMDFKvw}{10.244.64.2}{10.244.64.2:9300}{master=false},}, reason: zen-disco-join(join from node[{Skywalker}{bY9BsKYmRhqcXpcqMDFKvw}{10.244.64.2}{10.244.64.2:9300}{master=false}])
 ```
 
 As you can assert, the cluster is up and running. Easy, wasn't it?
@@ -116,24 +116,24 @@ Let's take another look at the logs of one of the Elasticsearch `master` nodes:
 ```
 $ kubectl logs -f es-master-tile7
 (...)
-[2016-05-13 15:07:22,363][INFO ][node                     ] [Stranger] version[2.3.2], pid[172], build[b9e4a6a/2016-04-21T16:03:47Z]
-[2016-05-13 15:07:22,370][INFO ][node                     ] [Stranger] initializing ...
-[2016-05-13 15:07:23,373][INFO ][plugins                  ] [Stranger] modules [reindex, lang-expression, lang-groovy], plugins [cloud-kubernetes], sites []
-[2016-05-13 15:07:23,452][INFO ][env                      ] [Stranger] using [1] data paths, mounts [[/data (/dev/sda9)]], net usable_space [14.1gb], net total_space [15.5gb], spins? [possibly], types [ext4]
-[2016-05-13 15:07:23,455][INFO ][env                      ] [Stranger] heap size [1015.6mb], compressed ordinary object pointers [true]
-[2016-05-13 15:07:28,088][INFO ][node                     ] [Stranger] initialized
-[2016-05-13 15:07:28,089][INFO ][node                     ] [Stranger] starting ...
-[2016-05-13 15:07:28,233][INFO ][transport                ] [Stranger] publish_address {10.244.101.2:9300}, bound_addresses {10.244.101.2:9300}
-[2016-05-13 15:07:28,239][INFO ][discovery                ] [Stranger] myesdb/6c9o-8CyStefdhCfmsGkIg
-[2016-05-13 15:07:32,714][INFO ][cluster.service          ] [Stranger] new_master {Stranger}{6c9o-8CyStefdhCfmsGkIg}{10.244.101.2}{10.244.101.2:9300}{data=false, master=true}, reason: zen-disco-join(elected_as_master, [0] joins received)
-[2016-05-13 15:07:32,721][INFO ][node                     ] [Stranger] started
-[2016-05-13 15:07:32,763][INFO ][gateway                  ] [Stranger] recovered [0] indices into cluster_state
-[2016-05-13 15:09:16,291][INFO ][cluster.service          ] [Stranger] added {{Tower}{Er6hmt5yTlO3N4HhpWl-Tg}{10.244.19.2}{10.244.19.2:9300}{data=false, master=false},}, reason: zen-disco-join(join from node[{Tower}{Er6hmt5yTlO3N4HhpWl-Tg}{10.244.19.2}{10.244.19.2:9300}{data=false, master=false}])
-[2016-05-13 15:10:39,119][INFO ][cluster.service          ] [Stranger] added {{Skywalker}{bY9BsKYmRhqcXpcqMDFKvw}{10.244.64.2}{10.244.64.2:9300}{master=false},}, reason: zen-disco-join(join from node[{Skywalker}{bY9BsKYmRhqcXpcqMDFKvw}{10.244.64.2}{10.244.64.2:9300}{master=false}])
-[2016-05-13 15:15:46,512][INFO ][cluster.service          ] [Stranger] added {{Norman Osborn}{Mxptb3y3Qp6R6xq9eddEzg}{10.244.19.3}{10.244.19.3:9300}{data=false, master=true},}, reason: zen-disco-join(join from node[{Norman Osborn}{Mxptb3y3Qp6R6xq9eddEzg}{10.244.19.3}{10.244.19.3:9300}{data=false, master=true}])
-[2016-05-13 15:15:47,184][INFO ][cluster.service          ] [Stranger] added {{Deathlok}{OQEV0LTSQh2Q1k7WVNCUBw}{10.244.64.3}{10.244.64.3:9300}{data=false, master=true},}, reason: zen-disco-join(join from node[{Deathlok}{OQEV0LTSQh2Q1k7WVNCUBw}{10.244.64.3}{10.244.64.3:9300}{data=false, master=true}])
-[2016-05-13 15:16:12,750][INFO ][cluster.service          ] [Stranger] added {{Hitman}{KW69CqVrQwyFbB1mbndK5w}{10.244.101.3}{10.244.101.3:9300}{data=false, master=false},}, reason: zen-disco-join(join from node[{Hitman}{KW69CqVrQwyFbB1mbndK5w}{10.244.101.3}{10.244.101.3:9300}{data=false, master=false}])
-[2016-05-13 15:16:34,865][INFO ][cluster.service          ] [Stranger] added {{Trapster}{vXWqivMrRKefxWaf_FJW6g}{10.244.19.4}{10.244.19.4:9300}{master=false},}, reason: zen-disco-join(join from node[{Trapster}{vXWqivMrRKefxWaf_FJW6g}{10.244.19.4}{10.244.19.4:9300}{master=false}])
+[2016-06-08 15:07:22,363][INFO ][node                     ] [Stranger] version[2.3.3], pid[172], build[b9e4a6a/2016-04-21T16:03:47Z]
+[2016-06-08 15:07:22,370][INFO ][node                     ] [Stranger] initializing ...
+[2016-06-08 15:07:23,373][INFO ][plugins                  ] [Stranger] modules [reindex, lang-expression, lang-groovy], plugins [cloud-kubernetes], sites []
+[2016-06-08 15:07:23,452][INFO ][env                      ] [Stranger] using [1] data paths, mounts [[/data (/dev/sda9)]], net usable_space [14.1gb], net total_space [15.5gb], spins? [possibly], types [ext4]
+[2016-06-08 15:07:23,455][INFO ][env                      ] [Stranger] heap size [1015.6mb], compressed ordinary object pointers [true]
+[2016-06-08 15:07:28,088][INFO ][node                     ] [Stranger] initialized
+[2016-06-08 15:07:28,089][INFO ][node                     ] [Stranger] starting ...
+[2016-06-08 15:07:28,233][INFO ][transport                ] [Stranger] publish_address {10.244.101.2:9300}, bound_addresses {10.244.101.2:9300}
+[2016-06-08 15:07:28,239][INFO ][discovery                ] [Stranger] myesdb/6c9o-8CyStefdhCfmsGkIg
+[2016-06-08 15:07:32,714][INFO ][cluster.service          ] [Stranger] new_master {Stranger}{6c9o-8CyStefdhCfmsGkIg}{10.244.101.2}{10.244.101.2:9300}{data=false, master=true}, reason: zen-disco-join(elected_as_master, [0] joins received)
+[2016-06-08 15:07:32,721][INFO ][node                     ] [Stranger] started
+[2016-06-08 15:07:32,763][INFO ][gateway                  ] [Stranger] recovered [0] indices into cluster_state
+[2016-06-08 15:09:16,291][INFO ][cluster.service          ] [Stranger] added {{Tower}{Er6hmt5yTlO3N4HhpWl-Tg}{10.244.19.2}{10.244.19.2:9300}{data=false, master=false},}, reason: zen-disco-join(join from node[{Tower}{Er6hmt5yTlO3N4HhpWl-Tg}{10.244.19.2}{10.244.19.2:9300}{data=false, master=false}])
+[2016-06-08 15:10:39,119][INFO ][cluster.service          ] [Stranger] added {{Skywalker}{bY9BsKYmRhqcXpcqMDFKvw}{10.244.64.2}{10.244.64.2:9300}{master=false},}, reason: zen-disco-join(join from node[{Skywalker}{bY9BsKYmRhqcXpcqMDFKvw}{10.244.64.2}{10.244.64.2:9300}{master=false}])
+[2016-06-08 15:15:46,512][INFO ][cluster.service          ] [Stranger] added {{Norman Osborn}{Mxptb3y3Qp6R6xq9eddEzg}{10.244.19.3}{10.244.19.3:9300}{data=false, master=true},}, reason: zen-disco-join(join from node[{Norman Osborn}{Mxptb3y3Qp6R6xq9eddEzg}{10.244.19.3}{10.244.19.3:9300}{data=false, master=true}])
+[2016-06-08 15:15:47,184][INFO ][cluster.service          ] [Stranger] added {{Deathlok}{OQEV0LTSQh2Q1k7WVNCUBw}{10.244.64.3}{10.244.64.3:9300}{data=false, master=true},}, reason: zen-disco-join(join from node[{Deathlok}{OQEV0LTSQh2Q1k7WVNCUBw}{10.244.64.3}{10.244.64.3:9300}{data=false, master=true}])
+[2016-06-08 15:16:12,750][INFO ][cluster.service          ] [Stranger] added {{Hitman}{KW69CqVrQwyFbB1mbndK5w}{10.244.101.3}{10.244.101.3:9300}{data=false, master=false},}, reason: zen-disco-join(join from node[{Hitman}{KW69CqVrQwyFbB1mbndK5w}{10.244.101.3}{10.244.101.3:9300}{data=false, master=false}])
+[2016-06-08 15:16:34,865][INFO ][cluster.service          ] [Stranger] added {{Trapster}{vXWqivMrRKefxWaf_FJW6g}{10.244.19.4}{10.244.19.4:9300}{master=false},}, reason: zen-disco-join(join from node[{Trapster}{vXWqivMrRKefxWaf_FJW6g}{10.244.19.4}{10.244.19.4:9300}{master=false}])
 ```
 
 ### Access the service
@@ -159,9 +159,9 @@ You should see something similar to the following:
   "name" : "Hitman",
   "cluster_name" : "myesdb",
   "version" : {
-    "number" : "2.3.2",
+    "number" : "2.3.3",
     "build_hash" : "b9e4a6acad4008027e4038f6abed7f7dba346f94",
-    "build_timestamp" : "2016-04-21T16:03:47Z",
+    "build_timestamp" : "2016-06-02T16:03:47Z",
     "build_snapshot" : false,
     "lucene_version" : "5.5.0"
   },
