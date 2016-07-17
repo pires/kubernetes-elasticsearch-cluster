@@ -12,7 +12,6 @@ spec:
         component: elasticsearch
         role: data
     spec:
-      serviceAccount: elasticsearch
       containers:
       - name: es-data
         securityContext:

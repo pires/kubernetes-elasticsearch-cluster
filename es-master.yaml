@@ -12,7 +12,6 @@ spec:
         component: elasticsearch
         role: master
     spec:
-      serviceAccount: elasticsearch
       containers:
       - name: es-master
         securityContext:
