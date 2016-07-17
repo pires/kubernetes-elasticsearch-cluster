@@ -1,24 +1,20 @@
-apiVersion: v1
-kind: ReplicationController
+apiVersion: extensions/v1beta1
+kind: Deployment
 metadata:
-  name: es-master
+  name: es-data
   labels:
     component: elasticsearch
-    role: master
+    role: data
 spec:
-  replicas: 1
-  selector:
-    component: elasticsearch
-    role: master
   template:
     metadata:
       labels:
         component: elasticsearch
-        role: master
+        role: data
     spec:
       serviceAccount: elasticsearch
       containers:
-      - name: es-master
+      - name: es-data
         securityContext:
           privileged: true
           capabilities:
@@ -34,8 +30,6 @@ spec:
         - name: "CLUSTER_NAME"
           value: "myesdb"
         - name: NODE_MASTER
-          value: "true"
-        - name: NODE_DATA
           value: "false"
         - name: HTTP_ENABLE
           value: "false"
@@ -44,8 +38,8 @@ spec:
           name: transport
           protocol: TCP
         volumeMounts:
-        - mountPath: /data
-          name: storage
+        - name: storage
+          mountPath: /data
       volumes:
           - emptyDir:
               medium: ""

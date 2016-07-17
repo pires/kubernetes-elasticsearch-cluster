@@ -24,22 +24,21 @@ Providing your own version of [the images automatically built from this reposito
 ### Deploy
 
 ```
-kubectl create -f service-account.yaml
 kubectl create -f es-discovery-svc.yaml
 kubectl create -f es-svc.yaml
-kubectl create -f es-master-rc.yaml
+kubectl create -f es-master.yaml
 ```
 
 Wait until `es-master` is provisioned, and
 
 ```
-kubectl create -f es-client-rc.yaml
+kubectl create -f es-client.yaml
 ```
 
 Wait until `es-client` is provisioned, and
 
 ```
-kubectl create -f es-data-rc.yaml
+kubectl create -f es-data.yaml
 ```
 
 Wait until `es-data` is provisioned.
@@ -47,19 +46,19 @@ Wait until `es-data` is provisioned.
 Now, I leave up to you how to validate the cluster, but a first step is to wait for containers to be in the `Running` state and check Elasticsearch master logs:
 
 ```
-$ kubectl get svc,rc,pods
-NAME                      CLUSTER-IP       EXTERNAL-IP   PORT(S)    AGE
-elasticsearch             10.100.202.107                 9200/TCP   10m
-elasticsearch-discovery   10.100.99.125    <none>        9300/TCP   10m
-kubernetes                10.100.0.1       <none>        443/TCP    21h
-NAME                      DESIRED          CURRENT       AGE
-es-client                 1                1             5m
-es-data                   1                1             4m
-es-master                 1                1             7m
-NAME                      READY            STATUS        RESTARTS   AGE
-es-client-5b1oc           1/1              Running       0          5m
-es-data-0s6eg             1/1              Running       0          4m
-es-master-tile7           1/1              Running       0          7m
+$ kubectl get svc,deployment,pods
+NAME                         CLUSTER-IP      EXTERNAL-IP   PORT(S)      AGE
+elasticsearch                10.100.89.244   <pending>     9200/TCP     8m
+elasticsearch-discovery      10.100.95.166   <none>        9300/TCP     4m
+kubernetes                   10.100.0.1      <none>        443/TCP      13m
+NAME                         DESIRED         CURRENT       UP-TO-DATE   AVAILABLE   AGE
+es-client                    1               1             1            1           1m
+es-data                      1               1             1            1           57s
+es-master                    1               1             1            1           7m
+NAME                         READY           STATUS        RESTARTS     AGE
+es-client-1380689306-c1660   1/1             Running       0            1m
+es-data-1989895003-26sa4     1/1             Running       0            57s
+es-master-3223879910-x4gqe   1/1             Running       0            3m
 ```
 
 ```
@@ -88,27 +87,27 @@ As you can assert, the cluster is up and running. Easy, wasn't it?
 Scaling each type of node to handle your cluster is as easy as:
 
 ```
-kubectl scale --replicas 3 rc/es-master
-kubectl scale --replicas 2 rc/es-client
-kubectl scale --replicas 2 rc/es-data
+kubectl scale deployment es-master --replicas 3
+kubectl scale deployment es-client --replicas 2
+kubectl scale deployment es-data --replicas 2
 ```
 
 Did it work?
 
 ```
-$ kubectl get rc,pods
-NAME              DESIRED   CURRENT   AGE
-es-client         2         2         7m
-es-data           2         2         6m
-es-master         3         3         9m
-NAME              READY     STATUS    RESTARTS   AGE
-es-client-5b1oc   1/1       Running   0          7m
-es-client-t44y2   1/1       Running   0          29s
-es-data-0s6eg     1/1       Running   0          6m
-es-data-3i5kh     1/1       Running   0          15s
-es-master-ctfjz   1/1       Running   0          1m
-es-master-tile7   1/1       Running   0          9m
-es-master-tk14l   1/1       Running   0          1m
+$ kubectl get deployments,pods
+NAME                         DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
+es-client                    2         2         2            2           4m
+es-data                      2         2         2            2           3m
+es-master                    3         3         3            3           9m
+NAME                         READY     STATUS    RESTARTS     AGE
+es-client-1380689306-c1660   1/1       Running   0            4m
+es-client-1380689306-pyy6f   1/1       Running   0            39s
+es-data-1989895003-26sa4     1/1       Running   0            3m
+es-data-1989895003-xdlkk     1/1       Running   0            20s
+es-master-3223879910-hdapr   1/1       Running   0            1m
+es-master-3223879910-lrnff   1/1       Running   0            1m
+es-master-3223879910-x4gqe   1/1       Running   0            5m
 ```
 
 Let's take another look at the logs of one of the Elasticsearch `master` nodes:
