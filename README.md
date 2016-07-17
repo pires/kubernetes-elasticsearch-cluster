@@ -1,5 +1,5 @@
 # kubernetes-elasticsearch-cluster
-Elasticsearch (2.3.3) cluster on top of Kubernetes made easy.
+Elasticsearch (2.3.4) cluster on top of Kubernetes made easy.
 
 Elasticsearch best-practices recommend to separate nodes in three roles:
 * `Master` nodes - intended for clustering management only, no data, no HTTP API
@@ -74,7 +74,6 @@ $ kubectl logs -f es-master-3223879910-x4gqe
 [2016-07-17 10:00:12,700][INFO ][discovery                ] [the Tomorrow Man Zarrko] myesdb/ZXhavZBbQbW20m9C2cL26Q
 [2016-07-17 10:00:19,416][INFO ][cluster.service          ] [the Tomorrow Man Zarrko] new_master {the Tomorrow Man Zarrko}{ZXhavZBbQbW20m9C2cL26Q}{10.244.66.3}{10.244.66.3:9300}{data=false, master=true}, added {{Crime Master}{JxUega31TNy3UCsX7bMuGw}{10.244.76.2}{10.244.76.2:9300}{master=false},}, reason: zen-disco-join(elected_as_master, [0] joins received)
 [2016-07-17 10:00:34,544][INFO ][node                     ] [the Tomorrow Man Zarrko] started
-[2016-07-17 10:00:34,545][INFO ][cluster.service          ] [the Tomorrow Man Zarrko] removed {{Crime Master}{JxUega31TNy3UCsX7bMuGw}{10.244.76.2}{10.244.76.2:9300}{master=false},}, reason: zen-disco-node_failed({Crime Master}{JxUega31TNy3UCsX7bMuGw}{10.244.76.2}{10.244.76.2:9300}{master=false}), reason transport disconnected
 [2016-07-17 10:00:34,631][INFO ][gateway                  ] [the Tomorrow Man Zarrko] recovered [0] indices into cluster_state
 [2016-07-17 10:01:24,066][INFO ][cluster.service          ] [the Tomorrow Man Zarrko] added {{Mr. Wu}{uXv9cYiVQ6ixWdQSIQnNUw}{10.244.76.2}{10.244.76.2:9300}{data=false, master=false},}, reason: zen-disco-join(join from node[{Mr. Wu}{uXv9cYiVQ6ixWdQSIQnNUw}{10.244.76.2}{10.244.76.2:9300}{data=false, master=false}])
 [2016-07-17 10:02:20,164][INFO ][cluster.service          ] [the Tomorrow Man Zarrko] added {{Nicholas Maunder}{4G3PopXqRmmeqMygxMAUqQ}{10.244.18.2}{10.244.18.2:9300}{master=false},}, reason: zen-disco-join(join from node[{Nicholas Maunder}{4G3PopXqRmmeqMygxMAUqQ}{10.244.18.2}{10.244.18.2:9300}{master=false}])
