@@ -12,7 +12,7 @@ Given this, I'm hereby making possible for you to scale as needed. For instance,
 
 ## Pre-requisites
 
-* Kubernetes cluster (tested with v1.3.0 on top of [Vagrant + CoreOS](https://github.com/pires/kubernetes-vagrant-coreos-cluster))
+* Kubernetes cluster (tested with v1.3.5 on top of [Vagrant + CoreOS](https://github.com/pires/kubernetes-vagrant-coreos-cluster))
 * `kubectl` configured to access your cluster master API Server
 
 ## Build images (optional)
@@ -47,36 +47,36 @@ Now, I leave up to you how to validate the cluster, but a first step is to wait 
 
 ```
 $ kubectl get svc,deployment,pods
-NAME                         CLUSTER-IP      EXTERNAL-IP   PORT(S)      AGE
-elasticsearch                10.100.89.244   <pending>     9200/TCP     8m
-elasticsearch-discovery      10.100.95.166   <none>        9300/TCP     4m
-kubernetes                   10.100.0.1      <none>        443/TCP      13m
-NAME                         DESIRED         CURRENT       UP-TO-DATE   AVAILABLE   AGE
-es-client                    1               1             1            1           1m
-es-data                      1               1             1            1           57s
-es-master                    1               1             1            1           7m
-NAME                         READY           STATUS        RESTARTS     AGE
-es-client-1380689306-c1660   1/1             Running       0            1m
-es-data-1989895003-26sa4     1/1             Running       0            57s
-es-master-3223879910-x4gqe   1/1             Running       0            3m
+NAME                         CLUSTER-IP       EXTERNAL-IP   PORT(S)      AGE
+elasticsearch                10.100.166.126   <pending>     9200/TCP     36m
+elasticsearch-discovery      10.100.103.179   <none>        9300/TCP     36m
+kubernetes                   10.100.0.1       <none>        443/TCP      42m
+NAME                         DESIRED          CURRENT       UP-TO-DATE   AVAILABLE   AGE
+es-client                    1                1             1            1           1m
+es-data                      1                1             1            1           51s
+es-master                    1                1             1            1           8m
+NAME                         READY            STATUS        RESTARTS     AGE
+es-client-1532011931-ik7ld   1/1              Running       0            1m
+es-data-2129027932-9wyey     1/1              Running       0            51s
+es-master-3368190183-4ux7v   1/1              Running       0            8m
 ```
 
 ```
-$ kubectl logs -f es-master-3223879910-x4gqe
-[2016-07-17 10:00:05,104][INFO ][node                     ] [the Tomorrow Man Zarrko] version[2.3.4], pid[11], build[e455fd0/2016-06-30T11:24:31Z]
-[2016-07-17 10:00:05,107][INFO ][node                     ] [the Tomorrow Man Zarrko] initializing ...
-[2016-07-17 10:00:06,452][INFO ][plugins                  ] [the Tomorrow Man Zarrko] modules [reindex, lang-expression, lang-groovy], plugins [cloud-kubernetes], sites []
-[2016-07-17 10:00:06,515][INFO ][env                      ] [the Tomorrow Man Zarrko] using [1] data paths, mounts [[/data (/dev/sda9)]], net usable_space [14.1gb], net total_space [15.5gb], spins? [possibly], types [ext4]
-[2016-07-17 10:00:06,521][INFO ][env                      ] [the Tomorrow Man Zarrko] heap size [1015.6mb], compressed ordinary object pointers [true]
-[2016-07-17 10:00:12,466][INFO ][node                     ] [the Tomorrow Man Zarrko] initialized
-[2016-07-17 10:00:12,466][INFO ][node                     ] [the Tomorrow Man Zarrko] starting ...
-[2016-07-17 10:00:12,681][INFO ][transport                ] [the Tomorrow Man Zarrko] publish_address {10.244.66.3:9300}, bound_addresses {10.244.66.3:9300}
-[2016-07-17 10:00:12,700][INFO ][discovery                ] [the Tomorrow Man Zarrko] myesdb/ZXhavZBbQbW20m9C2cL26Q
-[2016-07-17 10:00:19,416][INFO ][cluster.service          ] [the Tomorrow Man Zarrko] new_master {the Tomorrow Man Zarrko}{ZXhavZBbQbW20m9C2cL26Q}{10.244.66.3}{10.244.66.3:9300}{data=false, master=true}, added {{Crime Master}{JxUega31TNy3UCsX7bMuGw}{10.244.76.2}{10.244.76.2:9300}{master=false},}, reason: zen-disco-join(elected_as_master, [0] joins received)
-[2016-07-17 10:00:34,544][INFO ][node                     ] [the Tomorrow Man Zarrko] started
-[2016-07-17 10:00:34,631][INFO ][gateway                  ] [the Tomorrow Man Zarrko] recovered [0] indices into cluster_state
-[2016-07-17 10:01:24,066][INFO ][cluster.service          ] [the Tomorrow Man Zarrko] added {{Mr. Wu}{uXv9cYiVQ6ixWdQSIQnNUw}{10.244.76.2}{10.244.76.2:9300}{data=false, master=false},}, reason: zen-disco-join(join from node[{Mr. Wu}{uXv9cYiVQ6ixWdQSIQnNUw}{10.244.76.2}{10.244.76.2:9300}{data=false, master=false}])
-[2016-07-17 10:02:20,164][INFO ][cluster.service          ] [the Tomorrow Man Zarrko] added {{Nicholas Maunder}{4G3PopXqRmmeqMygxMAUqQ}{10.244.18.2}{10.244.18.2:9300}{master=false},}, reason: zen-disco-join(join from node[{Nicholas Maunder}{4G3PopXqRmmeqMygxMAUqQ}{10.244.18.2}{10.244.18.2:9300}{master=false}])
+$ kubectl logs -f es-master-3368190183-4ux7v
+[2016-08-22 11:50:46,704][INFO ][node                     ] [The Destroyer] version[2.3.5], pid[11], build[90f439f/2016-07-27T10:36:52Z]
+[2016-08-22 11:50:46,705][INFO ][node                     ] [The Destroyer] initializing ...
+[2016-08-22 11:50:47,764][INFO ][plugins                  ] [The Destroyer] modules [reindex, lang-expression, lang-groovy], plugins [cloud-kubernetes], sites []
+[2016-08-22 11:50:47,824][INFO ][env                      ] [The Destroyer] using [1] data paths, mounts [[/data (/dev/sda9)]], net usable_space [13.5gb], net total_space [15.5gb], spins? [possibly], types [ext4]
+[2016-08-22 11:50:47,825][INFO ][env                      ] [The Destroyer] heap size [503.6mb], compressed ordinary object pointers [true]
+[2016-08-22 11:50:52,800][INFO ][node                     ] [The Destroyer] initialized
+[2016-08-22 11:50:52,800][INFO ][node                     ] [The Destroyer] starting ...
+[2016-08-22 11:50:53,053][INFO ][transport                ] [The Destroyer] publish_address {10.244.72.2:9300}, bound_addresses {10.244.72.2:9300}
+[2016-08-22 11:50:53,067][INFO ][discovery                ] [The Destroyer] myesdb/eO4Xb_xQSBGUvchOvMR_jA
+[2016-08-22 11:50:58,757][INFO ][cluster.service          ] [The Destroyer] new_master {The Destroyer}{eO4Xb_xQSBGUvchOvMR_jA}{10.244.72.2}{10.244.72.2:9300}{data=false, master=true}, reason: zen-disco-join(elected_as_master, [0] joins received)
+[2016-08-22 11:50:58,767][INFO ][node                     ] [The Destroyer] started
+[2016-08-22 11:50:58,806][INFO ][gateway                  ] [The Destroyer] recovered [0] indices into cluster_state
+[2016-08-22 11:57:33,414][INFO ][cluster.service          ] [The Destroyer] added {{St. John Allerdyce}{6gSJOytcRXG_zYkBksGDEA}{10.244.74.2}{10.244.74.2:9300}{data=false, master=false},}, reason: zen-disco-join(join from node[{St. John Allerdyce}{6gSJOytcRXG_zYkBksGDEA}{10.244.74.2}{10.244.74.2:9300}{data=false, master=false}])
+[2016-08-22 11:58:21,927][INFO ][cluster.service          ] [The Destroyer] added {{Amergin}{JdCvogNSR5KDuawdIP5QDQ}{10.244.83.2}{10.244.83.2:9300}{master=false},}, reason: zen-disco-join(join from node[{Amergin}{JdCvogNSR5KDuawdIP5QDQ}{10.244.83.2}{10.244.83.2:9300}{master=false}])
 ```
 
 As you can assert, the cluster is up and running. Easy, wasn't it?
@@ -96,42 +96,41 @@ Did it work?
 ```
 $ kubectl get deployments,pods
 NAME                         DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
-es-client                    2         2         2            2           4m
+es-client                    2         2         2            2           3m
 es-data                      2         2         2            2           3m
-es-master                    3         3         3            3           9m
+es-master                    3         3         3            3           10m
 NAME                         READY     STATUS    RESTARTS     AGE
-es-client-1380689306-c1660   1/1       Running   0            4m
-es-client-1380689306-pyy6f   1/1       Running   0            39s
-es-data-1989895003-26sa4     1/1       Running   0            3m
-es-data-1989895003-xdlkk     1/1       Running   0            20s
-es-master-3223879910-hdapr   1/1       Running   0            1m
-es-master-3223879910-lrnff   1/1       Running   0            1m
-es-master-3223879910-x4gqe   1/1       Running   0            5m
+es-client-1532011931-ik7ld   1/1       Running   2            3m
+es-client-1532011931-ps1ly   1/1       Running   0            1m
+es-data-2129027932-3asba     1/1       Running   1            1m
+es-data-2129027932-9wyey     1/1       Running   0            3m
+es-master-3368190183-4ux7v   1/1       Running   0            10m
+es-master-3368190183-n7tcq   1/1       Running   0            1m
+es-master-3368190183-v8yxv   1/1       Running   0            1m
 ```
 
 Let's take another look at the logs of one of the Elasticsearch `master` nodes:
 
 ```
-$ kubectl logs -f es-master-3223879910-x4gqe
-[2016-07-17 10:00:05,104][INFO ][node                     ] [the Tomorrow Man Zarrko] version[2.3.4], pid[11], build[e455fd0/2016-06-30T11:24:31Z]
-[2016-07-17 10:00:05,107][INFO ][node                     ] [the Tomorrow Man Zarrko] initializing ...
-[2016-07-17 10:00:06,452][INFO ][plugins                  ] [the Tomorrow Man Zarrko] modules [reindex, lang-expression, lang-groovy], plugins [cloud-kubernetes], sites []
-[2016-07-17 10:00:06,515][INFO ][env                      ] [the Tomorrow Man Zarrko] using [1] data paths, mounts [[/data (/dev/sda9)]], net usable_space [14.1gb], net total_space [15.5gb], spins? [possibly], types [ext4]
-[2016-07-17 10:00:06,521][INFO ][env                      ] [the Tomorrow Man Zarrko] heap size [1015.6mb], compressed ordinary object pointers [true]
-[2016-07-17 10:00:12,466][INFO ][node                     ] [the Tomorrow Man Zarrko] initialized
-[2016-07-17 10:00:12,466][INFO ][node                     ] [the Tomorrow Man Zarrko] starting ...
-[2016-07-17 10:00:12,681][INFO ][transport                ] [the Tomorrow Man Zarrko] publish_address {10.244.66.3:9300}, bound_addresses {10.244.66.3:9300}
-[2016-07-17 10:00:12,700][INFO ][discovery                ] [the Tomorrow Man Zarrko] myesdb/ZXhavZBbQbW20m9C2cL26Q
-[2016-07-17 10:00:19,416][INFO ][cluster.service          ] [the Tomorrow Man Zarrko] new_master {the Tomorrow Man Zarrko}{ZXhavZBbQbW20m9C2cL26Q}{10.244.66.3}{10.244.66.3:9300}{data=false, master=true}, added {{Crime Master}{JxUega31TNy3UCsX7bMuGw}{10.244.76.2}{10.244.76.2:9300}{master=false},}, reason: zen-disco-join(elected_as_master, [0] joins received)
-[2016-07-17 10:00:34,544][INFO ][node                     ] [the Tomorrow Man Zarrko] started
-[2016-07-17 10:00:34,545][INFO ][cluster.service          ] [the Tomorrow Man Zarrko] removed {{Crime Master}{JxUega31TNy3UCsX7bMuGw}{10.244.76.2}{10.244.76.2:9300}{master=false},}, reason: zen-disco-node_failed({Crime Master}{JxUega31TNy3UCsX7bMuGw}{10.244.76.2}{10.244.76.2:9300}{master=false}), reason transport disconnected
-[2016-07-17 10:00:34,631][INFO ][gateway                  ] [the Tomorrow Man Zarrko] recovered [0] indices into cluster_state
-[2016-07-17 10:01:24,066][INFO ][cluster.service          ] [the Tomorrow Man Zarrko] added {{Mr. Wu}{uXv9cYiVQ6ixWdQSIQnNUw}{10.244.76.2}{10.244.76.2:9300}{data=false, master=false},}, reason: zen-disco-join(join from node[{Mr. Wu}{uXv9cYiVQ6ixWdQSIQnNUw}{10.244.76.2}{10.244.76.2:9300}{data=false, master=false}])
-[2016-07-17 10:02:20,164][INFO ][cluster.service          ] [the Tomorrow Man Zarrko] added {{Nicholas Maunder}{4G3PopXqRmmeqMygxMAUqQ}{10.244.18.2}{10.244.18.2:9300}{master=false},}, reason: zen-disco-join(join from node[{Nicholas Maunder}{4G3PopXqRmmeqMygxMAUqQ}{10.244.18.2}{10.244.18.2:9300}{master=false}])
-[2016-07-17 10:03:44,010][INFO ][cluster.service          ] [the Tomorrow Man Zarrko] added {{Xavin}{ncl3a8aqS-SsPT9OPvh60g}{10.244.18.3}{10.244.18.3:9300}{data=false, master=true},}, reason: zen-disco-join(join from node[{Xavin}{ncl3a8aqS-SsPT9OPvh60g}{10.244.18.3}{10.244.18.3:9300}{data=false, master=true}])
-[2016-07-17 10:03:44,980][INFO ][cluster.service          ] [the Tomorrow Man Zarrko] added {{Conquest}{bHHNGvt0RlOG7N2GD7AWfA}{10.244.76.3}{10.244.76.3:9300}{data=false, master=true},}, reason: zen-disco-join(join from node[{Conquest}{bHHNGvt0RlOG7N2GD7AWfA}{10.244.76.3}{10.244.76.3:9300}{data=false, master=true}])
-[2016-07-17 10:04:06,123][INFO ][cluster.service          ] [the Tomorrow Man Zarrko] added {{Armand Martel}{Dhz1n2cZRbeVeqbTkWdBEQ}{10.244.66.2}{10.244.66.2:9300}{data=false, master=false},}, reason: zen-disco-join(join from node[{Armand Martel}{Dhz1n2cZRbeVeqbTkWdBEQ}{10.244.66.2}{10.244.66.2:9300}{data=false, master=false}])
-[2016-07-17 10:04:26,498][INFO ][cluster.service          ] [the Tomorrow Man Zarrko] added {{Firestar}{Q9AIAhEOTYqbHMiaP8w-0A}{10.244.66.4}{10.244.66.4:9300}{master=false},}, reason: zen-disco-join(join from node[{Firestar}{Q9AIAhEOTYqbHMiaP8w-0A}{10.244.66.4}{10.244.66.4:9300}{master=false}])
+$ kubectl logs -f es-master-3368190183-4ux7v
+[2016-08-22 11:50:46,704][INFO ][node                     ] [The Destroyer] version[2.3.5], pid[11], build[90f439f/2016-07-27T10:36:52Z]
+[2016-08-22 11:50:46,705][INFO ][node                     ] [The Destroyer] initializing ...
+[2016-08-22 11:50:47,764][INFO ][plugins                  ] [The Destroyer] modules [reindex, lang-expression, lang-groovy], plugins [cloud-kubernetes], sites []
+[2016-08-22 11:50:47,824][INFO ][env                      ] [The Destroyer] using [1] data paths, mounts [[/data (/dev/sda9)]], net usable_space [13.5gb], net total_space [15.5gb], spins? [possibly], types [ext4]
+[2016-08-22 11:50:47,825][INFO ][env                      ] [The Destroyer] heap size [503.6mb], compressed ordinary object pointers [true]
+[2016-08-22 11:50:52,800][INFO ][node                     ] [The Destroyer] initialized
+[2016-08-22 11:50:52,800][INFO ][node                     ] [The Destroyer] starting ...
+[2016-08-22 11:50:53,053][INFO ][transport                ] [The Destroyer] publish_address {10.244.72.2:9300}, bound_addresses {10.244.72.2:9300}
+[2016-08-22 11:50:53,067][INFO ][discovery                ] [The Destroyer] myesdb/eO4Xb_xQSBGUvchOvMR_jA
+[2016-08-22 11:50:58,757][INFO ][cluster.service          ] [The Destroyer] new_master {The Destroyer}{eO4Xb_xQSBGUvchOvMR_jA}{10.244.72.2}{10.244.72.2:9300}{data=false, master=true}, reason: zen-disco-join(elected_as_master, [0] joins received)
+[2016-08-22 11:50:58,767][INFO ][node                     ] [The Destroyer] started
+[2016-08-22 11:50:58,806][INFO ][gateway                  ] [The Destroyer] recovered [0] indices into cluster_state
+[2016-08-22 11:57:33,414][INFO ][cluster.service          ] [The Destroyer] added {{St. John Allerdyce}{6gSJOytcRXG_zYkBksGDEA}{10.244.74.2}{10.244.74.2:9300}{data=false, master=false},}, reason: zen-disco-join(join from node[{St. John Allerdyce}{6gSJOytcRXG_zYkBksGDEA}{10.244.74.2}{10.244.74.2:9300}{data=false, master=false}])
+[2016-08-22 11:58:21,927][INFO ][cluster.service          ] [The Destroyer] added {{Amergin}{JdCvogNSR5KDuawdIP5QDQ}{10.244.83.2}{10.244.83.2:9300}{master=false},}, reason: zen-disco-join(join from node[{Amergin}{JdCvogNSR5KDuawdIP5QDQ}{10.244.83.2}{10.244.83.2:9300}{master=false}])
+[2016-08-22 12:04:31,859][INFO ][cluster.service          ] [The Destroyer] added {{Beta Ray Bill}{oO8X5HIZQbeIb4guf8Yh_w}{10.244.74.2}{10.244.74.2:9300}{data=false, master=true},}, reason: zen-disco-join(join from node[{Beta Ray Bill}{oO8X5HIZQbeIb4guf8Yh_w}{10.244.74.2}{10.244.74.2:9300}{data=false, master=true}])
+[2016-08-22 12:04:32,034][INFO ][cluster.service          ] [The Destroyer] added {{Tiger Shark}{T59rILwORPGvjmszgSBaCA}{10.244.83.3}{10.244.83.3:9300}{data=false, master=true},}, reason: zen-disco-join(join from node[{Tiger Shark}{T59rILwORPGvjmszgSBaCA}{10.244.83.3}{10.244.83.3:9300}{data=false, master=true}])
+[2016-08-22 12:05:50,791][INFO ][cluster.service          ] [The Destroyer] added {{Doug and Jerry}{4j8AK5lvQPeXLGUeP7G17w}{10.244.74.3}{10.244.74.3:9300}{data=false, master=false},}, reason: zen-disco-join(join from node[{Doug and Jerry}{4j8AK5lvQPeXLGUeP7G17w}{10.244.74.3}{10.244.74.3:9300}{data=false, master=false}])
+
 ```
 
 ### Access the service
@@ -141,25 +140,25 @@ $ kubectl logs -f es-master-3223879910-x4gqe
 ```
 $ kubectl get svc elasticsearch
 NAME            CLUSTER-IP      EXTERNAL-IP   PORT(S)    AGE
-elasticsearch   10.100.89.244   <pending>     9200/TCP   11m
+elasticsearch   10.100.166.126   <pending>     9200/TCP   11m
 ```
 
 From any host on your cluster (that's running `kube-proxy`), run:
 
 ```
-curl http://10.100.89.244:9200
+curl http://10.100.166.126:9200
 ```
 
 You should see something similar to the following:
 
 ```json
 {
-  "name" : "Mr. Wu",
+  "name" : "Doug and Jerry",
   "cluster_name" : "myesdb",
   "version" : {
-    "number" : "2.3.4",
+    "number" : "2.3.5",
     "build_hash" : "e455fd0c13dceca8dbbdbb1665d068ae55dabe3f",
-    "build_timestamp" : "2016-06-30T11:24:31Z",
+    "build_timestamp" : "2016-07-27T11:24:31Z",
     "build_snapshot" : false,
     "lucene_version" : "5.5.0"
   },
@@ -170,7 +169,7 @@ You should see something similar to the following:
 Or if you want to see cluster information:
 
 ```
-curl http://10.100.89.244:9200/_cluster/health?pretty
+curl http://10.100.166.126:9200/_cluster/health?pretty
 ```
 
 You should see something similar to the following:
