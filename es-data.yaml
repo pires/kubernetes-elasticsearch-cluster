@@ -32,6 +32,8 @@ spec:
           value: "false"
         - name: HTTP_ENABLE
           value: "false"
+        - name: ES_HEAP_SIZE
+          value: "256m"
         ports:
         - containerPort: 9300
           name: transport
