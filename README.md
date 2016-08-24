@@ -8,7 +8,11 @@ Elasticsearch best-practices recommend to separate nodes in three roles:
 
 Given this, I'm hereby making possible for you to scale as needed. For instance, a good strong scenario could be 3 master, 2 client, 5 data nodes.
 
-*Attention:* As of the moment, Kubernetes pod descriptors use an `emptyDir` for storing data in each data node container. This is meant to be for the sake of simplicity and should be adapted according to your storage needs.
+## (Very) Important notes
+
+* By default, `ES_HEAP_SIZE` is set to `256MB`. This is a *very low* value but many users, i.e. `minikube` users, were having issues with pods getting killed because hosts were out of memory. You can change this yourself in the deployment descriptors available in this repository.
+
+* As of the moment, Kubernetes pod descriptors use an `emptyDir` for storing data in each data node container. This is meant to be for the sake of simplicity and should be adapted according to your storage needs.
 
 ## Pre-requisites
 
