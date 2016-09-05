@@ -1,0 +1,32 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: kibana
+  labels:
+    component: kibana
+    role: web
+spec:
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: kibana
+        tier: frontend
+    spec:
+      containers:
+      - image: kibana:4.5
+        name: kibana
+        env:
+        - name: ELASTICSEARCH_URL
+          value: http://10.0.0.110:9200
+        - name: NODE_OPTIONS
+          value: "--max-old-space-size=300"
+        ports:
+        - containerPort: 5601
+          name: kibana
+        volumeMounts:
+        - name: kibana-persistent-storage
+          mountPath: /var/www/html
+      volumes:
+      - name: kibana-persistent-storage
