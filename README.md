@@ -199,3 +199,27 @@ You should see something similar to the following:
   "active_shards_percent_as_number" : 100.0
 }
 ```
+
+## Clean up with Curator
+
+Additionally, you can run a Scheduled Job running [Curator](https://github.com/elastic/curator) to clean up your indices (or do other actions on your ES).
+
+For this you need to deploy a Config Map (which configures the Curator) and the Scheduled Job:
+
+```
+kubectl create -f es-curator-configmap.yaml
+kubectl create -f es-curator.yaml
+```
+
+The pod is set to run once a day at 1 minute past midnight and delete indices that are older than 3 days.
+
+You can change the schedule by editing the Cron notation in the `es-curator.yaml`.
+
+You can change the action (e.g. delete older than 3 days) by editing the `es-curator-configmap.yaml`. The definition of the `action_file.yaml` is quite self-explaining for simple set ups. For more advanced configuration options, please consult the [Curator Documentation](https://www.elastic.co/guide/en/elasticsearch/client/curator/current/index.html).
+
+If you want to remove Curator again, just run:
+
+```
+kubectl delete scheduledjob curator
+kubectl delete configmap curator-config
+``` 
