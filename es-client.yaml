@@ -12,7 +12,7 @@ spec:
         component: elasticsearch
         role: client
       annotations:
-        pod.alpha.kubernetes.io/init-containers: '[
+        pod.beta.kubernetes.io/init-containers: '[
           {
           "name": "sysctl",
             "image": "busybox",
