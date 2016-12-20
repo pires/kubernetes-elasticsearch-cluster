@@ -16,6 +16,7 @@ spec:
           {
           "name": "sysctl",
             "image": "busybox",
+            "imagePullPolicy": "IfNotPresent",
             "command": ["sysctl", "-w", "vm.max_map_count=262144"],
             "securityContext": {
               "privileged": true
@@ -30,7 +31,7 @@ spec:
           capabilities:
             add:
               - IPC_LOCK
-        image: quay.io/pires/docker-elasticsearch-kubernetes:5.0.1_1
+        image: quay.io/pires/docker-elasticsearch-kubernetes:5.1.1
         imagePullPolicy: Always
         env:
         - name: NAMESPACE
