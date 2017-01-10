@@ -6,6 +6,7 @@ metadata:
     component: elasticsearch
     role: client
 spec:
+  replicas: 2
   template:
     metadata:
       labels:
@@ -31,7 +32,7 @@ spec:
           capabilities:
             add:
               - IPC_LOCK
-        image: quay.io/pires/docker-elasticsearch-kubernetes:5.1.1
+        image: quay.io/pires/docker-elasticsearch-kubernetes:5.1.1_1
         imagePullPolicy: Always
         env:
         - name: NAMESPACE
