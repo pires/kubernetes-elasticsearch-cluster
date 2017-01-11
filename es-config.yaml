@@ -1,0 +1,7 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: es-config
+data:
+  CLUSTER_NAME: myesdb
+  ES_JAVA_OPTS: "-Xms256m -Xmx256m"
