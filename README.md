@@ -11,7 +11,7 @@ Given this, I'm going to demonstrate how to provision a (near, as storage is sti
 ## (Very) Important notes
 
 * By default, `ES_JAVA_OPTS` is set to `-Xms256m -Xmx256m`. This is a *very low* value but many users, i.e. `minikube` users, were having issues with pods getting killed because hosts were out of memory.
-You can change this yourself in the deployment descriptors available in this repository.
+You can change this yourself in the `es-config.yaml` ConfigMap available in this repository.
 
 * As of the moment, Kubernetes pod descriptors use an `emptyDir` for storing data in each data node container. This is meant to be for the sake of simplicity and should be adapted according to your storage needs.
 
@@ -31,13 +31,17 @@ Providing your own version of [the images automatically built from this reposito
 ```
 kubectl create -f es-discovery-svc.yaml
 kubectl create -f es-svc.yaml
+kubectl create -f es-config.yaml
+kubectl create -f es-master-config.yaml
 kubectl create -f es-master.yaml
 ```
 
 Wait until `es-master` deployment is provisioned, and
 
 ```
+kubectl create -f es-client-config.yaml
 kubectl create -f es-client.yaml
+kubectl create -f es-data-config.yaml
 kubectl create -f es-data.yaml
 ```
 Now, I leave up to you how to validate the cluster, but a first step is to wait for containers to be in the `Running` state and check Elasticsearch master logs:
