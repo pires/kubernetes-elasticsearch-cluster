@@ -1,5 +1,5 @@
 # kubernetes-elasticsearch-cluster
-Elasticsearch (5.1.1) cluster on top of Kubernetes made easy.
+Elasticsearch (5.2.0) cluster on top of Kubernetes made easy.
 
 Elasticsearch best-practices recommend to separate nodes in three roles:
 * `Master` nodes - intended for clustering management only, no data, no HTTP API
@@ -17,7 +17,7 @@ You can change this yourself in the deployment descriptors available in this rep
 
 ## Pre-requisites
 
-* Kubernetes cluster with **alpha features enabled** (tested with v1.5.1 on top of [Vagrant + CoreOS](https://github.com/pires/kubernetes-vagrant-coreos-cluster))
+* Kubernetes cluster with **alpha features enabled** (tested with v1.5.2 on top of [Vagrant + CoreOS](https://github.com/pires/kubernetes-vagrant-coreos-cluster))
 * `kubectl` configured to access your cluster master API Server
 
 ## Build images (optional)
@@ -44,56 +44,58 @@ Now, I leave up to you how to validate the cluster, but a first step is to wait 
 
 ```
 $ kubectl get svc,deployment,pods
-NAME                          CLUSTER-IP       EXTERNAL-IP   PORT(S)          AGE
-svc/elasticsearch             10.100.18.90     <pending>     9200:30565/TCP   50m
-svc/elasticsearch-discovery   10.100.132.130   <none>        9300/TCP         50m
-svc/kubernetes                10.100.0.1       <none>        443/TCP          59m
+NAME                          CLUSTER-IP      EXTERNAL-IP   PORT(S)          AGE
+svc/elasticsearch             10.100.203.98   <pending>     9200:32057/TCP   4m
+svc/elasticsearch-discovery   10.100.131.27   <none>        9300/TCP         4m
+svc/kubernetes                10.100.0.1      <none>        443/TCP          12m
 
 NAME               DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
-deploy/es-client   2         2         2            2           1m
-deploy/es-data     2         2         2            2           42s
+deploy/es-client   2         2         2            2           2m
+deploy/es-data     2         2         2            2           2m
 deploy/es-master   3         3         3            3           4m
 
 NAME                            READY     STATUS    RESTARTS   AGE
-po/es-client-4262732819-42rwb   1/1       Running   0          1m
-po/es-client-4262732819-6b784   1/1       Running   0          1m
-po/es-data-3541237351-3jljw     1/1       Running   0          42s
-po/es-data-3541237351-vmrgj     1/1       Running   0          42s
-po/es-master-2236168375-87ntb   1/1       Running   0          4m
-po/es-master-2236168375-hs8fx   1/1       Running   0          4m
-po/es-master-2236168375-jjzpw   1/1       Running   0          4m
+po/es-client-583869315-11mjj    1/1       Running   0          2m
+po/es-client-583869315-q9wsj    1/1       Running   0          2m
+po/es-data-903871959-ctbsj      1/1       Running   0          2m
+po/es-data-903871959-mw0tj      1/1       Running   0          2m
+po/es-master-2173384742-40g9j   1/1       Running   0          4m
+po/es-master-2173384742-d2m7j   1/1       Running   0          4m
+po/es-master-2173384742-q7ckf   1/1       Running   0          4m
 ```
 
 ```
-$ kubectl logs -f po/es-master-2236168375-jjzpw
-[2017-01-10T13:02:32,631][INFO ][o.e.n.Node               ] [] initializing ...
-[2017-01-10T13:02:32,818][INFO ][o.e.e.NodeEnvironment    ] [YRkHkWd] using [1] data paths, mounts [[/data (/dev/sda9)]], net usable_space [13.7gb], net total_space [15.5gb], spins? [possibly], types [ext4]
-[2017-01-10T13:02:32,821][INFO ][o.e.e.NodeEnvironment    ] [YRkHkWd] heap size [247.5mb], compressed ordinary object pointers [true]
-[2017-01-10T13:02:32,828][INFO ][o.e.n.Node               ] node name [YRkHkWd] derived from node ID [YRkHkWd2RfO7AwLPXyhujQ]; set [node.name] to override
-[2017-01-10T13:02:32,840][INFO ][o.e.n.Node               ] version[5.1.1], pid[11], build[5395e21/2016-12-06T12:36:15.409Z], OS[Linux/4.8.15-coreos/amd64], JVM[Oracle Corporation/OpenJDK 64-Bit Server VM/1.8.0_111/25.111-b14]
-[2017-01-10T13:02:35,077][INFO ][o.e.p.PluginsService     ] [YRkHkWd] loaded module [aggs-matrix-stats]
-[2017-01-10T13:02:35,077][INFO ][o.e.p.PluginsService     ] [YRkHkWd] loaded module [ingest-common]
-[2017-01-10T13:02:35,078][INFO ][o.e.p.PluginsService     ] [YRkHkWd] loaded module [lang-expression]
-[2017-01-10T13:02:35,078][INFO ][o.e.p.PluginsService     ] [YRkHkWd] loaded module [lang-groovy]
-[2017-01-10T13:02:35,078][INFO ][o.e.p.PluginsService     ] [YRkHkWd] loaded module [lang-mustache]
-[2017-01-10T13:02:35,081][INFO ][o.e.p.PluginsService     ] [YRkHkWd] loaded module [lang-painless]
-[2017-01-10T13:02:35,082][INFO ][o.e.p.PluginsService     ] [YRkHkWd] loaded module [percolator]
-[2017-01-10T13:02:35,082][INFO ][o.e.p.PluginsService     ] [YRkHkWd] loaded module [reindex]
-[2017-01-10T13:02:35,083][INFO ][o.e.p.PluginsService     ] [YRkHkWd] loaded module [transport-netty3]
-[2017-01-10T13:02:35,083][INFO ][o.e.p.PluginsService     ] [YRkHkWd] loaded module [transport-netty4]
-[2017-01-10T13:02:35,085][INFO ][o.e.p.PluginsService     ] [YRkHkWd] no plugins loaded
-[2017-01-10T13:02:35,555][WARN ][o.e.d.s.g.GroovyScriptEngineService] [groovy] scripts are deprecated, use [painless] scripts instead
-[2017-01-10T13:02:41,656][INFO ][o.e.n.Node               ] initialized
-[2017-01-10T13:02:41,656][INFO ][o.e.n.Node               ] [YRkHkWd] starting ...
-[2017-01-10T13:02:42,345][INFO ][o.e.t.TransportService   ] [YRkHkWd] publish_address {10.244.104.2:9300}, bound_addresses {10.244.104.2:9300}
-[2017-01-10T13:02:42,372][INFO ][o.e.b.BootstrapCheck     ] [YRkHkWd] bound or publishing to a non-loopback or non-link-local address, enforcing bootstrap checks
-[2017-01-10T13:02:55,113][INFO ][o.e.c.s.ClusterService   ] [YRkHkWd] new_master {YRkHkWd}{YRkHkWd2RfO7AwLPXyhujQ}{Zbnfgf-KTLGgudA7UE5twg}{10.244.104.2}{10.244.104.2:9300}, added {{fj3iw4Y}{fj3iw4Y1RVi-nL1lIsXPtQ}{yF3Bfo3IQL-YfokyDTxSDQ}{10.244.45.2}{10.244.45.2:9300},{qjwZtTB}{qjwZtTBYRiOM2oz-Gapfag}{FuAW-dwsTPOPRZZUYmXCoQ}{10.244.101.2}{10.244.101.2:9300},}, reason: zen-disco-elected-as-master ([2] nodes joined)[{fj3iw4Y}{fj3iw4Y1RVi-nL1lIsXPtQ}{yF3Bfo3IQL-YfokyDTxSDQ}{10.244.45.2}{10.244.45.2:9300}, {qjwZtTB}{qjwZtTBYRiOM2oz-Gapfag}{FuAW-dwsTPOPRZZUYmXCoQ}{10.244.101.2}{10.244.101.2:9300}]
-[2017-01-10T13:02:55,261][INFO ][o.e.n.Node               ] [YRkHkWd] started
-[2017-01-10T13:02:55,371][INFO ][o.e.g.GatewayService     ] [YRkHkWd] recovered [0] indices into cluster_state
-[2017-01-10T13:05:55,017][INFO ][o.e.c.s.ClusterService   ] [YRkHkWd] added {{OXvJf4E}{OXvJf4EPRQm0qXO3jXFezQ}{5qkKCoLdQUCpXU0627Aghw}{10.244.39.3}{10.244.39.3:9300},}, reason: zen-disco-node-join[{OXvJf4E}{OXvJf4EPRQm0qXO3jXFezQ}{5qkKCoLdQUCpXU0627Aghw}{10.244.39.3}{10.244.39.3:9300}]
-[2017-01-10T13:05:55,501][INFO ][o.e.c.s.ClusterService   ] [YRkHkWd] added {{m_HYFOL}{m_HYFOLwRauyE7ACaiKlwQ}{_TkBJ0PuR1eB8F6ShVYwDQ}{10.244.45.3}{10.244.45.3:9300},}, reason: zen-disco-node-join[{m_HYFOL}{m_HYFOLwRauyE7ACaiKlwQ}{_TkBJ0PuR1eB8F6ShVYwDQ}{10.244.45.3}{10.244.45.3:9300}]
-[2017-01-10T13:06:29,344][INFO ][o.e.c.s.ClusterService   ] [YRkHkWd] added {{TwKmCsx}{TwKmCsxDSwi-VLvZ2Fi9-A}{qFq2GG15Tly_j3EYvjMkUQ}{10.244.101.3}{10.244.101.3:9300},}, reason: zen-disco-node-join[{TwKmCsx}{TwKmCsxDSwi-VLvZ2Fi9-A}{qFq2GG15Tly_j3EYvjMkUQ}{10.244.101.3}{10.244.101.3:9300}]
-[2017-01-10T13:06:30,838][INFO ][o.e.c.s.ClusterService   ] [YRkHkWd] added {{DgJsL0p}{DgJsL0pAQeSfOxIcHLVOvA}{CfGlrnnNTNKkMHeIzOxuEA}{10.244.45.4}{10.244.45.4:9300},}, reason: zen-disco-node-join[{DgJsL0p}{DgJsL0pAQeSfOxIcHLVOvA}{CfGlrnnNTNKkMHeIzOxuEA}{10.244.45.4}{10.244.45.4:9300}]
+$ kubectl logs -f po/es-master-2173384742-40g9j
+[2017-02-01T09:34:15,118][INFO ][o.e.n.Node               ] [] initializing ...
+[2017-02-01T09:34:15,538][INFO ][o.e.e.NodeEnvironment    ] [5gNfx3_] using [1] data paths, mounts [[/data (/dev/sda9)]], net usable_space [13.7gb], net total_space [15.5gb], spins? [possibly], types [ext4]
+[2017-02-01T09:34:15,539][INFO ][o.e.e.NodeEnvironment    ] [5gNfx3_] heap size [247.5mb], compressed ordinary object pointers [true]
+[2017-02-01T09:34:15,545][INFO ][o.e.n.Node               ] node name [5gNfx3_] derived from node ID [5gNfx3_GSrmZiChMKhBgIQ]; set [node.name] to override
+[2017-02-01T09:34:15,551][INFO ][o.e.n.Node               ] version[5.2.0], pid[13], build[24e05b9/2017-01-24T19:52:35.800Z], OS[Linux/4.8.17-coreos/amd64], JVM[Oracle Corporation/OpenJDK 64-Bit Server VM/1.8.0_111/25.111-b14]
+[2017-02-01T09:34:19,676][INFO ][o.e.p.PluginsService     ] [5gNfx3_] loaded module [aggs-matrix-stats]
+[2017-02-01T09:34:19,676][INFO ][o.e.p.PluginsService     ] [5gNfx3_] loaded module [ingest-common]
+[2017-02-01T09:34:19,676][INFO ][o.e.p.PluginsService     ] [5gNfx3_] loaded module [lang-expression]
+[2017-02-01T09:34:19,677][INFO ][o.e.p.PluginsService     ] [5gNfx3_] loaded module [lang-groovy]
+[2017-02-01T09:34:19,677][INFO ][o.e.p.PluginsService     ] [5gNfx3_] loaded module [lang-mustache]
+[2017-02-01T09:34:19,678][INFO ][o.e.p.PluginsService     ] [5gNfx3_] loaded module [lang-painless]
+[2017-02-01T09:34:19,678][INFO ][o.e.p.PluginsService     ] [5gNfx3_] loaded module [percolator]
+[2017-02-01T09:34:19,690][INFO ][o.e.p.PluginsService     ] [5gNfx3_] loaded module [reindex]
+[2017-02-01T09:34:19,691][INFO ][o.e.p.PluginsService     ] [5gNfx3_] loaded module [transport-netty3]
+[2017-02-01T09:34:19,691][INFO ][o.e.p.PluginsService     ] [5gNfx3_] loaded module [transport-netty4]
+[2017-02-01T09:34:19,693][INFO ][o.e.p.PluginsService     ] [5gNfx3_] no plugins loaded
+[2017-02-01T09:34:20,717][WARN ][o.e.d.s.g.GroovyScriptEngineService] [groovy] scripts are deprecated, use [painless] scripts instead
+[2017-02-01T09:34:34,927][INFO ][o.e.n.Node               ] initialized
+[2017-02-01T09:34:34,927][INFO ][o.e.n.Node               ] [5gNfx3_] starting ...
+[2017-02-01T09:34:35,136][WARN ][i.n.u.i.MacAddressUtil   ] Failed to find a usable hardware address from the network interfaces; using random bytes: 15:8d:90:01:27:3f:55:d8
+[2017-02-01T09:34:35,271][INFO ][o.e.t.TransportService   ] [5gNfx3_] publish_address {10.244.56.2:9300}, bound_addresses {10.244.56.2:9300}
+[2017-02-01T09:34:35,287][INFO ][o.e.b.BootstrapChecks    ] [5gNfx3_] bound or publishing to a non-loopback or non-link-local address, enforcing bootstrap checks
+[2017-02-01T09:34:38,548][INFO ][o.e.c.s.ClusterService   ] [5gNfx3_] new_master {5gNfx3_}{5gNfx3_GSrmZiChMKhBgIQ}{VV-TQnHBRFCwU_AK_aHKpA}{10.244.56.2}{10.244.56.2:9300}, added {{V4ZOb1u}{V4ZOb1ugSwu_1JjxaihuCw}{NLKOlJN4SNeUWCrfR8Q_MA}{10.244.44.2}{10.244.44.2:9300},}, reason: zen-disco-elected-as-master ([1] nodes joined)[{V4ZOb1u}{V4ZOb1ugSwu_1JjxaihuCw}{NLKOlJN4SNeUWCrfR8Q_MA}{10.244.44.2}{10.244.44.2:9300}]
+[2017-02-01T09:34:38,667][INFO ][o.e.n.Node               ] [5gNfx3_] started
+[2017-02-01T09:34:38,843][INFO ][o.e.g.GatewayService     ] [5gNfx3_] recovered [0] indices into cluster_state
+[2017-02-01T09:34:40,766][INFO ][o.e.c.s.ClusterService   ] [5gNfx3_] added {{s0DFRMx}{s0DFRMxOR9GvMPhdoRj-Og}{sm0_EP7kTBOvkpBNFgpFrA}{10.244.9.2}{10.244.9.2:9300},}, reason: zen-disco-node-join[{s0DFRMx}{s0DFRMxOR9GvMPhdoRj-Og}{sm0_EP7kTBOvkpBNFgpFrA}{10.244.9.2}{10.244.9.2:9300}]
+[2017-02-01T09:36:02,176][INFO ][o.e.c.s.ClusterService   ] [5gNfx3_] added {{EVWrdUh}{EVWrdUh6SI2vLz5qYCO11g}{TNbwoaOnTFq3q8ZMW2oedw}{10.244.56.3}{10.244.56.3:9300},}, reason: zen-disco-node-join[{EVWrdUh}{EVWrdUh6SI2vLz5qYCO11g}{TNbwoaOnTFq3q8ZMW2oedw}{10.244.56.3}{10.244.56.3:9300}]
+[2017-02-01T09:36:28,567][INFO ][o.e.c.s.ClusterService   ] [5gNfx3_] added {{9Qyjemc}{9QyjemcWQJKTR5zQoj23Rg}{p0pLUaTtTmCOCleEb2BnOA}{10.244.44.4}{10.244.44.4:9300},}, reason: zen-disco-node-join[{9Qyjemc}{9QyjemcWQJKTR5zQoj23Rg}{p0pLUaTtTmCOCleEb2BnOA}{10.244.44.4}{10.244.44.4:9300}]
+[2017-02-01T09:36:29,169][INFO ][o.e.c.s.ClusterService   ] [5gNfx3_] added {{civ5bHu}{civ5bHuWTKOzFLyRuBDexQ}{MsOr_2peTkClI-RuE6XjZQ}{10.244.44.3}{10.244.44.3:9300},}, reason: zen-disco-node-join[{civ5bHu}{civ5bHuWTKOzFLyRuBDexQ}{MsOr_2peTkClI-RuE6XjZQ}{10.244.44.3}{10.244.44.3:9300}]
+[2017-02-01T09:36:40,953][INFO ][o.e.c.s.ClusterService   ] [5gNfx3_] added {{IfNeRsV}{IfNeRsVzQT6Gqds3BLt0Pw}{LnxQsC_xRy60EBXFCaww_Q}{10.244.67.3}{10.244.67.3:9300},}, reason: zen-disco-node-join[{IfNeRsV}{IfNeRsVzQT6Gqds3BLt0Pw}{LnxQsC_xRy60EBXFCaww_Q}{10.244.67.3}{10.244.67.3:9300}]
 ```
 
 As you can assert, the cluster is up and running. Easy, wasn't it?
@@ -104,29 +106,29 @@ As you can assert, the cluster is up and running. Easy, wasn't it?
 
 ```
 $ kubectl get svc elasticsearch
-NAME            CLUSTER-IP     EXTERNAL-IP   PORT(S)          AGE
-elasticsearch   10.100.18.90   <pending>     9200:30565/TCP   50m
+NAME            CLUSTER-IP      EXTERNAL-IP   PORT(S)          AGE
+elasticsearch   10.100.203.98   <pending>     9200:32057/TCP   7m
 ```
 
 From any host on your cluster (that's running `kube-proxy`), run:
 
 ```
-curl http://10.100.18.90:9200
+curl http://10.100.203.98:9200
 ```
 
 You should see something similar to the following:
 
 ```json
 {
-  "name" : "m_HYFOL",
+  "name" : "IfNeRsV",
   "cluster_name" : "myesdb",
-  "cluster_uuid" : "LRe1dWqzSGSP5oURwLlzxQ",
+  "cluster_uuid" : "tLXdVPqCRsax2Hm9VCSFjQ",
   "version" : {
-    "number" : "5.1.1",
-    "build_hash" : "5395e21",
-    "build_date" : "2016-12-06T12:36:15.409Z",
+    "number" : "5.2.0",
+    "build_hash" : "24e05b9",
+    "build_date" : "2017-01-24T19:52:35.800Z",
     "build_snapshot" : false,
-    "lucene_version" : "6.3.0"
+    "lucene_version" : "6.4.0"
   },
   "tagline" : "You Know, for Search"
 }
@@ -135,7 +137,7 @@ You should see something similar to the following:
 Or if you want to see cluster information:
 
 ```
-curl http://10.100.18.90:9200/_cluster/health?pretty
+curl http://10.100.203.98:9200/_cluster/health?pretty
 ```
 
 You should see something similar to the following:
