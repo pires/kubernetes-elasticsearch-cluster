@@ -28,10 +28,11 @@ spec:
       containers:
       - name: es-client
         securityContext:
-          privileged: true
+          privileged: false
           capabilities:
             add:
               - IPC_LOCK
+              - SYS_RESOURCE
         image: quay.io/pires/docker-elasticsearch-kubernetes:5.2.0
         imagePullPolicy: Always
         env:
