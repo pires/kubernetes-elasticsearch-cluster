@@ -40,16 +40,31 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: metadata.namespace
-        - name: "CLUSTER_NAME"
-          value: "myesdb"
+        - name: CLUSTER_NAME
+          valueFrom:
+            configMapKeyRef:
+              name: es-config
+              key: CLUSTER_NAME
+        - name: ES_JAVA_OPTS
+          valueFrom:
+            configMapKeyRef:
+              name: es-config
+              key: ES_JAVA_OPTS
         - name: NODE_MASTER
-          value: "false"
+          valueFrom:
+            configMapKeyRef:
+              name: es-data-config
+              key: NODE_MASTER
         - name: NODE_INGEST
-          value: "false"
+          valueFrom:
+            configMapKeyRef:
+              name: es-data-config
+              key: NODE_INGEST
         - name: HTTP_ENABLE
-          value: "false"
-        - name: "ES_JAVA_OPTS"
-          value: "-Xms256m -Xmx256m"
+          valueFrom:
+            configMapKeyRef:
+              name: es-data-config
+              key: HTTP_ENABLE
         ports:
         - containerPort: 9300
           name: transport

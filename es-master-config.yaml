@@ -1,0 +1,10 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: es-master-config
+data:
+  NUMBER_OF_MASTERS: "2"
+  NODE_MASTER: "true"
+  NODE_INGEST: "false"
+  NODE_DATA: "false"
+  HTTP_ENABLE: "false"

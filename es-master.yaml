@@ -40,20 +40,41 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: metadata.namespace
-        - name: "CLUSTER_NAME"
-          value: "myesdb"
-        - name: "NUMBER_OF_MASTERS"
-          value: "2"
+        - name: CLUSTER_NAME
+          valueFrom:
+            configMapKeyRef:
+              name: es-config
+              key: CLUSTER_NAME
+        - name: ES_JAVA_OPTS
+          valueFrom:
+            configMapKeyRef:
+              name: es-config
+              key: ES_JAVA_OPTS
+        - name: NUMBER_OF_MASTERS
+          valueFrom:
+            configMapKeyRef:
+              name: es-master-config
+              key: NUMBER_OF_MASTERS
         - name: NODE_MASTER
-          value: "true"
+          valueFrom:
+            configMapKeyRef:
+              name: es-master-config
+              key: NODE_MASTER
         - name: NODE_INGEST
-          value: "false"
+          valueFrom:
+            configMapKeyRef:
+              name: es-master-config
+              key: NODE_INGEST
         - name: NODE_DATA
-          value: "false"
+          valueFrom:
+            configMapKeyRef:
+              name: es-master-config
+              key: NODE_DATA
         - name: HTTP_ENABLE
-          value: "false"
-        - name: "ES_JAVA_OPTS"
-          value: "-Xms256m -Xmx256m"
+          valueFrom:
+            configMapKeyRef:
+              name: es-master-config
+              key: HTTP_ENABLE
         ports:
         - containerPort: 9300
           name: transport
