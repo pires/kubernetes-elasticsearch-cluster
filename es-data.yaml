@@ -50,6 +50,8 @@ spec:
           value: "false"
         - name: NODE_INGEST
           value: "false"
+        - name: NODE_DATA
+          value: "true"
         - name: HTTP_ENABLE
           value: "false"
         - name: "ES_JAVA_OPTS"
