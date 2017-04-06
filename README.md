@@ -10,6 +10,9 @@ Given this, I'm going to demonstrate how to provision a (near, as storage is sti
 
 ## (Very) Important notes
 
+* Elasticsearch pods need for an init-container to run in privileged mode, so it can set some VM options. For that to happen, the `kubelet` should be running with args `--allow-privileged`, otherwise
+the init-container will fail to run.
+
 * By default, `ES_JAVA_OPTS` is set to `-Xms256m -Xmx256m`. This is a *very low* value but many users, i.e. `minikube` users, were having issues with pods getting killed because hosts were out of memory.
 You can change this yourself in the deployment descriptors available in this repository.
 
