@@ -1,6 +1,17 @@
 # kubernetes-elasticsearch-cluster
 Elasticsearch (5.2.2) cluster on top of Kubernetes made easy.
 
+Links:
+* [Important Notes](#important-notes)
+* [Pre-Requisites](#pre-requisites)
+* [Build-Images(optional)](#build-images)
+* [Test (deploying & accessing)](#test)
+* [Clean up with Curator](#curator)
+* [FAQ](#faq)
+* [Troubleshooting](#troubleshooting)
+
+
+
 Elasticsearch best-practices recommend to separate nodes in three roles:
 * `Master` nodes - intended for clustering management only, no data, no HTTP API
 * `Client` nodes - intended for client usage, no data, with HTTP API
@@ -8,6 +19,7 @@ Elasticsearch best-practices recommend to separate nodes in three roles:
 
 Given this, I'm going to demonstrate how to provision a (near, as storage is still an issue) production grade scenario consisting of 3 master, 2 client and 2 data nodes.
 
+<a id="important-notes">
 ## (Very) Important notes
 
 * Elasticsearch pods need for an init-container to run in privileged mode, so it can set some VM options. For that to happen, the `kubelet` should be running with args `--allow-privileged`, otherwise
@@ -20,16 +32,20 @@ You can change this yourself in the deployment descriptors available in this rep
 
 * The [stateful](stateful) directory contains an example which deploys the data pods as a `StatefulSet`. These use a `volumeClaimTemplates` to provision persistent storage for each pod.
 
+<a id="pre-requisites">
 ## Pre-requisites
 
 * Kubernetes cluster with **alpha features enabled** (tested with v1.5.2 on top of [Vagrant + CoreOS](https://github.com/pires/kubernetes-vagrant-coreos-cluster))
 * `kubectl` configured to access your cluster master API Server
 
+<a id="build-images">
 ## Build images (optional)
 
 Providing your own version of [the images automatically built from this repository](https://github.com/pires/docker-elasticsearch-kubernetes) will not be supported. This is an *optional* step. You have been warned.
 
+<a id="test">
 ## Test
+
 
 ### Deploy
 
@@ -166,6 +182,7 @@ You should see something similar to the following:
 }
 ```
 
+<a id="#curator">
 ## Clean up with Curator
 
 Additionally, you can run a [CronJob](http://kubernetes.io/docs/user-guide/cron-jobs/) that will periodically run [Curator](https://github.com/elastic/curator) to clean up your indices (or do other actions on your cluster).
@@ -198,6 +215,7 @@ kubectl delete cronjob curator
 kubectl delete configmap curator-config
 ```
 
+<a id="faq">
 ## FAQ
 ### Why does `NUMBER_OF_MASTERS` differ from number of master-replicas?
 The default value for this environment variable is 2, meaning a cluster will need a minimum of 2 master nodes to operate. If you have 3 masters and one dies, the cluster still works. Minimum master nodes are usually `n/2 + 1`, where `n` is the number of master nodes in a cluster. If you have 5 master nodes, you should have a minimum of 3, less than that and the cluster _stops_. If you scale the number of masters, make sure to update the minimum number of master nodes through the Elasticsearch API as setting environment variable will only work on cluster setup. More info: https://www.elastic.co/guide/en/elasticsearch/guide/1.x/_important_configuration_changes.html#_minimum_master_nodes
@@ -205,3 +223,43 @@ The default value for this environment variable is 2, meaning a cluster will nee
 
 ### How can I customize `elasticsearch.yaml`?
 Read a different config file by settings env var `path.conf=/path/to/my/config/`. Another option would be to build your own image from  [this repository](https://github.com/pires/docker-elasticsearch-kubernetes)
+
+## Troubleshooting
+One of the errors you may come across when running the setup is the following error:
+
+    [2016-11-29T01:28:36,515][WARN ][o.e.b.ElasticsearchUncaughtExceptionHandler] [] uncaught exception in thread [main]
+    org.elasticsearch.bootstrap.StartupException: java.lang.IllegalArgumentException: No up-and-running site-local (private) addresses found, got [name:lo (lo), name:eth0 (eth0)]
+    	at org.elasticsearch.bootstrap.Elasticsearch.init(Elasticsearch.java:116) ~[elasticsearch-5.0.1.jar:5.0.1]
+    	at org.elasticsearch.bootstrap.Elasticsearch.execute(Elasticsearch.java:103) ~[elasticsearch-5.0.1.jar:5.0.1]
+    	at org.elasticsearch.cli.SettingCommand.execute(SettingCommand.java:54) ~[elasticsearch-5.0.1.jar:5.0.1]
+    	at org.elasticsearch.cli.Command.mainWithoutErrorHandling(Command.java:96) ~[elasticsearch-5.0.1.jar:5.0.1]
+    	at org.elasticsearch.cli.Command.main(Command.java:62) ~[elasticsearch-5.0.1.jar:5.0.1]
+    	at org.elasticsearch.bootstrap.Elasticsearch.main(Elasticsearch.java:80) ~[elasticsearch-5.0.1.jar:5.0.1]
+    	at org.elasticsearch.bootstrap.Elasticsearch.main(Elasticsearch.java:73) ~[elasticsearch-5.0.1.jar:5.0.1]
+    Caused by: java.lang.IllegalArgumentException: No up-and-running site-local (private) addresses found, got [name:lo (lo), name:eth0 (eth0)]
+    	at org.elasticsearch.common.network.NetworkUtils.getSiteLocalAddresses(NetworkUtils.java:187) ~[elasticsearch-5.0.1.jar:5.0.1]
+    	at org.elasticsearch.common.network.NetworkService.resolveInternal(NetworkService.java:246) ~[elasticsearch-5.0.1.jar:5.0.1]
+    	at org.elasticsearch.common.network.NetworkService.resolveInetAddresses(NetworkService.java:220) ~[elasticsearch-5.0.1.jar:5.0.1]
+    	at org.elasticsearch.common.network.NetworkService.resolveBindHostAddresses(NetworkService.java:130) ~[elasticsearch-5.0.1.jar:5.0.1]
+    	at org.elasticsearch.transport.TcpTransport.bindServer(TcpTransport.java:575) ~[elasticsearch-5.0.1.jar:5.0.1]
+    	at org.elasticsearch.transport.netty4.Netty4Transport.doStart(Netty4Transport.java:182) ~[?:?]
+    	at org.elasticsearch.common.component.AbstractLifecycleComponent.start(AbstractLifecycleComponent.java:68) ~[elasticsearch-5.0.1.jar:5.0.1]
+    	at org.elasticsearch.transport.TransportService.doStart(TransportService.java:182) ~[elasticsearch-5.0.1.jar:5.0.1]
+    	at org.elasticsearch.common.component.AbstractLifecycleComponent.start(AbstractLifecycleComponent.java:68) ~[elasticsearch-5.0.1.jar:5.0.1]
+    	at org.elasticsearch.node.Node.start(Node.java:525) ~[elasticsearch-5.0.1.jar:5.0.1]
+    	at org.elasticsearch.bootstrap.Bootstrap.start(Bootstrap.java:211) ~[elasticsearch-5.0.1.jar:5.0.1]
+    	at org.elasticsearch.bootstrap.Bootstrap.init(Bootstrap.java:288) ~[elasticsearch-5.0.1.jar:5.0.1]
+    	at org.elasticsearch.bootstrap.Elasticsearch.init(Elasticsearch.java:112) ~[elasticsearch-5.0.1.jar:5.0.1]
+    	... 6 more
+    [2016-11-29T01:28:37,448][INFO ][o.e.n.Node               ] [kIEYQSE] stopping ...
+    [2016-11-29T01:28:37,451][INFO ][o.e.n.Node               ] [kIEYQSE] stopped
+    [2016-11-29T01:28:37,452][INFO ][o.e.n.Node               ] [kIEYQSE] closing ...
+    [2016-11-29T01:28:37,464][INFO ][o.e.n.Node               ] [kIEYQSE] closed
+
+    This is related to how the docker container binds to network ports, it defaults to ``_local_``. It will need to match the actual interface name on the node and will probably depend on what distribution of linux you use for deployment or cloud hosting provider you use. For instance if the primary interface on the node is `p1p1` then that is the value that needs to change for the `NETWORK_HOST` variable to match would be `_p1p1_`.
+    Please see [the documentation](https://github.com/pires/docker-elasticsearch#environment-variables) for reference of options.
+
+    The fix is to add the environment variable NETWORK_HOST to the kubernetes files (es-master.yaml, es-client.yaml, and es-data.yaml), under the spec containers section you will just need to add the following:
+
+        - name: "NETWORK_HOST"
+          value: "_eth0_" #_p1p1_ if interface name is p1p1, ens4 would be _ens4_, etc
