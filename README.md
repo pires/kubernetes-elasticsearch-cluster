@@ -20,6 +20,7 @@ Elasticsearch best-practices recommend to separate nodes in three roles:
 Given this, I'm going to demonstrate how to provision a (near, as storage is still an issue) production grade scenario consisting of 3 master, 2 client and 2 data nodes.
 
 <a id="important-notes">
+
 ## (Very) Important notes
 
 * Elasticsearch pods need for an init-container to run in privileged mode, so it can set some VM options. For that to happen, the `kubelet` should be running with args `--allow-privileged`, otherwise
@@ -33,19 +34,21 @@ You can change this yourself in the deployment descriptors available in this rep
 * The [stateful](stateful) directory contains an example which deploys the data pods as a `StatefulSet`. These use a `volumeClaimTemplates` to provision persistent storage for each pod.
 
 <a id="pre-requisites">
+
 ## Pre-requisites
 
 * Kubernetes cluster with **alpha features enabled** (tested with v1.5.2 on top of [Vagrant + CoreOS](https://github.com/pires/kubernetes-vagrant-coreos-cluster))
 * `kubectl` configured to access your cluster master API Server
 
 <a id="build-images">
+
 ## Build images (optional)
 
 Providing your own version of [the images automatically built from this repository](https://github.com/pires/docker-elasticsearch-kubernetes) will not be supported. This is an *optional* step. You have been warned.
 
 <a id="test">
-## Test
 
+## Test
 
 ### Deploy
 
@@ -183,6 +186,7 @@ You should see something similar to the following:
 ```
 
 <a id="#curator">
+
 ## Clean up with Curator
 
 Additionally, you can run a [CronJob](http://kubernetes.io/docs/user-guide/cron-jobs/) that will periodically run [Curator](https://github.com/elastic/curator) to clean up your indices (or do other actions on your cluster).
@@ -216,7 +220,9 @@ kubectl delete configmap curator-config
 ```
 
 <a id="faq">
+
 ## FAQ
+
 ### Why does `NUMBER_OF_MASTERS` differ from number of master-replicas?
 The default value for this environment variable is 2, meaning a cluster will need a minimum of 2 master nodes to operate. If you have 3 masters and one dies, the cluster still works. Minimum master nodes are usually `n/2 + 1`, where `n` is the number of master nodes in a cluster. If you have 5 master nodes, you should have a minimum of 3, less than that and the cluster _stops_. If you scale the number of masters, make sure to update the minimum number of master nodes through the Elasticsearch API as setting environment variable will only work on cluster setup. More info: https://www.elastic.co/guide/en/elasticsearch/guide/1.x/_important_configuration_changes.html#_minimum_master_nodes
 
@@ -256,10 +262,10 @@ One of the errors you may come across when running the setup is the following er
     [2016-11-29T01:28:37,452][INFO ][o.e.n.Node               ] [kIEYQSE] closing ...
     [2016-11-29T01:28:37,464][INFO ][o.e.n.Node               ] [kIEYQSE] closed
 
-    This is related to how the docker container binds to network ports, it defaults to ``_local_``. It will need to match the actual interface name on the node and will probably depend on what distribution of linux you use for deployment or cloud hosting provider you use. For instance if the primary interface on the node is `p1p1` then that is the value that needs to change for the `NETWORK_HOST` variable to match would be `_p1p1_`.
-    Please see [the documentation](https://github.com/pires/docker-elasticsearch#environment-variables) for reference of options.
+This is related to how the docker container binds to network ports, it defaults to ``_local_``. It will need to match the actual interface name on the node and will probably depend on what distribution of linux you use for deployment or cloud hosting provider you use. For instance if the primary interface on the node is `p1p1` then that is the value that needs to change for the `NETWORK_HOST` variable to match would be `_p1p1_`.
+Please see [the documentation](https://github.com/pires/docker-elasticsearch#environment-variables) for reference of options.
 
-    The fix is to add the environment variable NETWORK_HOST to the kubernetes files (es-master.yaml, es-client.yaml, and es-data.yaml), under the spec containers section you will just need to add the following:
+The fix is to add the environment variable NETWORK_HOST to the kubernetes files (es-master.yaml, es-client.yaml, and es-data.yaml), under the spec containers section you will just need to add the following:
 
-        - name: "NETWORK_HOST"
-          value: "_eth0_" #_p1p1_ if interface name is p1p1, ens4 would be _ens4_, etc
+    - name: "NETWORK_HOST"
+      value: "_eth0_" #_p1p1_ if interface name is p1p1, ens4 would be _ens4_, etc
