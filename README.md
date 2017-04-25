@@ -20,6 +20,7 @@ Elasticsearch best-practices recommend to separate nodes in three roles:
 Given this, I'm going to demonstrate how to provision a (near, as storage is still an issue) production grade scenario consisting of 3 master, 2 client and 2 data nodes.
 
 <a id="important-notes">
+
 ## (Very) Important notes
 
 * Elasticsearch pods need for an init-container to run in privileged mode, so it can set some VM options. For that to happen, the `kubelet` should be running with args `--allow-privileged`, otherwise
@@ -33,19 +34,21 @@ You can change this yourself in the deployment descriptors available in this rep
 * The [stateful](stateful) directory contains an example which deploys the data pods as a `StatefulSet`. These use a `volumeClaimTemplates` to provision persistent storage for each pod.
 
 <a id="pre-requisites">
+
 ## Pre-requisites
 
 * Kubernetes cluster with **alpha features enabled** (tested with v1.5.2 on top of [Vagrant + CoreOS](https://github.com/pires/kubernetes-vagrant-coreos-cluster))
 * `kubectl` configured to access your cluster master API Server
 
 <a id="build-images">
+
 ## Build images (optional)
 
 Providing your own version of [the images automatically built from this repository](https://github.com/pires/docker-elasticsearch-kubernetes) will not be supported. This is an *optional* step. You have been warned.
 
 <a id="test">
-## Test
 
+## Test
 
 ### Deploy
 
@@ -183,6 +186,7 @@ You should see something similar to the following:
 ```
 
 <a id="#curator">
+
 ## Clean up with Curator
 
 Additionally, you can run a [CronJob](http://kubernetes.io/docs/user-guide/cron-jobs/) that will periodically run [Curator](https://github.com/elastic/curator) to clean up your indices (or do other actions on your cluster).
