@@ -262,10 +262,10 @@ One of the errors you may come across when running the setup is the following er
     [2016-11-29T01:28:37,452][INFO ][o.e.n.Node               ] [kIEYQSE] closing ...
     [2016-11-29T01:28:37,464][INFO ][o.e.n.Node               ] [kIEYQSE] closed
 
-    This is related to how the docker container binds to network ports, it defaults to ``_local_``. It will need to match the actual interface name on the node and will probably depend on what distribution of linux you use for deployment or cloud hosting provider you use. For instance if the primary interface on the node is `p1p1` then that is the value that needs to change for the `NETWORK_HOST` variable to match would be `_p1p1_`.
-    Please see [the documentation](https://github.com/pires/docker-elasticsearch#environment-variables) for reference of options.
+This is related to how the docker container binds to network ports, it defaults to ``_local_``. It will need to match the actual interface name on the node and will probably depend on what distribution of linux you use for deployment or cloud hosting provider you use. For instance if the primary interface on the node is `p1p1` then that is the value that needs to change for the `NETWORK_HOST` variable to match would be `_p1p1_`.
+Please see [the documentation](https://github.com/pires/docker-elasticsearch#environment-variables) for reference of options.
 
-    The fix is to add the environment variable NETWORK_HOST to the kubernetes files (es-master.yaml, es-client.yaml, and es-data.yaml), under the spec containers section you will just need to add the following:
+The fix is to add the environment variable NETWORK_HOST to the kubernetes files (es-master.yaml, es-client.yaml, and es-data.yaml), under the spec containers section you will just need to add the following:
 
-        - name: "NETWORK_HOST"
-          value: "_eth0_" #_p1p1_ if interface name is p1p1, ens4 would be _ens4_, etc
+    - name: "NETWORK_HOST"
+      value: "_eth0_" #_p1p1_ if interface name is p1p1, ens4 would be _ens4_, etc
