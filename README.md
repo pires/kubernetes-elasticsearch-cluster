@@ -219,6 +219,19 @@ kubectl delete cronjob curator
 kubectl delete configmap curator-config
 ```
 
+<a id="#helm">
+
+## Deploying with Helm
+
+[Helm](https://github.com/kubernetes/helm) charts for a basic (non-stateful) ElasticSearch deployment are maintained at https://github.com/clockworksoul/helm-elasticsearch. With Helm properly installed and configured, standing up a complete cluster is almost trivial:
+
+```
+$ git clone git@github.com:clockworksoul/helm-elasticsearch.git
+$ helm install helm-elasticsearch
+```
+
+Various parameters of the cluster, including replica count and memory allocations, can be adjusted by editing the `helm-elasticsearch/values.yaml` file. For information about Helm, please consult the [complete Helm documentation](https://github.com/kubernetes/helm/blob/master/docs/index.md).
+
 <a id="faq">
 
 ## FAQ
