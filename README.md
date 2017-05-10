@@ -18,7 +18,7 @@ Elasticsearch (5.4.0) cluster on top of Kubernetes made easy.
 Elasticsearch best-practices recommend to separate nodes in three roles:
 * `Master` nodes - intended for clustering management only, no data, no HTTP API
 * `Client` nodes - intended for client usage, no data, with HTTP API
-* `Data` nodes - intended for storing and indexing your data, no HTTP API
+* `Data` nodes - intended for storing and indexing data, no HTTP API
 
 Given this, I'm going to demonstrate how to provision a (near, as storage is still an issue) production grade scenario consisting of 3 master, 2 client and 2 data nodes.
 
@@ -30,9 +30,9 @@ Given this, I'm going to demonstrate how to provision a (near, as storage is sti
 the init-container will fail to run.
 
 * By default, `ES_JAVA_OPTS` is set to `-Xms256m -Xmx256m`. This is a *very low* value but many users, i.e. `minikube` users, were having issues with pods getting killed because hosts were out of memory.
-You can change this yourself in the deployment descriptors available in this repository.
+One can change this in the deployment descriptors available in this repository.
 
-* As of the moment, Kubernetes pod descriptors use an `emptyDir` for storing data in each data node container. This is meant to be for the sake of simplicity and should be adapted according to your storage needs.
+* As of the moment, Kubernetes pod descriptors use an `emptyDir` for storing data in each data node container. This is meant to be for the sake of simplicity and should be adapted according to one's storage needs.
 
 * The [stateful](stateful) directory contains an example which deploys the data pods as a `StatefulSet`. These use a `volumeClaimTemplates` to provision persistent storage for each pod.
 
@@ -41,13 +41,13 @@ You can change this yourself in the deployment descriptors available in this rep
 ## Pre-requisites
 
 * Kubernetes cluster with **alpha features enabled** (tested with v1.5.2 on top of [Vagrant + CoreOS](https://github.com/pires/kubernetes-vagrant-coreos-cluster))
-* `kubectl` configured to access your cluster master API Server
+* `kubectl` configured to access the cluster master API Server
 
 <a id="build-images">
 
 ## Build images (optional)
 
-Providing your own version of [the images automatically built from this repository](https://github.com/pires/docker-elasticsearch-kubernetes) will not be supported. This is an *optional* step. You have been warned.
+Providing one's own version of [the images automatically built from this repository](https://github.com/pires/docker-elasticsearch-kubernetes) will not be supported. This is an *optional* step. One has been warned.
 
 ## Test
 
@@ -60,13 +60,12 @@ kubectl create -f es-master.yaml
 ```
 
 Wait until `es-master` deployment is provisioned, and
-
 ```
 kubectl create -f es-client.yaml
 kubectl create -f es-data.yaml
 ```
-Now, I leave up to you how to validate the cluster, but a first step is to wait for containers to be in the `Running` state and check Elasticsearch master logs:
 
+Wait for containers to be in the `Running` state and check one of the Elasticsearch master nodes logs:
 ```
 $ kubectl get svc,deployment,pods
 NAME                          CLUSTER-IP      EXTERNAL-IP   PORT(S)          AGE
@@ -120,11 +119,11 @@ $ kubectl logs po/es-master-2212299741-0x880
 [2017-05-10T09:00:28,684][INFO ][o.e.c.s.ClusterService   ] [es-master-2212299741-0x880] added {{es-data-1526844084-4mfg3}{F6EWBX0dTPuD0hXNcKqI-w}{ASI3slfvS6GIYweNQLoWpg}{10.244.65.5}{10.244.65.5:9300},}, reason: zen-disco-receive(from master [master {es-master-2212299741-1j9lm}{NM2PTRGoTeumDqDX9HpPJA}{UYMXBCwlT1iRYA_n2xiIgg}{10.244.65.3}{10.244.65.3:9300} committed version [7]])
 ```
 
-As you can assert, the cluster is up and running. Easy, wasn't it?
+As we can assert, the cluster is up and running. Easy, wasn't it?
 
 ### Access the service
 
-*Don't forget* that services in Kubernetes are only acessible from containers in the cluster. For different behavior you should [configure the creation of an external load-balancer](http://kubernetes.io/v1.1/docs/user-guide/services.html#type-loadbalancer). While it's supported within this example service descriptor, its usage is out of scope of this document, for now.
+*Don't forget* that services in Kubernetes are only acessible from containers in the cluster. For different behavior one should [configure the creation of an external load-balancer](http://kubernetes.io/v1.1/docs/user-guide/services.html#type-loadbalancer). While it's supported within this example service descriptor, its usage is out of scope of this document, for now.
 
 ```
 $ kubectl get svc elasticsearch
@@ -132,13 +131,13 @@ NAME            CLUSTER-IP      EXTERNAL-IP   PORT(S)          AGE
 elasticsearch   10.100.75.158   <pending>     9200:31163/TCP   5m
 ```
 
-From any host on your cluster (that's running `kube-proxy`), run:
+From any host on the Kubernetes cluster (that's running `kube-proxy` or similar), run:
 
 ```
 curl http://10.100.75.158:9200
 ```
 
-You should see something similar to the following:
+One should see something similar to the following:
 
 ```json
 {
@@ -156,13 +155,13 @@ You should see something similar to the following:
 }
 ```
 
-Or if you want to see cluster information:
+Or if one wants to see cluster information:
 
 ```
 curl http://10.100.75.158:9200/_cluster/health?pretty
 ```
 
-You should see something similar to the following:
+One should see something similar to the following:
 
 ```json
 {
@@ -209,7 +208,7 @@ The image used in this repo is very minimalist. However, one can install additio
 
 ## Clean up with Curator
 
-Additionally, one can run a [CronJob](http://kubernetes.io/docs/user-guide/cron-jobs/) that will periodically run [Curator](https://github.com/elastic/curator) to clean up indices (or do other actions on your cluster).
+Additionally, one can run a [CronJob](http://kubernetes.io/docs/user-guide/cron-jobs/) that will periodically run [Curator](https://github.com/elastic/curator) to clean up indices (or do other actions on the Elasticsearch cluster).
 
 ```
 kubectl create -f es-curator-config.yaml
@@ -228,11 +227,11 @@ The job is configured to run once a day at _1 minute past midnight and delete in
 
 **Notes**
 
-- You can change the schedule by editing the cron notation in `es-curator.yaml`.
-- You can change the action (e.g. delete older than 3 days) by editing the `es-curator-config.yaml`.
+- One can change the schedule by editing the cron notation in `es-curator.yaml`.
+- One can change the action (e.g. delete older than 3 days) by editing the `es-curator-config.yaml`.
 - The definition of the `action_file.yaml` is quite self-explaining for simple set-ups. For more advanced configuration options, please consult the [Curator Documentation](https://www.elastic.co/guide/en/elasticsearch/client/curator/current/index.html).
 
-If you want to remove the curator job, just run:
+If one wants to remove the curator job, just run:
 
 ```
 kubectl delete cronjob curator
@@ -244,14 +243,14 @@ Various parameters of the cluster, including replica count and memory allocation
 ## FAQ
 
 ### Why does `NUMBER_OF_MASTERS` differ from number of master-replicas?
-The default value for this environment variable is 2, meaning a cluster will need a minimum of 2 master nodes to operate. If you have 3 masters and one dies, the cluster still works. Minimum master nodes are usually `n/2 + 1`, where `n` is the number of master nodes in a cluster. If you have 5 master nodes, you should have a minimum of 3, less than that and the cluster _stops_. If you scale the number of masters, make sure to update the minimum number of master nodes through the Elasticsearch API as setting environment variable will only work on cluster setup. More info: https://www.elastic.co/guide/en/elasticsearch/guide/1.x/_important_configuration_changes.html#_minimum_master_nodes
+The default value for this environment variable is 2, meaning a cluster will need a minimum of 2 master nodes to operate. If a cluster has 3 masters and one dies, the cluster still works. Minimum master nodes are usually `n/2 + 1`, where `n` is the number of master nodes in a cluster. If a cluster has 5 master nodes, one should have a minimum of 3, less than that and the cluster _stops_. If one scales the number of masters, make sure to update the minimum number of master nodes through the Elasticsearch API as setting environment variable will only work on cluster setup. More info: https://www.elastic.co/guide/en/elasticsearch/guide/1.x/_important_configuration_changes.html#_minimum_master_nodes
 
 
 ### How can I customize `elasticsearch.yaml`?
-Read a different config file by settings env var `path.conf=/path/to/my/config/`. Another option would be to build your own image from  [this repository](https://github.com/pires/docker-elasticsearch-kubernetes)
+Read a different config file by settings env var `path.conf=/path/to/my/config/`. Another option would be to build one's own image from  [this repository](https://github.com/pires/docker-elasticsearch-kubernetes)
 
 ## Troubleshooting
-One of the errors you may come across when running the setup is the following error:
+One of the errors one may come across when running the setup is the following error:
 ```
 [2016-11-29T01:28:36,515][WARN ][o.e.b.ElasticsearchUncaughtExceptionHandler] [] uncaught exception in thread [main]
 org.elasticsearch.bootstrap.StartupException: java.lang.IllegalArgumentException: No up-and-running site-local (private) addresses found, got [name:lo (lo), name:eth0 (eth0)]
