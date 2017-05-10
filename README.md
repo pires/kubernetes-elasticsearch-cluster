@@ -48,8 +48,6 @@ You can change this yourself in the deployment descriptors available in this rep
 
 Providing your own version of [the images automatically built from this repository](https://github.com/pires/docker-elasticsearch-kubernetes) will not be supported. This is an *optional* step. You have been warned.
 
-<a id="test">
-
 ## Test
 
 ### Deploy
@@ -185,7 +183,7 @@ You should see something similar to the following:
 }
 ```
 
-<a id="#helm">
+<a id="helm">
 
 ## Deploying with Helm
 
@@ -196,7 +194,7 @@ $ git clone git@github.com:clockworksoul/helm-elasticsearch.git
 $ helm install helm-elasticsearch
 ```
 
-<a id="#plugins">
+<a id="plugins">
 
 ## Install plug-ins
 
@@ -206,7 +204,7 @@ The image used in this repo is very minimalist. However, one can install additio
   value: "repository-gcs,x-pack"
 ```
 
-<a id="#curator">
+<a id="curator">
 
 ## Clean up with Curator
 
