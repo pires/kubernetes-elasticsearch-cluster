@@ -51,7 +51,20 @@ Providing one's own version of [the images automatically built from this reposit
 
 ## Test
 
-### Deploy
+### Deploy ELK (Elasticsearch and Kibana)
+./start-es-cluster.sh
+
+### Stopping the elk cluster
+./stop-es-cluster.sh
+
+### Test Kibana URL
+http://{kubernetes-node-ips}:30102/status
+
+### Test Elastic search API
+http://{kubernetes-node-ips}:30101
+
+
+### Deploy Elasticsearch Only
 
 ```
 kubectl create -f es-discovery-svc.yaml

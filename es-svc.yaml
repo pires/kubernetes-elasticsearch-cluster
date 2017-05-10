@@ -10,7 +10,9 @@ spec:
   selector:
     component: elasticsearch
     role: client
+  clusterIP: 10.0.0.110
   ports:
   - name: http
+    nodePort: 30101
     port: 9200
     protocol: TCP
