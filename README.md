@@ -1,7 +1,8 @@
 # kubernetes-elasticsearch-cluster
 Elasticsearch (5.4.0) cluster on top of Kubernetes made easy.
 
-Links:
+### Table of Contents
+
 * [Important Notes](#important-notes)
 * [Pre-Requisites](#pre-requisites)
 * [Build-Images(optional)](#build-images)
@@ -12,7 +13,7 @@ Links:
 * [FAQ](#faq)
 * [Troubleshooting](#troubleshooting)
 
-
+## Abstract
 
 Elasticsearch best-practices recommend to separate nodes in three roles:
 * `Master` nodes - intended for clustering management only, no data, no HTTP API
