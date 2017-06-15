@@ -7,6 +7,7 @@ Elasticsearch (5.4.0) cluster on top of Kubernetes made easy.
 * [Pre-Requisites](#pre-requisites)
 * [Build-Images(optional)](#build-images)
 * [Test (deploying & accessing)](#test)
+* [Scheduling pods](#scheduling)
 * [Deploying with Helm](#helm)
 * [Install plug-ins](#plugins)
 * [Clean up with Curator](#curator)
@@ -182,6 +183,35 @@ One should see something similar to the following:
   "active_shards_percent_as_number" : 100.0
 }
 ```
+<a id="scheduling">
+
+## Scheduling pods
+
+One of the advantages of setting up a cluster is that ES is more resistent to restarting pods and/or nodes. However if all of your data pods are schedules onto the same node and this node is reset, your cluster will still have some downtime. 
+Therefor it is not recommanded that you use a single node to host your cluster. In case you have multiple nodes you can use the concept of pods affinity and anti-affinity to make sure pods of the same rc,deployment and/or statefulset are deployed on different nodes. 
+To make sure they are scheduled onto different nodes, we can use the `pod anti affinity`.
+
+Example in the case of our statefulset:
+```
+   spec:
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: role
+                  operator: In
+                  values:
+                  - data
+              topologyKey: kubernetes.io/hostname
+      containers:
+```
+
+Note: Inter-pod affinity and anti-affinity were introduced in Kubernetes 1.4
+
+[More information](https://kubernetes.io/docs/concepts/configuration/assign-pod-node/)
 
 <a id="helm">
 
