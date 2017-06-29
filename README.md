@@ -283,6 +283,9 @@ The default value for this environment variable is 2, meaning a cluster will nee
 Read a different config file by settings env var `path.conf=/path/to/my/config/`. Another option would be to build one's own image from  [this repository](https://github.com/pires/docker-elasticsearch-kubernetes)
 
 ## Troubleshooting
+
+### No up-and-running site-local
+
 One of the errors one may come across when running the setup is the following error:
 ```
 [2016-11-29T01:28:36,515][WARN ][o.e.b.ElasticsearchUncaughtExceptionHandler] [] uncaught exception in thread [main]
@@ -321,5 +324,16 @@ Please see [the documentation](https://github.com/pires/docker-elasticsearch#env
 In order to workaround this, set `NETWORK_HOST` environment variable in the pod descriptors as follows:
 ```yaml
 - name: "NETWORK_HOST"
-  value: "_eth0_" #_p1p1_ if interface name is p1p1, ens4 would be _ens4_, etc
+  value: "_eth0_" #_p1p1_ if interface name is p1p1, _ens4_ if interface name is ens4, and so on.
+```
+
+### (IPv6) org.elasticsearch.bootstrap.StartupException: BindTransportException
+
+Intermittent failures occur when the local network interface has both IPv4 and IPv6 addresses, and Elasticsearch tries to bind to the IPv6 address first.
+If the IPv4 address is chosen first, Elasticsearch starts correctly.
+
+In order to workaround this, set `NETWORK_HOST` environment variable in the pod descriptors as follows:
+```yaml
+- name: "NETWORK_HOST"
+  value: "_eth0:ipv4_" #_p1p1:ipv4_ if interface name is p1p1, _ens4:ipv4_ if interface name is ens4, and so on.
 ```
