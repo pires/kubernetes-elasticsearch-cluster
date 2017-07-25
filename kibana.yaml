@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: kibana
-        image: vvcelparti01:443/kibana:5.5.0
+        image: kibana:5.5.0
         env:
         - name: SERVER_BASEPATH
           value: /api/v1/proxy/namespaces/default/services/kibana:5601
