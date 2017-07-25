@@ -1,0 +1,40 @@
+piVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: kibana
+  namespace: default
+  labels:
+    component: kibana
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+     component: kibana
+  template:
+    metadata:
+      labels:
+        component: kibana
+    spec:
+      containers:
+      - name: kibana
+        image: vvcelparti01:443/kibana:5.5.0
+        env:
+        - name: SERVER_BASEPATH
+          value: /api/v1/proxy/namespaces/default/services/kibana:5601
+        - name: XPACK_SECURITY_ENABLED
+          value: 'false'
+        - name: XPACK_GRAPH_ENABLED
+          value: 'false'
+        - name: XPACK_ML_ENABLED
+          value: 'false'
+        - name: XPACK_REPORTING_ENABLED
+          value: 'false'
+        resources:
+          limits:
+            cpu: 1000m
+          requests:
+            cpu: 100m
+        ports:
+        - containerPort: 5601
+          name: kibana
+          protocol: TCP
