@@ -17,8 +17,10 @@ spec:
     spec:
       containers:
       - name: kibana
-        image: kibana:5.5.0
+        image: cfontes/kibana-xpack-less:5.5.0
         env:
+        - name: "CLUSTER_NAME"
+          value: "myesdb"
         - name: SERVER_BASEPATH
           value: /api/v1/proxy/namespaces/default/services/kibana:5601
         - name: XPACK_SECURITY_ENABLED

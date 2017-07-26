@@ -275,6 +275,40 @@ kubectl delete configmap curator-config
 
 Various parameters of the cluster, including replica count and memory allocations, can be adjusted by editing the `helm-elasticsearch/values.yaml` file. For information about Helm, please consult the [complete Helm documentation](https://github.com/kubernetes/helm/blob/master/docs/index.md).
 
+## Kibana
+
+You can also add Kibana to the mix, to do it we need to remove XPACK from Kibana, as the ES provided here doesn't have it installed.
+
+So you can either use the provided Kibana image that already removed it or build your own with the Dockerfile below
+
+```
+FROM docker.elastic.co/kibana/kibana:5.5.0
+RUN bin/kibana-plugin remove x-pack
+``` 
+
+and the command 
+
+```
+docker build -t kibana-xpack-less:5.5.0 .
+```
+
+After this is done we can deploy it by running
+
+```
+kubectl create -f kibana.yaml
+kubectl create -f kibana-es.yaml
+```
+
+Kibana will be available by Kibana-es, after running it you can use kube-proxy to access it by the link
+
+```
+http://localhost:8080/api/v1/proxy/namespaces/default/services/kibana:5601/app/kibana#?_g=()
+```
+
+you can also create and ingress to map it to a simpler url or even access it using the node port by changing the service.
+
+in case you will not be using the link above, please change the parameter ```SERVER_BASEPATH``` on ``` kibana.yaml``` to the one you need.
+
 ## FAQ
 
 ### Why does `NUMBER_OF_MASTERS` differ from number of master-replicas?
