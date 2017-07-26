@@ -302,7 +302,7 @@ kubectl create -f kibana-es.yaml
 Kibana will be available by Kibana-es, after running it you can use kube-proxy to access it by the link
 
 ```
-http://localhost:8080/api/v1/proxy/namespaces/default/services/kibana:5601/app/kibana#?_g=()
+http://localhost:8080/api/v1/proxy/namespaces/default/services/kibana:5601
 ```
 
 you can also create and ingress to map it to a simpler url or even access it using the node port by changing the service.
