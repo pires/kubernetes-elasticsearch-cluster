@@ -42,7 +42,7 @@ One can change this in the deployment descriptors available in this repository.
 
 ## Pre-requisites
 
-* Kubernetes cluster with **alpha features enabled** (tested with v1.6.6 on top of [Vagrant + CoreOS](https://github.com/pires/kubernetes-vagrant-coreos-cluster))
+* Kubernetes cluster with **alpha features enabled** (tested with v1.7.2 on top of [Vagrant + CoreOS](https://github.com/pires/kubernetes-vagrant-coreos-cluster))
 * `kubectl` configured to access the cluster master API Server
 
 <a id="build-images">
@@ -71,59 +71,58 @@ Wait for containers to be in the `Running` state and check one of the Elasticsea
 ```
 $ kubectl get svc,deployment,pods
 NAME                          CLUSTER-IP      EXTERNAL-IP   PORT(S)          AGE
-svc/elasticsearch             10.100.238.19   <pending>     9200:32493/TCP   4m
-svc/elasticsearch-discovery   10.100.172.24   <none>        9300/TCP         4m
-svc/kubernetes                10.100.0.1      <none>        443/TCP          27m
+svc/elasticsearch             10.100.68.102   <pending>     9200:30536/TCP   2m
+svc/elasticsearch-discovery   10.100.98.9     <none>        9300/TCP         2m
+svc/kubernetes                10.100.0.1      <none>        443/TCP          14m
 
 NAME               DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
-deploy/es-client   2         2         2            2           3m
-deploy/es-data     2         2         2            2           3m
-deploy/es-master   3         3         3            3           4m
+deploy/es-client   2         2         2            2           49s
+deploy/es-data     2         2         2            2           48s
+deploy/es-master   3         3         3            3           2m
 
 NAME                            READY     STATUS    RESTARTS   AGE
-po/es-client-3364614079-6fcwb   1/1       Running   0          3m
-po/es-client-3364614079-rrk8l   1/1       Running   0          3m
-po/es-data-1714145973-8snmz     1/1       Running   0          3m
-po/es-data-1714145973-n9vfj     1/1       Running   0          3m
-po/es-master-2410152926-186f6   1/1       Running   0          4m
-po/es-master-2410152926-5dm1v   1/1       Running   0          4m
-po/es-master-2410152926-dzjpz   1/1       Running   0          4m
+po/es-client-3159607856-cj49h   1/1       Running   0          49s
+po/es-client-3159607856-g54pg   1/1       Running   0          49s
+po/es-data-1222765614-1lzz6     1/1       Running   0          48s
+po/es-data-1222765614-j10lj     1/1       Running   0          48s
+po/es-master-3966308282-2qdbc   1/1       Running   0          2m
+po/es-master-3966308282-hd6zh   1/1       Running   0          2m
+po/es-master-3966308282-tvx67   1/1       Running   0          2m
 ```
 
 ```
-$ kubectl logs po/es-master-2805466080-9j3zn
-kubectl logs po/es-master-2410152926-186f6
-[2017-07-09T14:10:42,509][INFO ][o.e.n.Node               ] [es-master-2410152926-186f6] initializing ...
-[2017-07-09T14:10:42,620][INFO ][o.e.e.NodeEnvironment    ] [es-master-2410152926-186f6] using [1] data paths, mounts [[/data (/dev/sda9)]], net usable_space [13.7gb], net total_space [15.5gb], spins? [possibly], types [ext4]
-[2017-07-09T14:10:42,621][INFO ][o.e.e.NodeEnvironment    ] [es-master-2410152926-186f6] heap size [247.5mb], compressed ordinary object pointers [true]
-[2017-07-09T14:10:42,623][INFO ][o.e.n.Node               ] [es-master-2410152926-186f6] node name [es-master-2410152926-186f6], node ID [XUSV6-boTW6KAU4haZmqUw]
-[2017-07-09T14:10:42,623][INFO ][o.e.n.Node               ] [es-master-2410152926-186f6] version[5.5.0], pid[8], build[260387d/2017-06-30T23:16:05.735Z], OS[Linux/4.12.0-coreos/amd64], JVM[Oracle Corporation/OpenJDK 64-Bit Server VM/1.8.0_131/25.131-b11]
-[2017-07-09T14:10:42,623][INFO ][o.e.n.Node               ] [es-master-2410152926-186f6] JVM arguments [-XX:+UseConcMarkSweepGC, -XX:CMSInitiatingOccupancyFraction=75, -XX:+UseCMSInitiatingOccupancyOnly, -XX:+DisableExplicitGC, -XX:+AlwaysPreTouch, -Xss1m, -Djava.awt.headless=true, -Dfile.encoding=UTF-8, -Djna.nosys=true, -Djdk.io.permissionsUseCanonicalPath=true, -Dio.netty.noUnsafe=true, -Dio.netty.noKeySetOptimization=true, -Dlog4j.shutdownHookEnabled=false, -Dlog4j2.disable.jmx=true, -Dlog4j.skipJansi=true, -XX:+HeapDumpOnOutOfMemoryError, -Xms256m, -Xmx256m, -Des.path.home=/elasticsearch]
-[2017-07-09T14:10:43,994][INFO ][o.e.p.PluginsService     ] [es-master-2410152926-186f6] loaded module [aggs-matrix-stats]
-[2017-07-09T14:10:43,995][INFO ][o.e.p.PluginsService     ] [es-master-2410152926-186f6] loaded module [ingest-common]
-[2017-07-09T14:10:43,995][INFO ][o.e.p.PluginsService     ] [es-master-2410152926-186f6] loaded module [lang-expression]
-[2017-07-09T14:10:43,995][INFO ][o.e.p.PluginsService     ] [es-master-2410152926-186f6] loaded module [lang-groovy]
-[2017-07-09T14:10:43,996][INFO ][o.e.p.PluginsService     ] [es-master-2410152926-186f6] loaded module [lang-mustache]
-[2017-07-09T14:10:43,996][INFO ][o.e.p.PluginsService     ] [es-master-2410152926-186f6] loaded module [lang-painless]
-[2017-07-09T14:10:43,996][INFO ][o.e.p.PluginsService     ] [es-master-2410152926-186f6] loaded module [parent-join]
-[2017-07-09T14:10:43,996][INFO ][o.e.p.PluginsService     ] [es-master-2410152926-186f6] loaded module [percolator]
-[2017-07-09T14:10:43,997][INFO ][o.e.p.PluginsService     ] [es-master-2410152926-186f6] loaded module [reindex]
-[2017-07-09T14:10:43,997][INFO ][o.e.p.PluginsService     ] [es-master-2410152926-186f6] loaded module [transport-netty3]
-[2017-07-09T14:10:43,997][INFO ][o.e.p.PluginsService     ] [es-master-2410152926-186f6] loaded module [transport-netty4]
-[2017-07-09T14:10:43,998][INFO ][o.e.p.PluginsService     ] [es-master-2410152926-186f6] no plugins loaded
-[2017-07-09T14:10:46,548][INFO ][o.e.d.DiscoveryModule    ] [es-master-2410152926-186f6] using discovery type [zen]
-[2017-07-09T14:10:47,594][INFO ][o.e.n.Node               ] [es-master-2410152926-186f6] initialized
-[2017-07-09T14:10:47,595][INFO ][o.e.n.Node               ] [es-master-2410152926-186f6] starting ...
-[2017-07-09T14:10:47,871][INFO ][o.e.t.TransportService   ] [es-master-2410152926-186f6] publish_address {10.244.64.2:9300}, bound_addresses {10.244.64.2:9300}
-[2017-07-09T14:10:47,904][INFO ][o.e.b.BootstrapChecks    ] [es-master-2410152926-186f6] bound or publishing to a non-loopback or non-link-local address, enforcing bootstrap checks
-[2017-07-09T14:11:17,965][WARN ][o.e.n.Node               ] [es-master-2410152926-186f6] timed out while waiting for initial discovery state - timeout: 30s
-[2017-07-09T14:11:17,966][INFO ][o.e.n.Node               ] [es-master-2410152926-186f6] started
-[2017-07-09T14:11:24,006][WARN ][o.e.d.z.ZenDiscovery     ] [es-master-2410152926-186f6] not enough master nodes discovered during pinging (found [[Candidate{node={es-master-2410152926-186f6}{XUSV6-boTW6KAU4haZmqUw}{dZ6IqNjST8OHgICP6GUlgQ}{10.244.64.2}{10.244.64.2:9300}, clusterStateVersion=-1}]], but needed [2]), pinging again
-[2017-07-09T14:11:27,436][INFO ][o.e.c.s.ClusterService   ] [es-master-2410152926-186f6] detected_master {es-master-2410152926-5dm1v}{OHDJ39ksS_OoPB60mYZo5w}{N4kqbmxqTdOYTJ_tBjNApg}{10.244.13.3}{10.244.13.3:9300}, added {{es-master-2410152926-dzjpz}{cVDoqS6kQn293Bkr6YoDtQ}{cnqojo8ORdi2P085FykP4w}{10.244.85.2}{10.244.85.2:9300},{es-master-2410152926-5dm1v}{OHDJ39ksS_OoPB60mYZo5w}{N4kqbmxqTdOYTJ_tBjNApg}{10.244.13.3}{10.244.13.3:9300},}, reason: zen-disco-receive(from master [master {es-master-2410152926-5dm1v}{OHDJ39ksS_OoPB60mYZo5w}{N4kqbmxqTdOYTJ_tBjNApg}{10.244.13.3}{10.244.13.3:9300} committed version [3]])
-[2017-07-09T14:11:35,114][INFO ][o.e.c.s.ClusterService   ] [es-master-2410152926-186f6] added {{es-data-1714145973-8snmz}{HfTSlmroRTOAOS60-BcNXA}{b9WnreiPRFizSdtvBLGzVQ}{10.244.64.3}{10.244.64.3:9300},}, reason: zen-disco-receive(from master [master {es-master-2410152926-5dm1v}{OHDJ39ksS_OoPB60mYZo5w}{N4kqbmxqTdOYTJ_tBjNApg}{10.244.13.3}{10.244.13.3:9300} committed version [4]])
-[2017-07-09T14:11:35,298][INFO ][o.e.c.s.ClusterService   ] [es-master-2410152926-186f6] added {{es-client-3364614079-rrk8l}{ANiIeiEwRmKZQ_nHOQhRaw}{StN2EbxaTfi-VgEIeyp1Kw}{10.244.85.3}{10.244.85.3:9300},}, reason: zen-disco-receive(from master [master {es-master-2410152926-5dm1v}{OHDJ39ksS_OoPB60mYZo5w}{N4kqbmxqTdOYTJ_tBjNApg}{10.244.13.3}{10.244.13.3:9300} committed version [5]])
-[2017-07-09T14:11:44,046][INFO ][o.e.c.s.ClusterService   ] [es-master-2410152926-186f6] added {{es-client-3364614079-6fcwb}{wx4U1xqGS6y7oCtNxUE16g}{n8-BGHI4R2SMdgU7KCni2Q}{10.244.13.4}{10.244.13.4:9300},}, reason: zen-disco-receive(from master [master {es-master-2410152926-5dm1v}{OHDJ39ksS_OoPB60mYZo5w}{N4kqbmxqTdOYTJ_tBjNApg}{10.244.13.3}{10.244.13.3:9300} committed version [6]])
-[2017-07-09T14:11:45,366][INFO ][o.e.c.s.ClusterService   ] [es-master-2410152926-186f6] added {{es-data-1714145973-n9vfj}{iaXjBGHCRiOSat70poGAMA}{NoYRAz6BTUSwttOMvNQPFg}{10.244.13.5}{10.244.13.5:9300},}, reason: zen-disco-receive(from master [master {es-master-2410152926-5dm1v}{OHDJ39ksS_OoPB60mYZo5w}{N4kqbmxqTdOYTJ_tBjNApg}{10.244.13.3}{10.244.13.3:9300} committed version [7]])
+$ kubectl logs po/es-master-3966308282-2qdbc
+[2017-07-31T10:13:04,506][INFO ][o.e.n.Node               ] [es-master-3966308282-2qdbc] initializing ...
+[2017-07-31T10:13:04,665][INFO ][o.e.e.NodeEnvironment    ] [es-master-3966308282-2qdbc] using [1] data paths, mounts [[/data (/dev/sda9)]], net usable_space [13.6gb], net total_space [15.5gb], spins? [possibly], types [ext4]
+[2017-07-31T10:13:04,666][INFO ][o.e.e.NodeEnvironment    ] [es-master-3966308282-2qdbc] heap size [247.5mb], compressed ordinary object pointers [true]
+[2017-07-31T10:13:04,669][INFO ][o.e.n.Node               ] [es-master-3966308282-2qdbc] node name [es-master-3966308282-2qdbc], node ID [FtuYCvAATJyXg6suftszIw]
+[2017-07-31T10:13:04,671][INFO ][o.e.n.Node               ] [es-master-3966308282-2qdbc] version[5.5.1], pid[20], build[19c13d0/2017-07-18T20:44:24.823Z], OS[Linux/4.12.2-coreos/amd64], JVM[Oracle Corporation/OpenJDK 64-Bit Server VM/1.8.0_131/25.131-b11]
+[2017-07-31T10:13:04,671][INFO ][o.e.n.Node               ] [es-master-3966308282-2qdbc] JVM arguments [-XX:+UseConcMarkSweepGC, -XX:CMSInitiatingOccupancyFraction=75, -XX:+UseCMSInitiatingOccupancyOnly, -XX:+DisableExplicitGC, -XX:+AlwaysPreTouch, -Xss1m, -Djava.awt.headless=true, -Dfile.encoding=UTF-8, -Djna.nosys=true, -Djdk.io.permissionsUseCanonicalPath=true, -Dio.netty.noUnsafe=true, -Dio.netty.noKeySetOptimization=true, -Dlog4j.shutdownHookEnabled=false, -Dlog4j2.disable.jmx=true, -Dlog4j.skipJansi=true, -XX:+HeapDumpOnOutOfMemoryError, -Xms256m, -Xmx256m, -Des.path.home=/elasticsearch]
+[2017-07-31T10:13:05,971][INFO ][o.e.p.PluginsService     ] [es-master-3966308282-2qdbc] loaded module [aggs-matrix-stats]
+[2017-07-31T10:13:05,971][INFO ][o.e.p.PluginsService     ] [es-master-3966308282-2qdbc] loaded module [ingest-common]
+[2017-07-31T10:13:05,971][INFO ][o.e.p.PluginsService     ] [es-master-3966308282-2qdbc] loaded module [lang-expression]
+[2017-07-31T10:13:05,972][INFO ][o.e.p.PluginsService     ] [es-master-3966308282-2qdbc] loaded module [lang-groovy]
+[2017-07-31T10:13:05,972][INFO ][o.e.p.PluginsService     ] [es-master-3966308282-2qdbc] loaded module [lang-mustache]
+[2017-07-31T10:13:05,972][INFO ][o.e.p.PluginsService     ] [es-master-3966308282-2qdbc] loaded module [lang-painless]
+[2017-07-31T10:13:05,973][INFO ][o.e.p.PluginsService     ] [es-master-3966308282-2qdbc] loaded module [parent-join]
+[2017-07-31T10:13:05,973][INFO ][o.e.p.PluginsService     ] [es-master-3966308282-2qdbc] loaded module [percolator]
+[2017-07-31T10:13:05,973][INFO ][o.e.p.PluginsService     ] [es-master-3966308282-2qdbc] loaded module [reindex]
+[2017-07-31T10:13:05,974][INFO ][o.e.p.PluginsService     ] [es-master-3966308282-2qdbc] loaded module [transport-netty3]
+[2017-07-31T10:13:05,974][INFO ][o.e.p.PluginsService     ] [es-master-3966308282-2qdbc] loaded module [transport-netty4]
+[2017-07-31T10:13:05,975][INFO ][o.e.p.PluginsService     ] [es-master-3966308282-2qdbc] no plugins loaded
+[2017-07-31T10:13:08,733][INFO ][o.e.d.DiscoveryModule    ] [es-master-3966308282-2qdbc] using discovery type [zen]
+[2017-07-31T10:13:09,613][INFO ][o.e.n.Node               ] [es-master-3966308282-2qdbc] initialized
+[2017-07-31T10:13:09,613][INFO ][o.e.n.Node               ] [es-master-3966308282-2qdbc] starting ...
+[2017-07-31T10:13:09,869][INFO ][o.e.t.TransportService   ] [es-master-3966308282-2qdbc] publish_address {10.244.23.2:9300}, bound_addresses {10.244.23.2:9300}
+[2017-07-31T10:13:09,898][INFO ][o.e.b.BootstrapChecks    ] [es-master-3966308282-2qdbc] bound or publishing to a non-loopback or non-link-local address, enforcing bootstrap checks
+[2017-07-31T10:13:12,978][WARN ][o.e.d.z.ZenDiscovery     ] [es-master-3966308282-2qdbc] not enough master nodes discovered during pinging (found [[Candidate{node={es-master-3966308282-2qdbc}{FtuYCvAATJyXg6suftszIw}{bTlVUi-QRd-8-ix42LvpwA}{10.244.23.2}{10.244.23.2:9300}, clusterStateVersion=-1}]], but needed [2]), pinging again
+[2017-07-31T10:13:15,980][WARN ][o.e.d.z.ZenDiscovery     ] [es-master-3966308282-2qdbc] not enough master nodes discovered during pinging (found [[Candidate{node={es-master-3966308282-2qdbc}{FtuYCvAATJyXg6suftszIw}{bTlVUi-QRd-8-ix42LvpwA}{10.244.23.2}{10.244.23.2:9300}, clusterStateVersion=-1}]], but needed [2]), pinging again
+[2017-07-31T10:13:19,125][INFO ][o.e.c.s.ClusterService   ] [es-master-3966308282-2qdbc] detected_master {es-master-3966308282-hd6zh}{ewftNOzOQy2elVEPoTnqIA}{YXHme-qySgG0QmAvr-pwkA}{10.244.21.3}{10.244.21.3:9300}, added {{es-master-3966308282-tvx67}{wAUf_fUGRam0pkS2lm_yeg}{PNhDfm1pQE26BMIsZ3EaXw}{10.244.16.2}{10.244.16.2:9300},{es-master-3966308282-hd6zh}{ewftNOzOQy2elVEPoTnqIA}{YXHme-qySgG0QmAvr-pwkA}{10.244.21.3}{10.244.21.3:9300},}, reason: zen-disco-receive(from master [master {es-master-3966308282-hd6zh}{ewftNOzOQy2elVEPoTnqIA}{YXHme-qySgG0QmAvr-pwkA}{10.244.21.3}{10.244.21.3:9300} committed version [3]])
+[2017-07-31T10:13:19,183][INFO ][o.e.n.Node               ] [es-master-3966308282-2qdbc] started
+[2017-07-31T10:14:29,497][INFO ][o.e.c.s.ClusterService   ] [es-master-3966308282-2qdbc] added {{es-client-3159607856-cj49h}{t_IDXER9S-eMzi9fMftZFQ}{iVlxbMVHQAye84oi2bjz-A}{10.244.23.3}{10.244.23.3:9300},}, reason: zen-disco-receive(from master [master {es-master-3966308282-hd6zh}{ewftNOzOQy2elVEPoTnqIA}{YXHme-qySgG0QmAvr-pwkA}{10.244.21.3}{10.244.21.3:9300} committed version [4]])
+[2017-07-31T10:14:29,703][INFO ][o.e.c.s.ClusterService   ] [es-master-3966308282-2qdbc] added {{es-data-1222765614-j10lj}{1ZPKoD2yTTm-ggL6kBGl1w}{-KB__GUTTaiGs1aeLl4ceg}{10.244.16.3}{10.244.16.3:9300},}, reason: zen-disco-receive(from master [master {es-master-3966308282-hd6zh}{ewftNOzOQy2elVEPoTnqIA}{YXHme-qySgG0QmAvr-pwkA}{10.244.21.3}{10.244.21.3:9300} committed version [5]])
+[2017-07-31T10:14:34,872][INFO ][o.e.c.s.ClusterService   ] [es-master-3966308282-2qdbc] added {{es-client-3159607856-g54pg}{QW3IbBR6Qkuu0qfsvBWukQ}{-pM_D-5_Rwuo9xb_gxiKnQ}{10.244.21.4}{10.244.21.4:9300},}, reason: zen-disco-receive(from master [master {es-master-3966308282-hd6zh}{ewftNOzOQy2elVEPoTnqIA}{YXHme-qySgG0QmAvr-pwkA}{10.244.21.3}{10.244.21.3:9300} committed version [6]])
+[2017-07-31T10:14:36,975][INFO ][o.e.c.s.ClusterService   ] [es-master-3966308282-2qdbc] added {{es-data-1222765614-1lzz6}{wtCzgKPMRLm4zut8qYi0Bg}{JHSDg3huQAu04OXiWO_6rA}{10.244.21.5}{10.244.21.5:9300},}, reason: zen-disco-receive(from master [master {es-master-3966308282-hd6zh}{ewftNOzOQy2elVEPoTnqIA}{YXHme-qySgG0QmAvr-pwkA}{10.244.21.3}{10.244.21.3:9300} committed version [7]])
 ```
 
 As we can assert, the cluster is up and running. Easy, wasn't it?
@@ -135,26 +134,26 @@ As we can assert, the cluster is up and running. Easy, wasn't it?
 ```
 $ kubectl get svc elasticsearch
 NAME            CLUSTER-IP      EXTERNAL-IP   PORT(S)          AGE
-elasticsearch   10.100.238.19   <pending>     9200:32493/TCP   5m
+elasticsearch   10.100.68.102   <pending>     9200:30536/TCP   3m
 ```
 
 From any host on the Kubernetes cluster (that's running `kube-proxy` or similar), run:
 
 ```
-curl http://10.100.238.19:9200
+curl http://10.100.68.102:9200
 ```
 
 One should see something similar to the following:
 
 ```json
 {
-  "name" : "es-client-3364614079-rrk8l",
+  "name" : "es-client-3159607856-cj49h",
   "cluster_name" : "myesdb",
-  "cluster_uuid" : "Ipy_105fTf6PMdVwvKwpWA",
+  "cluster_uuid" : "m0jm8ASlSaKOS0wT52R5cA",
   "version" : {
-    "number" : "5.5.0",
-    "build_hash" : "260387d",
-    "build_date" : "2017-06-30T23:16:05.735Z",
+    "number" : "5.5.1",
+    "build_hash" : "19c13d0",
+    "build_date" : "2017-07-18T20:44:24.823Z",
     "build_snapshot" : false,
     "lucene_version" : "6.6.0"
   },
@@ -165,7 +164,7 @@ One should see something similar to the following:
 Or if one wants to see cluster information:
 
 ```
-curl http://10.100.238.19:9200/_cluster/health?pretty
+curl http://10.100.68.102:9200/_cluster/health?pretty
 ```
 
 One should see something similar to the following:
@@ -304,9 +303,8 @@ proxy it through the Kubernetes API Server, as follows:
 https://<API_SERVER_URL>/api/v1/proxy/namespaces/default/services/kibana:5601
 ```
 
-you can also create and ingress to map it to a simpler url or even access it using the node port by changing the service.
-
-in case you will not be using the link above, please change the parameter ```SERVER_BASEPATH``` on ``` kibana.yaml``` to the one you need.
+One can also create an Ingress to expose the service publicly or simly use the service nodeport.
+In the case one proceeds to do so, one must change the environment variable `SERVER_BASEPATH` to the match their environment.
 
 ## FAQ
 
