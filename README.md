@@ -1,5 +1,5 @@
 # kubernetes-elasticsearch-cluster
-Elasticsearch (5.5.0) cluster on top of Kubernetes made easy.
+Elasticsearch (5.5.1) cluster on top of Kubernetes made easy.
 
 ### Table of Contents
 

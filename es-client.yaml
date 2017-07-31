@@ -28,7 +28,7 @@ spec:
             add:
               - IPC_LOCK
               - SYS_RESOURCE
-        image: quay.io/pires/docker-elasticsearch-kubernetes:5.5.0
+        image: quay.io/pires/docker-elasticsearch-kubernetes:5.5.1
         imagePullPolicy: Always
         env:
         - name: NAMESPACE
