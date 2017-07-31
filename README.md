@@ -11,6 +11,7 @@ Elasticsearch (5.5.1) cluster on top of Kubernetes made easy.
 * [Deploying with Helm](#helm)
 * [Install plug-ins](#plugins)
 * [Clean up with Curator](#curator)
+* [Deploy Kibana](#kibana)
 * [FAQ](#faq)
 * [Troubleshooting](#troubleshooting)
 
@@ -275,34 +276,32 @@ kubectl delete configmap curator-config
 
 Various parameters of the cluster, including replica count and memory allocations, can be adjusted by editing the `helm-elasticsearch/values.yaml` file. For information about Helm, please consult the [complete Helm documentation](https://github.com/kubernetes/helm/blob/master/docs/index.md).
 
+<a id="kibana>
+
 ## Kibana
 
-You can also add Kibana to the mix, to do it we need to remove XPACK from Kibana, as the ES provided here doesn't have it installed.
+Additionally, one can also add Kibana to the mix. In order to do so, one must use a container image of Kibana without x-pack,
+as it's not supported by the Elasticsearch container images used in this repository.
 
-So you can either use the provided Kibana image that already removed it or build your own with the Dockerfile below
+An image is already provided but one can build their own like follows:
 
 ```
-FROM docker.elastic.co/kibana/kibana:5.5.0
+FROM docker.elastic.co/kibana/kibana:5.5.1
 RUN bin/kibana-plugin remove x-pack
-``` 
-
-and the command 
-
-```
-docker build -t kibana-xpack-less:5.5.0 .
 ```
 
-After this is done we can deploy it by running
+If ones does provide their own image, one must make sure to alter the following files before deploying:
 
 ```
 kubectl create -f kibana.yaml
-kubectl create -f kibana-es.yaml
+kubectl create -f kibana-svc.yaml
 ```
 
-Kibana will be available by Kibana-es, after running it you can use kube-proxy to access it by the link
+Kibana will be available through service `kibana`, and one will be able to access it from within the cluster or
+proxy it through the Kubernetes API Server, as follows:
 
 ```
-http://localhost:8080/api/v1/proxy/namespaces/default/services/kibana:5601
+https://<API_SERVER_URL>/api/v1/proxy/namespaces/default/services/kibana:5601
 ```
 
 you can also create and ingress to map it to a simpler url or even access it using the node port by changing the service.
