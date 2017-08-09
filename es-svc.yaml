@@ -6,7 +6,6 @@ metadata:
     component: elasticsearch
     role: client
 spec:
-  type: LoadBalancer
   selector:
     component: elasticsearch
     role: client
