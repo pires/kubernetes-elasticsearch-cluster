@@ -13,7 +13,7 @@ spec:
       labels:
         component: elasticsearch
         role: data
-     spec:
+    spec:
       initContainers:
       - name: init-sysctl
         image: busybox
