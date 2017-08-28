@@ -225,7 +225,7 @@ spec:
 [Helm](https://github.com/kubernetes/helm) charts for a basic (non-stateful) ElasticSearch deployment are maintained at https://github.com/clockworksoul/helm-elasticsearch. With Helm properly installed and configured, standing up a complete cluster is almost trivial:
 
 ```
-$ git clone git@github.com:clockworksoul/helm-elasticsearch.git
+$ git clone https://github.com/clockworksoul/helm-elasticsearch.git
 $ helm install helm-elasticsearch
 ```
 
