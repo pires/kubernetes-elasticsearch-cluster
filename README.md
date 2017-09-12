@@ -1,5 +1,5 @@
 # kubernetes-elasticsearch-cluster
-Elasticsearch (5.5.2) cluster on top of Kubernetes made easy.
+Elasticsearch (5.6.0) cluster on top of Kubernetes made easy.
 
 ### Table of Contents
 
@@ -70,59 +70,59 @@ kubectl create -f es-data.yaml
 Wait for containers to be in the `Running` state and check one of the Elasticsearch master nodes logs:
 ```
 $ kubectl get svc,deployment,pods
-NAME                          CLUSTER-IP      EXTERNAL-IP   PORT(S)          AGE
-svc/elasticsearch             10.100.68.102   <pending>     9200:30536/TCP   2m
-svc/elasticsearch-discovery   10.100.98.9     <none>        9300/TCP         2m
-svc/kubernetes                10.100.0.1      <none>        443/TCP          14m
+NAME                          CLUSTER-IP       EXTERNAL-IP   PORT(S)    AGE
+svc/elasticsearch             10.100.169.170   <none>        9200/TCP   1m
+svc/elasticsearch-discovery   10.100.186.247   <none>        9300/TCP   1m
+svc/kubernetes                10.100.0.1       <none>        443/TCP    5h
 
 NAME               DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
-deploy/es-client   2         2         2            2           49s
-deploy/es-data     2         2         2            2           48s
-deploy/es-master   3         3         3            3           2m
+deploy/es-client   2         2         2            2           28s
+deploy/es-data     2         2         2            2           21s
+deploy/es-master   3         3         3            3           1m
 
 NAME                            READY     STATUS    RESTARTS   AGE
-po/es-client-3159607856-cj49h   1/1       Running   0          49s
-po/es-client-3159607856-g54pg   1/1       Running   0          49s
-po/es-data-1222765614-1lzz6     1/1       Running   0          48s
-po/es-data-1222765614-j10lj     1/1       Running   0          48s
-po/es-master-3966308282-2qdbc   1/1       Running   0          2m
-po/es-master-3966308282-hd6zh   1/1       Running   0          2m
-po/es-master-3966308282-tvx67   1/1       Running   0          2m
+po/es-client-3800087898-hm9jc   1/1       Running   0          28s
+po/es-client-3800087898-xsr0f   1/1       Running   0          28s
+po/es-data-369535600-5b0q2      1/1       Running   0          21s
+po/es-data-369535600-t0w5c      1/1       Running   0          21s
+po/es-master-275923172-lpcjb    1/1       Running   0          1m
+po/es-master-275923172-ngnn1    1/1       Running   0          1m
+po/es-master-275923172-nj8fb    1/1       Running   0          1m
 ```
 
 ```
-$ kubectl logs po/es-master-3966308282-2qdbc
-[2017-07-31T10:13:04,506][INFO ][o.e.n.Node               ] [es-master-3966308282-2qdbc] initializing ...
-[2017-07-31T10:13:04,665][INFO ][o.e.e.NodeEnvironment    ] [es-master-3966308282-2qdbc] using [1] data paths, mounts [[/data (/dev/sda9)]], net usable_space [13.6gb], net total_space [15.5gb], spins? [possibly], types [ext4]
-[2017-07-31T10:13:04,666][INFO ][o.e.e.NodeEnvironment    ] [es-master-3966308282-2qdbc] heap size [247.5mb], compressed ordinary object pointers [true]
-[2017-07-31T10:13:04,669][INFO ][o.e.n.Node               ] [es-master-3966308282-2qdbc] node name [es-master-3966308282-2qdbc], node ID [FtuYCvAATJyXg6suftszIw]
-[2017-07-31T10:13:04,671][INFO ][o.e.n.Node               ] [es-master-3966308282-2qdbc] version[5.5.1], pid[20], build[19c13d0/2017-07-18T20:44:24.823Z], OS[Linux/4.12.2-coreos/amd64], JVM[Oracle Corporation/OpenJDK 64-Bit Server VM/1.8.0_131/25.131-b11]
-[2017-07-31T10:13:04,671][INFO ][o.e.n.Node               ] [es-master-3966308282-2qdbc] JVM arguments [-XX:+UseConcMarkSweepGC, -XX:CMSInitiatingOccupancyFraction=75, -XX:+UseCMSInitiatingOccupancyOnly, -XX:+DisableExplicitGC, -XX:+AlwaysPreTouch, -Xss1m, -Djava.awt.headless=true, -Dfile.encoding=UTF-8, -Djna.nosys=true, -Djdk.io.permissionsUseCanonicalPath=true, -Dio.netty.noUnsafe=true, -Dio.netty.noKeySetOptimization=true, -Dlog4j.shutdownHookEnabled=false, -Dlog4j2.disable.jmx=true, -Dlog4j.skipJansi=true, -XX:+HeapDumpOnOutOfMemoryError, -Xms256m, -Xmx256m, -Des.path.home=/elasticsearch]
-[2017-07-31T10:13:05,971][INFO ][o.e.p.PluginsService     ] [es-master-3966308282-2qdbc] loaded module [aggs-matrix-stats]
-[2017-07-31T10:13:05,971][INFO ][o.e.p.PluginsService     ] [es-master-3966308282-2qdbc] loaded module [ingest-common]
-[2017-07-31T10:13:05,971][INFO ][o.e.p.PluginsService     ] [es-master-3966308282-2qdbc] loaded module [lang-expression]
-[2017-07-31T10:13:05,972][INFO ][o.e.p.PluginsService     ] [es-master-3966308282-2qdbc] loaded module [lang-groovy]
-[2017-07-31T10:13:05,972][INFO ][o.e.p.PluginsService     ] [es-master-3966308282-2qdbc] loaded module [lang-mustache]
-[2017-07-31T10:13:05,972][INFO ][o.e.p.PluginsService     ] [es-master-3966308282-2qdbc] loaded module [lang-painless]
-[2017-07-31T10:13:05,973][INFO ][o.e.p.PluginsService     ] [es-master-3966308282-2qdbc] loaded module [parent-join]
-[2017-07-31T10:13:05,973][INFO ][o.e.p.PluginsService     ] [es-master-3966308282-2qdbc] loaded module [percolator]
-[2017-07-31T10:13:05,973][INFO ][o.e.p.PluginsService     ] [es-master-3966308282-2qdbc] loaded module [reindex]
-[2017-07-31T10:13:05,974][INFO ][o.e.p.PluginsService     ] [es-master-3966308282-2qdbc] loaded module [transport-netty3]
-[2017-07-31T10:13:05,974][INFO ][o.e.p.PluginsService     ] [es-master-3966308282-2qdbc] loaded module [transport-netty4]
-[2017-07-31T10:13:05,975][INFO ][o.e.p.PluginsService     ] [es-master-3966308282-2qdbc] no plugins loaded
-[2017-07-31T10:13:08,733][INFO ][o.e.d.DiscoveryModule    ] [es-master-3966308282-2qdbc] using discovery type [zen]
-[2017-07-31T10:13:09,613][INFO ][o.e.n.Node               ] [es-master-3966308282-2qdbc] initialized
-[2017-07-31T10:13:09,613][INFO ][o.e.n.Node               ] [es-master-3966308282-2qdbc] starting ...
-[2017-07-31T10:13:09,869][INFO ][o.e.t.TransportService   ] [es-master-3966308282-2qdbc] publish_address {10.244.23.2:9300}, bound_addresses {10.244.23.2:9300}
-[2017-07-31T10:13:09,898][INFO ][o.e.b.BootstrapChecks    ] [es-master-3966308282-2qdbc] bound or publishing to a non-loopback or non-link-local address, enforcing bootstrap checks
-[2017-07-31T10:13:12,978][WARN ][o.e.d.z.ZenDiscovery     ] [es-master-3966308282-2qdbc] not enough master nodes discovered during pinging (found [[Candidate{node={es-master-3966308282-2qdbc}{FtuYCvAATJyXg6suftszIw}{bTlVUi-QRd-8-ix42LvpwA}{10.244.23.2}{10.244.23.2:9300}, clusterStateVersion=-1}]], but needed [2]), pinging again
-[2017-07-31T10:13:15,980][WARN ][o.e.d.z.ZenDiscovery     ] [es-master-3966308282-2qdbc] not enough master nodes discovered during pinging (found [[Candidate{node={es-master-3966308282-2qdbc}{FtuYCvAATJyXg6suftszIw}{bTlVUi-QRd-8-ix42LvpwA}{10.244.23.2}{10.244.23.2:9300}, clusterStateVersion=-1}]], but needed [2]), pinging again
-[2017-07-31T10:13:19,125][INFO ][o.e.c.s.ClusterService   ] [es-master-3966308282-2qdbc] detected_master {es-master-3966308282-hd6zh}{ewftNOzOQy2elVEPoTnqIA}{YXHme-qySgG0QmAvr-pwkA}{10.244.21.3}{10.244.21.3:9300}, added {{es-master-3966308282-tvx67}{wAUf_fUGRam0pkS2lm_yeg}{PNhDfm1pQE26BMIsZ3EaXw}{10.244.16.2}{10.244.16.2:9300},{es-master-3966308282-hd6zh}{ewftNOzOQy2elVEPoTnqIA}{YXHme-qySgG0QmAvr-pwkA}{10.244.21.3}{10.244.21.3:9300},}, reason: zen-disco-receive(from master [master {es-master-3966308282-hd6zh}{ewftNOzOQy2elVEPoTnqIA}{YXHme-qySgG0QmAvr-pwkA}{10.244.21.3}{10.244.21.3:9300} committed version [3]])
-[2017-07-31T10:13:19,183][INFO ][o.e.n.Node               ] [es-master-3966308282-2qdbc] started
-[2017-07-31T10:14:29,497][INFO ][o.e.c.s.ClusterService   ] [es-master-3966308282-2qdbc] added {{es-client-3159607856-cj49h}{t_IDXER9S-eMzi9fMftZFQ}{iVlxbMVHQAye84oi2bjz-A}{10.244.23.3}{10.244.23.3:9300},}, reason: zen-disco-receive(from master [master {es-master-3966308282-hd6zh}{ewftNOzOQy2elVEPoTnqIA}{YXHme-qySgG0QmAvr-pwkA}{10.244.21.3}{10.244.21.3:9300} committed version [4]])
-[2017-07-31T10:14:29,703][INFO ][o.e.c.s.ClusterService   ] [es-master-3966308282-2qdbc] added {{es-data-1222765614-j10lj}{1ZPKoD2yTTm-ggL6kBGl1w}{-KB__GUTTaiGs1aeLl4ceg}{10.244.16.3}{10.244.16.3:9300},}, reason: zen-disco-receive(from master [master {es-master-3966308282-hd6zh}{ewftNOzOQy2elVEPoTnqIA}{YXHme-qySgG0QmAvr-pwkA}{10.244.21.3}{10.244.21.3:9300} committed version [5]])
-[2017-07-31T10:14:34,872][INFO ][o.e.c.s.ClusterService   ] [es-master-3966308282-2qdbc] added {{es-client-3159607856-g54pg}{QW3IbBR6Qkuu0qfsvBWukQ}{-pM_D-5_Rwuo9xb_gxiKnQ}{10.244.21.4}{10.244.21.4:9300},}, reason: zen-disco-receive(from master [master {es-master-3966308282-hd6zh}{ewftNOzOQy2elVEPoTnqIA}{YXHme-qySgG0QmAvr-pwkA}{10.244.21.3}{10.244.21.3:9300} committed version [6]])
-[2017-07-31T10:14:36,975][INFO ][o.e.c.s.ClusterService   ] [es-master-3966308282-2qdbc] added {{es-data-1222765614-1lzz6}{wtCzgKPMRLm4zut8qYi0Bg}{JHSDg3huQAu04OXiWO_6rA}{10.244.21.5}{10.244.21.5:9300},}, reason: zen-disco-receive(from master [master {es-master-3966308282-hd6zh}{ewftNOzOQy2elVEPoTnqIA}{YXHme-qySgG0QmAvr-pwkA}{10.244.21.3}{10.244.21.3:9300} committed version [7]])
+$ kubectl logs po/es-master-275923172-lpcjb
+[2017-09-12T16:20:47,413][INFO ][o.e.n.Node               ] [es-master-275923172-lpcjb] initializing ...
+[2017-09-12T16:20:47,575][INFO ][o.e.e.NodeEnvironment    ] [es-master-275923172-lpcjb] using [1] data paths, mounts [[/data (/dev/sda9)]], net usable_space [13.7gb], net total_space [15.5gb], spins? [possibly], types [ext4]
+[2017-09-12T16:20:47,577][INFO ][o.e.e.NodeEnvironment    ] [es-master-275923172-lpcjb] heap size [247.5mb], compressed ordinary object pointers [true]
+[2017-09-12T16:20:47,580][INFO ][o.e.n.Node               ] [es-master-275923172-lpcjb] node name [es-master-275923172-lpcjb], node ID [A9M6aaPzRuS-SVOLl7Vj9A]
+[2017-09-12T16:20:47,581][INFO ][o.e.n.Node               ] [es-master-275923172-lpcjb] version[5.6.0], pid[25], build[781a835/2017-09-07T03:09:58.087Z], OS[Linux/4.13.0-coreos/amd64], JVM[Oracle Corporation/OpenJDK 64-Bit Server VM/1.8.0_131/25.131-b11]
+[2017-09-12T16:20:47,582][INFO ][o.e.n.Node               ] [es-master-275923172-lpcjb] JVM arguments [-XX:+UseConcMarkSweepGC, -XX:CMSInitiatingOccupancyFraction=75, -XX:+UseCMSInitiatingOccupancyOnly, -XX:+DisableExplicitGC, -XX:+AlwaysPreTouch, -Xss1m, -Djava.awt.headless=true, -Dfile.encoding=UTF-8, -Djna.nosys=true, -Djdk.io.permissionsUseCanonicalPath=true, -Dio.netty.noUnsafe=true, -Dio.netty.noKeySetOptimization=true, -Dlog4j.shutdownHookEnabled=false, -Dlog4j2.disable.jmx=true, -Dlog4j.skipJansi=true, -XX:+HeapDumpOnOutOfMemoryError, -Xms256m, -Xmx256m, -Des.path.home=/elasticsearch]
+[2017-09-12T16:20:49,008][INFO ][o.e.p.PluginsService     ] [es-master-275923172-lpcjb] loaded module [aggs-matrix-stats]
+[2017-09-12T16:20:49,008][INFO ][o.e.p.PluginsService     ] [es-master-275923172-lpcjb] loaded module [ingest-common]
+[2017-09-12T16:20:49,009][INFO ][o.e.p.PluginsService     ] [es-master-275923172-lpcjb] loaded module [lang-expression]
+[2017-09-12T16:20:49,009][INFO ][o.e.p.PluginsService     ] [es-master-275923172-lpcjb] loaded module [lang-groovy]
+[2017-09-12T16:20:49,009][INFO ][o.e.p.PluginsService     ] [es-master-275923172-lpcjb] loaded module [lang-mustache]
+[2017-09-12T16:20:49,009][INFO ][o.e.p.PluginsService     ] [es-master-275923172-lpcjb] loaded module [lang-painless]
+[2017-09-12T16:20:49,010][INFO ][o.e.p.PluginsService     ] [es-master-275923172-lpcjb] loaded module [parent-join]
+[2017-09-12T16:20:49,011][INFO ][o.e.p.PluginsService     ] [es-master-275923172-lpcjb] loaded module [percolator]
+[2017-09-12T16:20:49,011][INFO ][o.e.p.PluginsService     ] [es-master-275923172-lpcjb] loaded module [reindex]
+[2017-09-12T16:20:49,011][INFO ][o.e.p.PluginsService     ] [es-master-275923172-lpcjb] loaded module [transport-netty3]
+[2017-09-12T16:20:49,012][INFO ][o.e.p.PluginsService     ] [es-master-275923172-lpcjb] loaded module [transport-netty4]
+[2017-09-12T16:20:49,013][INFO ][o.e.p.PluginsService     ] [es-master-275923172-lpcjb] no plugins loaded
+[2017-09-12T16:20:51,356][INFO ][o.e.d.DiscoveryModule    ] [es-master-275923172-lpcjb] using discovery type [zen]
+[2017-09-12T16:20:52,237][INFO ][o.e.n.Node               ] [es-master-275923172-lpcjb] initialized
+[2017-09-12T16:20:52,241][INFO ][o.e.n.Node               ] [es-master-275923172-lpcjb] starting ...
+[2017-09-12T16:20:52,618][INFO ][o.e.t.TransportService   ] [es-master-275923172-lpcjb] publish_address {10.244.48.2:9300}, bound_addresses {10.244.48.2:9300}
+[2017-09-12T16:20:52,648][INFO ][o.e.b.BootstrapChecks    ] [es-master-275923172-lpcjb] bound or publishing to a non-loopback or non-link-local address, enforcing bootstrap checks
+[2017-09-12T16:20:55,954][INFO ][o.e.c.s.ClusterService   ] [es-master-275923172-lpcjb] new_master {es-master-275923172-lpcjb}{A9M6aaPzRuS-SVOLl7Vj9A}{akW5Qz09RoeBHV16KUnPJg}{10.244.48.2}{10.244.48.2:9300}, added {{es-master-275923172-nj8fb}{wsmiXLlWRrSEhhN4NPcRMQ}{FmQuB67SSUSKke9w7CQjjA}{10.244.14.3}{10.244.14.3:9300},}, reason: zen-disco-elected-as-master ([1] nodes joined)[{es-master-275923172-nj8fb}{wsmiXLlWRrSEhhN4NPcRMQ}{FmQuB67SSUSKke9w7CQjjA}{10.244.14.3}{10.244.14.3:9300}]
+[2017-09-12T16:20:55,995][INFO ][o.e.n.Node               ] [es-master-275923172-lpcjb] started
+[2017-09-12T16:20:56,079][INFO ][o.e.g.GatewayService     ] [es-master-275923172-lpcjb] recovered [0] indices into cluster_state
+[2017-09-12T16:20:56,278][INFO ][o.e.c.s.ClusterService   ] [es-master-275923172-lpcjb] added {{es-master-275923172-ngnn1}{GZdGXETmQOy3Qi0Ylb82Sg}{Hu9QRDpTRF6FuIJE7rmfMA}{10.244.68.2}{10.244.68.2:9300},}, reason: zen-disco-node-join[{es-master-275923172-ngnn1}{GZdGXETmQOy3Qi0Ylb82Sg}{Hu9QRDpTRF6FuIJE7rmfMA}{10.244.68.2}{10.244.68.2:9300}]
+[2017-09-12T16:21:16,850][INFO ][o.e.c.s.ClusterService   ] [es-master-275923172-lpcjb] added {{es-client-3800087898-hm9jc}{7qP40AKVRKmBwilpkZkepw}{Y7GGJeawSDqUwrf8TgaoEQ}{10.244.48.3}{10.244.48.3:9300},}, reason: zen-disco-node-join[{es-client-3800087898-hm9jc}{7qP40AKVRKmBwilpkZkepw}{Y7GGJeawSDqUwrf8TgaoEQ}{10.244.48.3}{10.244.48.3:9300}]
+[2017-09-12T16:21:17,154][INFO ][o.e.c.s.ClusterService   ] [es-master-275923172-lpcjb] added {{es-client-3800087898-xsr0f}{70HsVVjQQ8yrBlnGwyOIRg}{OB6x3fdRSbeQB4hz3e5hXg}{10.244.14.4}{10.244.14.4:9300},}, reason: zen-disco-node-join[{es-client-3800087898-xsr0f}{70HsVVjQQ8yrBlnGwyOIRg}{OB6x3fdRSbeQB4hz3e5hXg}{10.244.14.4}{10.244.14.4:9300}]
+[2017-09-12T16:21:24,380][INFO ][o.e.c.s.ClusterService   ] [es-master-275923172-lpcjb] added {{es-data-369535600-t0w5c}{Q7z4j40fQeOTZP8SlKrmaw}{3GSJruvaTTCL2rEl3uEPOw}{10.244.68.3}{10.244.68.3:9300},}, reason: zen-disco-node-join[{es-data-369535600-t0w5c}{Q7z4j40fQeOTZP8SlKrmaw}{3GSJruvaTTCL2rEl3uEPOw}{10.244.68.3}{10.244.68.3:9300}]
+[2017-09-12T16:21:25,228][INFO ][o.e.c.s.ClusterService   ] [es-master-275923172-lpcjb] added {{es-data-369535600-5b0q2}{I2_SC1kfSbCFZ_FvTPHGNw}{AlG4-saZRU6r4Hd4CufRyg}{10.244.14.5}{10.244.14.5:9300},}, reason: zen-disco-node-join[{es-data-369535600-5b0q2}{I2_SC1kfSbCFZ_FvTPHGNw}{AlG4-saZRU6r4Hd4CufRyg}{10.244.14.5}{10.244.14.5:9300}]
 ```
 
 As we can assert, the cluster is up and running. Easy, wasn't it?
@@ -133,27 +133,27 @@ As we can assert, the cluster is up and running. Easy, wasn't it?
 
 ```
 $ kubectl get svc elasticsearch
-NAME            CLUSTER-IP      EXTERNAL-IP   PORT(S)          AGE
-elasticsearch   10.100.68.102   <pending>     9200:30536/TCP   3m
+NAME            CLUSTER-IP       EXTERNAL-IP   PORT(S)    AGE
+elasticsearch   10.100.169.170   <none>        9200/TCP   1m
 ```
 
 From any host on the Kubernetes cluster (that's running `kube-proxy` or similar), run:
 
 ```
-curl http://10.100.68.102:9200
+$ curl http://10.100.169.170:9200
 ```
 
 One should see something similar to the following:
 
 ```json
 {
-  "name" : "es-client-3159607856-cj49h",
+  "name" : "es-client-3800087898-xsr0f",
   "cluster_name" : "myesdb",
-  "cluster_uuid" : "m0jm8ASlSaKOS0wT52R5cA",
+  "cluster_uuid" : "9BYou_7nTiuz-PMcplEJuw",
   "version" : {
-    "number" : "5.5.1",
-    "build_hash" : "19c13d0",
-    "build_date" : "2017-07-18T20:44:24.823Z",
+    "number" : "5.6.0",
+    "build_hash" : "781a835",
+    "build_date" : "2017-09-07T03:09:58.087Z",
     "build_snapshot" : false,
     "lucene_version" : "6.6.0"
   },
@@ -164,7 +164,7 @@ One should see something similar to the following:
 Or if one wants to see cluster information:
 
 ```
-curl http://10.100.68.102:9200/_cluster/health?pretty
+$ curl http://10.100.169.170:9200/_cluster/health?pretty
 ```
 
 One should see something similar to the following:
