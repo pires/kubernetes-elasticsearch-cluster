@@ -42,7 +42,9 @@ One can change this in the deployment descriptors available in this repository.
 
 ## Pre-requisites
 
-* Kubernetes cluster with **alpha features enabled** (tested with v1.7.2 on top of [Vagrant + CoreOS](https://github.com/pires/kubernetes-vagrant-coreos-cluster))
+* Kubernetes cluster with **alpha features enabled** (tested with v1.7.2 on top of [Vagrant + CoreOS](https://github.com/pires/kubernetes-vagrant-coreos-cluster)), thas's because curator
+ is a CronJob object which comes from batch/v2alpha1, to enable it, just add
+ `--runtime-config=batch/v2alpha1=true` into your kube-apiserver options.
 * `kubectl` configured to access the cluster master API Server
 
 <a id="build-images">
