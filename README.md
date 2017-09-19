@@ -222,6 +222,16 @@ spec:
 
 <a id="helm">
 
+## PodDisruptionBudget
+
+If you want to ensure that more than 1 node won't be unavailable at a time, you can add PodDisruptionBudget manifests:
+```
+kubectl create -f es-master-pdb.yaml
+kubectl create -f es-data-pdb.yaml
+```
+
+Note: It's not recommended to grow this number because 1 node could be in maintenance, another fall down and you can't lose another node if the number of replicas is equal to two.
+
 ## Deploying with Helm
 
 [Helm](https://github.com/kubernetes/helm) charts for a basic (non-stateful) ElasticSearch deployment are maintained at https://github.com/clockworksoul/helm-elasticsearch. With Helm properly installed and configured, standing up a complete cluster is almost trivial:
