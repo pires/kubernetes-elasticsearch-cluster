@@ -53,6 +53,11 @@ spec:
         - containerPort: 9300
           name: transport
           protocol: TCP
+        lifecycle:
+          preStop:
+            httpGet:
+              path: /_cluster/health?wait_for_status=green&timeout=28800s
+              port: 9300
         volumeMounts:
         - name: storage
           mountPath: /data
