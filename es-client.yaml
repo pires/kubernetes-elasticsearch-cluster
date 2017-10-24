@@ -56,6 +56,15 @@ spec:
         - containerPort: 9300
           name: transport
           protocol: TCP
+        livenessProbe:
+          tcpSocket:
+            port: 9300
+        readinessProbe:
+          httpGet:
+            path: /_cluster/health
+            port: 9200
+          initialDelaySeconds: 20
+          timeoutSeconds: 5
         volumeMounts:
         - name: storage
           mountPath: /data
