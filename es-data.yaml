@@ -53,6 +53,11 @@ spec:
         - containerPort: 9300
           name: transport
           protocol: TCP
+        livenessProbe:
+          tcpSocket:
+            port: 9300
+          initialDelaySeconds: 20
+          periodSeconds: 10
         volumeMounts:
         - name: storage
           mountPath: /data
