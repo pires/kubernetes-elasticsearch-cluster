@@ -224,13 +224,13 @@ spec:
 
 ## PodDisruptionBudget
 
-If you want to ensure that more than 1 node won't be unavailable at a time, you can add PodDisruptionBudget manifests:
+If one wants to ensure that no more than `n` Elasticsearch nodes will be unavailable at a time, one can optionally (change and) apply the following manifests:
 ```
 kubectl create -f es-master-pdb.yaml
 kubectl create -f es-data-pdb.yaml
 ```
 
-Note: It's not recommended to grow this number because 1 node could be in maintenance, another fall down and you can't lose another node if the number of replicas is equal to two.
+**Note:** This is an advanced subject and one should only put it in practice if one understands clearly what it means both in the Kubernetes and Elasticsearch contexts.
 
 ## Deploying with Helm
 
