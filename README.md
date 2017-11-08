@@ -245,11 +245,13 @@ $ helm install helm-elasticsearch
 
 ## Install plug-ins
 
-The image used in this repo is very minimalist. However, one can install additional plug-ins at will by simply specifying the `ES_PLUGINS_INSTALL` environment variable in the desired pod descriptors. For instance, to install Google Cloud Storage and X-Pack plug-ins it would be like follows:
+The image used in this repo is very minimalist. However, one can install additional plug-ins at will by simply specifying the `ES_PLUGINS_INSTALL` environment variable in the desired pod descriptors. For instance, to install [Google Cloud Storage](https://www.elastic.co/guide/en/elasticsearch/plugins/5.6/repository-gcs.html) and [S3](https://www.elastic.co/guide/en/elasticsearch/plugins/5.6/repository-s3.html) plug-ins it would be like follows:
 ```yaml
 - name: "ES_PLUGINS_INSTALL"
-  value: "repository-gcs,x-pack"
+  value: "repository-gcs,repository-s3"
 ```
+
+_Note_ The X-Pack plugin does not currently work with the `quay.io/pires/docker-elasticsearch-kubernetes` image. See Issue #102
 
 <a id="curator">
 
