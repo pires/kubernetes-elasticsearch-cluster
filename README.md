@@ -251,7 +251,7 @@ The image used in this repo is very minimalist. However, one can install additio
   value: "repository-gcs,repository-s3"
 ```
 
-_Note_ The X-Pack plugin does not currently work with the `quay.io/pires/docker-elasticsearch-kubernetes` image. See Issue #102
+**Note:** The X-Pack plugin does not currently work with the `quay.io/pires/docker-elasticsearch-kubernetes` image. See Issue #102
 
 <a id="curator">
 
