@@ -8,6 +8,7 @@ Elasticsearch (5.6.0) cluster on top of Kubernetes made easy.
 * [Build-Images(optional)](#build-images)
 * [Test (deploying & accessing)](#test)
 * [Pod anti-affinity](#pod-anti-affinity)
+* [Availability](#availability)
 * [Deploying with Helm](#helm)
 * [Install plug-ins](#plugins)
 * [Clean up with Curator](#curator)
@@ -220,9 +221,9 @@ spec:
   - (...)
 ```
 
-<a id="helm">
+<a id="availability">
 
-## PodDisruptionBudget
+## Availability
 
 If one wants to ensure that no more than `n` Elasticsearch nodes will be unavailable at a time, one can optionally (change and) apply the following manifests:
 ```
@@ -230,7 +231,9 @@ kubectl create -f es-master-pdb.yaml
 kubectl create -f es-data-pdb.yaml
 ```
 
-**Note:** This is an advanced subject and one should only put it in practice if one understands clearly what it means both in the Kubernetes and Elasticsearch contexts.
+**Note:** This is an advanced subject and one should only put it in practice if one understands clearly what it means both in the Kubernetes and Elasticsearch contexts. For more information, please consult [Pod Disruptions](https://kubernetes.io/docs/concepts/workloads/pods/disruptions).
+
+<a id="helm">
 
 ## Deploying with Helm
 
