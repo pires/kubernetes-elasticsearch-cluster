@@ -296,6 +296,8 @@ Various parameters of the cluster, including replica count and memory allocation
 
 ## Kibana
 
+**ATTENTION**: This is community supported so it most probably is out-of-date.
+
 Additionally, one can also add Kibana to the mix. In order to do so, one must use a container image of Kibana without x-pack,
 as it's not supported by the Elasticsearch container images used in this repository.
 
