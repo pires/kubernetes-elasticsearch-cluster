@@ -324,7 +324,7 @@ proxy it through the Kubernetes API Server, as follows:
 https://<API_SERVER_URL>/api/v1/proxy/namespaces/default/services/kibana/proxy
 ```
 
-One can also create an Ingress to expose the service publicly or simly use the service nodeport.
+One can also create an Ingress to expose the service publicly or simply use the service nodeport.
 In the case one proceeds to do so, one must change the environment variable `SERVER_BASEPATH` to the match their environment.
 
 ## FAQ
