@@ -49,6 +49,8 @@ spec:
           value: "true"
         - name: "ES_JAVA_OPTS"
           value: "-Xms256m -Xmx256m"
+        - name: "NETWORK_HOST"
+          value: "_site_,_lo_"
         ports:
         - containerPort: 9200
           name: http
