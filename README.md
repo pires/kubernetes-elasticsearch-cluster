@@ -268,7 +268,16 @@ Additionally, one can run a [CronJob](http://kubernetes.io/docs/user-guide/cron-
 
 ```
 kubectl create -f es-curator-config.yaml
-kubectl create -f es-curator.yaml
+```
+
+Kubernetes 1.7:
+```
+kubectl create -f es-curator_v2alpha1.yaml
+```
+
+Kubernetes 1.8:
+```
+kubectl create -f es-curator_v1beta1.yaml
 ```
 
 Please, confirm the job has been created.
