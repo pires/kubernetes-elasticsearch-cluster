@@ -64,12 +64,12 @@ Providing one's own version of [the images automatically built from this reposit
 kubectl create -f es-discovery-svc.yaml
 kubectl create -f es-svc.yaml
 kubectl create -f es-master.yaml
-```
-
-Wait until `es-master` deployment is provisioned, and
-```
+# Wait until `es-master` deployment is provisioned, and
+kubectl rollout status -f es-master.yaml
 kubectl create -f es-client.yaml
 kubectl create -f es-data.yaml
+kubectl rollout status -f es-client.yaml
+kubectl rollout status -f es-data.yaml
 ```
 
 Wait for containers to be in the `Running` state and check one of the Elasticsearch master nodes logs:
