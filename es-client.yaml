@@ -15,8 +15,7 @@ spec:
     spec:
       initContainers:
       - name: init-sysctl
-        image: busybox
-        imagePullPolicy: Always
+        image: busybox:1.27.2
         command:
         - sysctl
         - -w
