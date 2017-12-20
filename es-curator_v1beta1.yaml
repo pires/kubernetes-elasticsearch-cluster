@@ -10,8 +10,11 @@ spec:
         spec:
           containers:
           - name: curator
-            image: bobrik/curator
-            args: ["--config", "/etc/config/config.yml", "/etc/config/action_file.yml"]
+            image: quay.io/pires/docker-elasticsearch-curator:5.4.1
+            args:
+            - --config
+            - /etc/config/config.yml
+            - /etc/config/action_file.yml
             volumeMounts:
               - name: config-volume
                 mountPath: /etc/config

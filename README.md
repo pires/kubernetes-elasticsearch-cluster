@@ -64,17 +64,16 @@ Providing one's own version of [the images automatically built from this reposit
 kubectl create -f es-discovery-svc.yaml
 kubectl create -f es-svc.yaml
 kubectl create -f es-master.yaml
-```
-
-Wait until `es-master` deployment is provisioned, and
-```
+kubectl rollout status -f es-master.yaml
 kubectl create -f es-client.yaml
+kubectl rollout status -f es-client.yaml
 kubectl create -f es-data.yaml
+kubectl rollout status -f es-data.yaml
 ```
 
-Wait for containers to be in the `Running` state and check one of the Elasticsearch master nodes logs:
+Check one of the Elasticsearch master nodes logs:
 ```
-$ kubectl get svc,deployment,pods
+$ kubectl get svc,deployment,pods -l component=elasticsearch
 NAME                          TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)    AGE
 svc/elasticsearch             ClusterIP   10.100.35.143    <none>        9200/TCP   6m
 svc/elasticsearch-discovery   ClusterIP   10.100.247.154   <none>        9300/TCP   6m

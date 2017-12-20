@@ -12,5 +12,4 @@ spec:
   ports:
   - name: http
     port: 9200
-    protocol: TCP
 #type: LoadBalancer
