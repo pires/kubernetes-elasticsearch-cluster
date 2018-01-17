@@ -50,6 +50,9 @@ spec:
           valueFrom:
             resourceFieldRef:
               resource: limits.cpu
+        resources:
+          limits:
+            cpu: 1
         ports:
         - containerPort: 9200
           name: http
