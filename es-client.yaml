@@ -46,6 +46,10 @@ spec:
           value: -Xms256m -Xmx256m
         - name: NETWORK_HOST
           value: _site_,_lo_
+        - name: PROCESSORS
+          valueFrom:
+            resourceFieldRef:
+              resource: limits.cpu
         ports:
         - containerPort: 9200
           name: http

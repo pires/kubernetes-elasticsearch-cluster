@@ -41,6 +41,8 @@ One can change this in the deployment descriptors available in this repository.
 
 * The [stateful](stateful) directory contains an example which deploys the data pods as a `StatefulSet`. These use a `volumeClaimTemplates` to provision persistent storage for each pod.
 
+* By default, `PROCESSORS` is set to `1`. This may not be enough for some deployments, especially at startup time. Adjust `resources.limits.cpu` and/or `livenessProbe` accordingly if required. Note that `resources.limits.cpu` must be an integer.
+
 <a id="pre-requisites">
 
 ## Pre-requisites
