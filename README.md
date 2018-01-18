@@ -1,5 +1,5 @@
 # kubernetes-elasticsearch-cluster
-Elasticsearch (6.1.1) cluster on top of Kubernetes made easy.
+Elasticsearch (6.1.2) cluster on top of Kubernetes made easy.
 
 ### Table of Contents
 
@@ -99,7 +99,7 @@ $ kubectl logs po/es-master-6f6449b7f-jwbcb
 [2017-12-20T12:17:59,199][INFO ][o.e.e.NodeEnvironment    ] [es-master-6f6449b7f-jwbcb] using [1] data paths, mounts [[/data (/dev/sda9)]], net usable_space [13.7gb], net total_space [15.5gb], types [ext4]
 [2017-12-20T12:17:59,200][INFO ][o.e.e.NodeEnvironment    ] [es-master-6f6449b7f-jwbcb] heap size [247.5mb], compressed ordinary object pointers [true]
 [2017-12-20T12:17:59,201][INFO ][o.e.n.Node               ] [es-master-6f6449b7f-jwbcb] node name [es-master-6f6449b7f-jwbcb], node ID [cqcVQ7hjQZuGXqb_9kZaMA]
-[2017-12-20T12:17:59,202][INFO ][o.e.n.Node               ] [es-master-6f6449b7f-jwbcb] version[6.1.1], pid[1], build[bd92e7f/2017-12-17T20:23:25.338Z], OS[Linux/4.14.4-coreos/amd64], JVM[Oracle Corporation/OpenJDK 64-Bit Server VM/1.8.0_151/25.151-b12]
+[2017-12-20T12:17:59,202][INFO ][o.e.n.Node               ] [es-master-6f6449b7f-jwbcb] version[6.1.2], pid[1], build[bd92e7f/2017-12-17T20:23:25.338Z], OS[Linux/4.14.4-coreos/amd64], JVM[Oracle Corporation/OpenJDK 64-Bit Server VM/1.8.0_151/25.151-b12]
 [2017-12-20T12:17:59,202][INFO ][o.e.n.Node               ] [es-master-6f6449b7f-jwbcb] JVM arguments [-XX:+UseConcMarkSweepGC, -XX:CMSInitiatingOccupancyFraction=75, -XX:+UseCMSInitiatingOccupancyOnly, -XX:+DisableExplicitGC, -XX:+AlwaysPreTouch, -Xss1m, -Djava.awt.headless=true, -Dfile.encoding=UTF-8, -Djna.nosys=true, -Djdk.io.permissionsUseCanonicalPath=true, -Dio.netty.noUnsafe=true, -Dio.netty.noKeySetOptimization=true, -Dlog4j.shutdownHookEnabled=false, -Dlog4j2.disable.jmx=true, -Dlog4j.skipJansi=true, -XX:+HeapDumpOnOutOfMemoryError, -Xms256m, -Xmx256m, -Des.path.home=/elasticsearch, -Des.path.conf=/elasticsearch/config]
 [2017-12-20T12:18:02,857][INFO ][o.e.p.PluginsService     ] [es-master-6f6449b7f-jwbcb] loaded module [aggs-matrix-stats]
 [2017-12-20T12:18:02,857][INFO ][o.e.p.PluginsService     ] [es-master-6f6449b7f-jwbcb] loaded module [analysis-common]
@@ -163,7 +163,7 @@ One should see something similar to the following:
   "cluster_name" : "myesdb",
   "cluster_uuid" : "SEjviHIJQ8-SEloYYcez8w",
   "version" : {
-    "number" : "6.1.1",
+    "number" : "6.1.2",
     "build_hash" : "bd92e7f",
     "build_date" : "2017-12-17T20:23:25.338Z",
     "build_snapshot" : false,
