@@ -1,8 +1,7 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1beta1
 kind: Deployment
 metadata:
   name: kibana
-  namespace: default
   labels:
     component: kibana
 spec:
@@ -19,8 +18,8 @@ spec:
       - name: kibana
         image: cfontes/kibana-xpack-less:5.5.0
         env:
-        - name: "CLUSTER_NAME"
-          value: "myesdb"
+        - name: CLUSTER_NAME
+          value: myesdb
         - name: SERVER_BASEPATH
           value: /api/v1/proxy/namespaces/default/services/kibana
         - name: XPACK_SECURITY_ENABLED
@@ -38,5 +37,4 @@ spec:
             cpu: 100m
         ports:
         - containerPort: 5601
-          name: kibana
-          protocol: TCP
+          name: http
