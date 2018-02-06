@@ -318,17 +318,9 @@ Various parameters of the cluster, including replica count and memory allocation
 
 **ATTENTION**: This is community supported so it most probably is out-of-date.
 
-Additionally, one can also add Kibana to the mix. In order to do so, one must use a container image of Kibana without x-pack,
-as it's not supported by the Elasticsearch container images used in this repository.
+Additionally, one can also add Kibana to the mix. In order to do so, one can use the Elastic upstream open source docker image without x-pack.
 
-An image is already provided but one can build their own like follows:
-
-```
-FROM docker.elastic.co/kibana/kibana:5.5.1
-RUN bin/kibana-plugin remove x-pack
-```
-
-If ones does provide their own image, one must make sure to alter the following files before deploying:
+### Deploy
 
 ```
 kubectl create -f kibana.yaml

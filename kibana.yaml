@@ -16,20 +16,12 @@ spec:
     spec:
       containers:
       - name: kibana
-        image: cfontes/kibana-xpack-less:5.5.0
+        image: docker.elastic.co/kibana/kibana-oss:6.1.2
         env:
         - name: CLUSTER_NAME
           value: myesdb
         - name: SERVER_BASEPATH
           value: /api/v1/proxy/namespaces/default/services/kibana
-        - name: XPACK_SECURITY_ENABLED
-          value: 'false'
-        - name: XPACK_GRAPH_ENABLED
-          value: 'false'
-        - name: XPACK_ML_ENABLED
-          value: 'false'
-        - name: XPACK_REPORTING_ENABLED
-          value: 'false'
         resources:
           limits:
             cpu: 1000m
