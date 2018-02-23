@@ -45,6 +45,11 @@ spec:
           value: "false"
         - name: ES_JAVA_OPTS
           value: -Xms256m -Xmx256m
+        lifecycle:
+          preStop:
+            httpGet:
+              path: /_cluster/health?wait_for_status=green&timeout=28800s
+              port: 9300
         ports:
         - containerPort: 9300
           name: transport

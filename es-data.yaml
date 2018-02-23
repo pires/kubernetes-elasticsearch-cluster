@@ -47,6 +47,11 @@ spec:
         ports:
         - containerPort: 9300
           name: transport
+        lifecycle:
+          preStop:
+            httpGet:
+              path: /_cluster/health?wait_for_status=green&timeout=28800s
+              port: 9300
         livenessProbe:
           tcpSocket:
             port: transport
