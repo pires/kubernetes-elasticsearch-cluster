@@ -16,20 +16,16 @@ spec:
     spec:
       initContainers:
       - name: init-sysctl
-        image: busybox
-        imagePullPolicy: IfNotPresent
-        command: ["sysctl", "-w", "vm.max_map_count=262144"]
+        image: busybox:1.27.2
+        command:
+        - sysctl
+        - -w
+        - vm.max_map_count=262144
         securityContext:
           privileged: true
       containers:
       - name: es-data
-        securityContext:
-          privileged: true
-          capabilities:
-            add:
-              - IPC_LOCK
-        image: quay.io/pires/docker-elasticsearch-kubernetes:5.6.0
-        imagePullPolicy: Always
+        image: quay.io/pires/docker-elasticsearch-kubernetes:6.1.2
         env:
         - name: NAMESPACE
           valueFrom:
@@ -39,16 +35,16 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: metadata.name
-        - name: "CLUSTER_NAME"
-          value: "myesdb"
+        - name: CLUSTER_NAME
+          value: myesdb
         - name: NODE_MASTER
           value: "false"
         - name: NODE_INGEST
           value: "false"
         - name: HTTP_ENABLE
           value: "false"
-        - name: "ES_JAVA_OPTS"
-          value: "-Xms256m -Xmx256m"
+        - name: ES_JAVA_OPTS
+          value: -Xms256m -Xmx256m
         lifecycle:
           preStop:
             httpGet:
@@ -57,17 +53,20 @@ spec:
         ports:
         - containerPort: 9300
           name: transport
-          protocol: TCP
+        livenessProbe:
+          tcpSocket:
+            port: transport
+          initialDelaySeconds: 20
+          periodSeconds: 10
         volumeMounts:
         - name: storage
           mountPath: /data
   volumeClaimTemplates:
   - metadata:
       name: storage
-      annotations:
-        volume.beta.kubernetes.io/storage-class: standard
     spec:
-      accessModes: [ "ReadWriteOnce" ]
+      storageClassName: standard
+      accessModes: [ ReadWriteOnce ]
       resources:
         requests:
           storage: 12Gi
