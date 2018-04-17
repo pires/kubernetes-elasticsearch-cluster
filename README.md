@@ -1,5 +1,5 @@
 # kubernetes-elasticsearch-cluster
-Elasticsearch (6.2.2) cluster on top of Kubernetes made easy.
+Elasticsearch (6.2.3) cluster on top of Kubernetes made easy.
 
 ### Table of Contents
 
@@ -21,6 +21,7 @@ Elasticsearch (6.2.2) cluster on top of Kubernetes made easy.
 ## Abstract
 
 Elasticsearch best-practices recommend to separate nodes in three roles:
+
 * `Master` nodes - intended for clustering management only, no data, no HTTP API
 * `Client` nodes - intended for client usage, no data, with HTTP API
 * `Data` nodes - intended for storing and indexing data, no HTTP API
@@ -31,17 +32,21 @@ Given this, I'm going to demonstrate how to provision a production grade scenari
 
 ## (Very) Important notes
 
-* Elasticsearch pods need for an init-container to run in privileged mode, so it can set some VM options. For that to happen, the `kubelet` should be running with args `--allow-privileged`, otherwise
-the init-container will fail to run.
+* Elasticsearch pods need for an init-container to run in privileged mode, so it can set some VM options.
+  For that to happen, the `kubelet` should be running with args `--allow-privileged`, otherwise the init-container will fail to run.
 
-* By default, `ES_JAVA_OPTS` is set to `-Xms256m -Xmx256m`. This is a *very low* value but many users, i.e. `minikube` users, were having issues with pods getting killed because hosts were out of memory.
-One can change this in the deployment descriptors available in this repository.
+* By default, `ES_JAVA_OPTS` is set to `-Xms256m -Xmx256m`. This is a *very low* value but many users, i.e. `minikube` users,
+  were having issues with pods getting killed because hosts were out of memory.
+  One can change this in the deployment descriptors available in this repository.
 
-* As of the moment, Kubernetes pod descriptors use an `emptyDir` for storing data in each data node container. This is meant to be for the sake of simplicity and should be adapted according to one's storage needs.
+* As of the moment, Kubernetes pod descriptors use an `emptyDir` for storing data in each data node container.
+  This is meant to be for the sake of simplicity and should be adapted according to one's storage needs.
 
-* The [stateful](stateful) directory contains an example which deploys the data pods as a `StatefulSet`. These use a `volumeClaimTemplates` to provision persistent storage for each pod.
+* The [stateful](stateful) directory contains an example which deploys the data pods as a `StatefulSet`.
+  These use a `volumeClaimTemplates` to provision persistent storage for each pod.
 
-* By default, `PROCESSORS` is set to `1`. This may not be enough for some deployments, especially at startup time. Adjust `resources.limits.cpu` and/or `livenessProbe` accordingly if required. Note that `resources.limits.cpu` must be an integer.
+* By default, `PROCESSORS` is set to `1`. This may not be enough for some deployments, especially at startup time.
+  Adjust `resources.limits.cpu` and/or `livenessProbe` accordingly if required. Note that `resources.limits.cpu` must be an integer.
 
 <a id="pre-requisites">
 
@@ -100,7 +105,7 @@ kubectl logs po/es-master-7bb68bd9d9-z6btz
 [2018-03-09T19:58:59,332][INFO ][o.e.e.NodeEnvironment    ] [es-master-7bb68bd9d9-z6btz] using [1] data paths, mounts [[/data (/dev/sda9)]], net usable_space [13.6gb], net total_space [15.5gb], types [ext4]
 [2018-03-09T19:58:59,332][INFO ][o.e.e.NodeEnvironment    ] [es-master-7bb68bd9d9-z6btz] heap size [247.5mb], compressed ordinary object pointers [true]
 [2018-03-09T19:58:59,334][INFO ][o.e.n.Node               ] [es-master-7bb68bd9d9-z6btz] node name [es-master-7bb68bd9d9-z6btz], node ID [VnP95Z2-QDadPP3vyc0hRA]
-[2018-03-09T19:58:59,335][INFO ][o.e.n.Node               ] [es-master-7bb68bd9d9-z6btz] version[6.2.2], pid[1], build[10b1edd/2018-02-16T19:01:30.685723Z], OS[Linux/4.15.7-coreos/amd64], JVM[Oracle Corporation/OpenJDK 64-Bit Server VM/1.8.0_151/25.151-b12]
+[2018-03-09T19:58:59,335][INFO ][o.e.n.Node               ] [es-master-7bb68bd9d9-z6btz] version[6.2.3], pid[1], build[10b1edd/2018-02-16T19:01:30.685723Z], OS[Linux/4.15.7-coreos/amd64], JVM[Oracle Corporation/OpenJDK 64-Bit Server VM/1.8.0_151/25.151-b12]
 [2018-03-09T19:58:59,335][INFO ][o.e.n.Node               ] [es-master-7bb68bd9d9-z6btz] JVM arguments [-XX:+UseConcMarkSweepGC, -XX:CMSInitiatingOccupancyFraction=75, -XX:+UseCMSInitiatingOccupancyOnly, -XX:+DisableExplicitGC, -XX:+AlwaysPreTouch, -Xss1m, -Djava.awt.headless=true, -Dfile.encoding=UTF-8, -Djna.nosys=true, -Djdk.io.permissionsUseCanonicalPath=true, -Dio.netty.noUnsafe=true, -Dio.netty.noKeySetOptimization=true, -Dlog4j.shutdownHookEnabled=false, -Dlog4j2.disable.jmx=true, -Dlog4j.skipJansi=true, -XX:+HeapDumpOnOutOfMemoryError, -Xms256m, -Xmx256m, -Des.path.home=/elasticsearch, -Des.path.conf=/elasticsearch/config]
 [2018-03-09T19:59:01,852][INFO ][o.e.p.PluginsService     ] [es-master-7bb68bd9d9-z6btz] loaded module [aggs-matrix-stats]
 [2018-03-09T19:59:01,852][INFO ][o.e.p.PluginsService     ] [es-master-7bb68bd9d9-z6btz] loaded module [analysis-common]
@@ -157,9 +162,9 @@ One should see something similar to the following:
   "cluster_name" : "myesdb",
   "cluster_uuid" : "2ZGyjjM-Tm2dyUIcgqPQcg",
   "version" : {
-    "number" : "6.2.2",
+    "number" : "6.2.3",
     "build_hash" : "10b1edd",
-    "build_date" : "2018-02-16T19:01:30.685723Z",
+    "build_date" : "2018-04-16T19:01:30.685723Z",
     "build_snapshot" : false,
     "lucene_version" : "7.2.1",
     "minimum_wire_compatibility_version" : "5.6.0",

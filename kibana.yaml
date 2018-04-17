@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: kibana
-        image: docker.elastic.co/kibana/kibana-oss:6.2.2
+        image: docker.elastic.co/kibana/kibana-oss:6.2.3
         env:
         - name: CLUSTER_NAME
           value: myesdb
