@@ -1,5 +1,5 @@
 # kubernetes-elasticsearch-cluster
-Elasticsearch (6.2.3) cluster on top of Kubernetes made easy.
+Elasticsearch (6.2.4) cluster on top of Kubernetes made easy.
 
 ### Table of Contents
 
