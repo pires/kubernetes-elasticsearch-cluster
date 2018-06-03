@@ -20,7 +20,7 @@ Elasticsearch (6.2.4) cluster on top of Kubernetes made easy.
 
 ## Abstract
 
-Elasticsearch best-practices recommend to separate nodes in three roles:
+[Elasticsearch best-practices recommend to separate nodes in three roles](https://www.elastic.co/guide/en/elasticsearch/reference/6.2/modules-node.html):
 
 * `Master` nodes - intended for clustering management only, no data, no HTTP API
 * `Client` nodes - intended for client usage, no data, with HTTP API
