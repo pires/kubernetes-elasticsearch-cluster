@@ -23,10 +23,10 @@ Elasticsearch (6.2.4) cluster on top of Kubernetes made easy.
 [Elasticsearch best-practices recommend to separate nodes in three roles](https://www.elastic.co/guide/en/elasticsearch/reference/6.2/modules-node.html):
 
 * `Master` nodes - intended for clustering management only, no data, no HTTP API
-* `Client` nodes - intended for client usage, no data, with HTTP API
-* `Data` nodes - intended for storing and indexing data, no HTTP API
+* `Data` nodes - intended for client usage and data, with HTTP API
+* `Ingest` nodes - intended for document pre-processing during ingestion, with HTTP API
 
-Given this, I'm going to demonstrate how to provision a production grade scenario consisting of 3 master, 2 client and 2 data nodes.
+Given this, I'm going to demonstrate how to provision a production grade scenario consisting of 3 master, 2 data and 2 ingest nodes.
 
 <a id="important-notes">
 
@@ -71,8 +71,9 @@ kubectl create -f es-discovery-svc.yaml
 kubectl create -f es-svc.yaml
 kubectl create -f es-master.yaml
 kubectl rollout status -f es-master.yaml
-kubectl create -f es-client.yaml
-kubectl rollout status -f es-client.yaml
+kubectl create -f es-ingest-svc.yaml
+kubectl create -f es-ingest.yaml
+kubectl rollout status -f es-ingest.yaml
 kubectl create -f es-data.yaml
 kubectl rollout status -f es-data.yaml
 ```
@@ -85,13 +86,13 @@ svc/elasticsearch             ClusterIP   10.100.38.182   <none>        9200/TCP
 svc/elasticsearch-discovery   ClusterIP   10.100.61.58    <none>        9300/TCP   53m
 
 NAME               DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
-deploy/es-client   2         2         2            2           6m
+deploy/es-ingest   2         2         2            2           6m
 deploy/es-data     2         2         2            2           6m
 deploy/es-master   3         3         3            3           8m
 
 NAME                            READY     STATUS    RESTARTS   AGE
-po/es-client-644b587668-llrnd   1/1       Running   0          6m
-po/es-client-644b587668-s8x65   1/1       Running   0          6m
+po/es-ingest-644b587668-llrnd   1/1       Running   0          6m
+po/es-ingest-644b587668-s8x65   1/1       Running   0          6m
 po/es-data-bf85b7fc-l4lks       1/1       Running   0          6m
 po/es-data-bf85b7fc-rczdp       1/1       Running   0          6m
 po/es-master-7bb68bd9d9-62w6z   1/1       Running   0          8m
@@ -127,9 +128,9 @@ kubectl logs po/es-master-7bb68bd9d9-z6btz
 [2018-03-09T19:59:11,051][INFO ][o.e.n.Node               ] [es-master-7bb68bd9d9-z6btz] starting ...
 [2018-03-09T19:59:11,958][INFO ][o.e.t.TransportService   ] [es-master-7bb68bd9d9-z6btz] publish_address {10.244.84.2:9300}, bound_addresses {10.244.84.2:9300}
 [2018-03-09T19:59:12,057][INFO ][o.e.b.BootstrapChecks    ] [es-master-7bb68bd9d9-z6btz] bound or publishing to a non-loopback address, enforcing bootstrap checks
-[2018-03-09T19:59:15,580][INFO ][o.e.c.s.ClusterApplierService] [es-master-7bb68bd9d9-z6btz] detected_master {es-master-7bb68bd9d9-mvfqc}{brjZXQqvSD2AY0EHCKWWvg}{iV3LbF_QScuCEmz9ydowgA}{10.244.18.3}{10.244.18.3:9300}, added {{es-master-7bb68bd9d9-mvfqc}{brjZXQqvSD2AY0EHCKWWvg}{iV3LbF_QScuCEmz9ydowgA}{10.244.18.3}{10.244.18.3:9300},{es-master-7bb68bd9d9-62w6z}{ibjHM0dtS9eyEe34BW3Sqw}{rHNfrs2ORWSgt355YFtA2w}{10.244.89.2}{10.244.89.2:9300},{es-client-644b587668-s8x65}{9KLKQPfURBmdUZqk7RRjkg}{hDUE49YFR2yGxCyiq_qXYg}{10.244.84.3}{10.244.84.3:9300},}, reason: apply cluster state (from master [master {es-master-7bb68bd9d9-mvfqc}{brjZXQqvSD2AY0EHCKWWvg}{iV3LbF_QScuCEmz9ydowgA}{10.244.18.3}{10.244.18.3:9300} committed version [4]])
+[2018-03-09T19:59:15,580][INFO ][o.e.c.s.ClusterApplierService] [es-master-7bb68bd9d9-z6btz] detected_master {es-master-7bb68bd9d9-mvfqc}{brjZXQqvSD2AY0EHCKWWvg}{iV3LbF_QScuCEmz9ydowgA}{10.244.18.3}{10.244.18.3:9300}, added {{es-master-7bb68bd9d9-mvfqc}{brjZXQqvSD2AY0EHCKWWvg}{iV3LbF_QScuCEmz9ydowgA}{10.244.18.3}{10.244.18.3:9300},{es-master-7bb68bd9d9-62w6z}{ibjHM0dtS9eyEe34BW3Sqw}{rHNfrs2ORWSgt355YFtA2w}{10.244.89.2}{10.244.89.2:9300},{es-ingest-644b587668-s8x65}{9KLKQPfURBmdUZqk7RRjkg}{hDUE49YFR2yGxCyiq_qXYg}{10.244.84.3}{10.244.84.3:9300},}, reason: apply cluster state (from master [master {es-master-7bb68bd9d9-mvfqc}{brjZXQqvSD2AY0EHCKWWvg}{iV3LbF_QScuCEmz9ydowgA}{10.244.18.3}{10.244.18.3:9300} committed version [4]])
 [2018-03-09T19:59:15,846][INFO ][o.e.n.Node               ] [es-master-7bb68bd9d9-z6btz] started
-[2018-03-09T19:59:16,864][INFO ][o.e.c.s.ClusterApplierService] [es-master-7bb68bd9d9-z6btz] added {{es-client-644b587668-llrnd}{jjR1flg2TDeLKogw7NMJpA}{JkCMkAQFRviPvSHjEW-hiw}{10.244.89.3}{10.244.89.3:9300},}, reason: apply cluster state (from master [master {es-master-7bb68bd9d9-mvfqc}{brjZXQqvSD2AY0EHCKWWvg}{iV3LbF_QScuCEmz9ydowgA}{10.244.18.3}{10.244.18.3:9300} committed version [5]])
+[2018-03-09T19:59:16,864][INFO ][o.e.c.s.ClusterApplierService] [es-master-7bb68bd9d9-z6btz] added {{es-ingest-644b587668-llrnd}{jjR1flg2TDeLKogw7NMJpA}{JkCMkAQFRviPvSHjEW-hiw}{10.244.89.3}{10.244.89.3:9300},}, reason: apply cluster state (from master [master {es-master-7bb68bd9d9-mvfqc}{brjZXQqvSD2AY0EHCKWWvg}{iV3LbF_QScuCEmz9ydowgA}{10.244.18.3}{10.244.18.3:9300} committed version [5]])
 [2018-03-09T20:05:12,130][INFO ][o.e.c.s.ClusterApplierService] [es-master-7bb68bd9d9-z6btz] added {{es-data-bf85b7fc-l4lks}{0AqhT3y0RrCMMgGoFZgs2A}{HO0Fx67KR46EpLz9SESIKA}{10.244.90.2}{10.244.90.2:9300},}, reason: apply cluster state (from master [master {es-master-7bb68bd9d9-mvfqc}{brjZXQqvSD2AY0EHCKWWvg}{iV3LbF_QScuCEmz9ydowgA}{10.244.18.3}{10.244.18.3:9300} committed version [6]])
 [2018-03-09T20:05:14,180][INFO ][o.e.c.s.ClusterApplierService] [es-master-7bb68bd9d9-z6btz] added {{es-data-bf85b7fc-rczdp}{TL0w2iRxTAeWru-Op6siOQ}{YFbkMum9R--wDiEiqnxbaQ}{10.244.90.3}{10.244.90.3:9300},}, reason: apply cluster state (from master [master {es-master-7bb68bd9d9-mvfqc}{brjZXQqvSD2AY0EHCKWWvg}{iV3LbF_QScuCEmz9ydowgA}{10.244.18.3}{10.244.18.3:9300} committed version [7]])
 ```
@@ -158,7 +159,7 @@ One should see something similar to the following:
 
 ```json
 {
-  "name" : "es-client-644b587668-llrnd",
+  "name" : "es-ingest-644b587668-llrnd",
   "cluster_name" : "myesdb",
   "cluster_uuid" : "2ZGyjjM-Tm2dyUIcgqPQcg",
   "version" : {
