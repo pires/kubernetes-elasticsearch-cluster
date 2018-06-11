@@ -222,6 +222,10 @@ spec:
         podAffinityTerm:
           labelSelector:
             matchExpressions:
+            - key: component
+              operator: In
+              values:
+              - elasticsearch
             - key: role
               operator: In
               values:
