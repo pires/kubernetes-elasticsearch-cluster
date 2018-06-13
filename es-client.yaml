@@ -38,6 +38,8 @@ spec:
           value: myesdb
         - name: NODE_MASTER
           value: "false"
+        - name: NODE_INGEST
+          value: "false"          
         - name: NODE_DATA
           value: "false"
         - name: HTTP_ENABLE
