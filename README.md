@@ -230,6 +230,8 @@ git clone https://github.com/clockworksoul/helm-elasticsearch.git
 helm install helm-elasticsearch
 ```
 
+Various parameters of the cluster, including replica count and memory allocations, can be adjusted by editing the `helm-elasticsearch/values.yaml` file. For information about Helm, please consult the [complete Helm documentation](https://github.com/kubernetes/helm/blob/master/docs/index.md).
+
 <a id="plugins">
 
 ## Install plug-ins
@@ -242,8 +244,6 @@ The image used in this repo is very minimalist. However, one can install additio
 ```
 
 **Note:** The X-Pack plugin does not currently work with the `quay.io/pires/docker-elasticsearch-kubernetes` image. See Issue #102
-
-Various parameters of the cluster, including replica count and memory allocations, can be adjusted by editing the `helm-elasticsearch/values.yaml` file. For information about Helm, please consult the [complete Helm documentation](https://github.com/kubernetes/helm/blob/master/docs/index.md).
 
 <a id="curator">
 
