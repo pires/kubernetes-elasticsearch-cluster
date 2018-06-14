@@ -53,6 +53,8 @@ spec:
           limits:
             cpu: 1
         ports:
+        - containerPort: 9200
+          name: http
         - containerPort: 9300
           name: transport
         livenessProbe:
@@ -60,6 +62,12 @@ spec:
             port: transport
           initialDelaySeconds: 20
           periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /_cluster/health
+            port: http
+          initialDelaySeconds: 20
+          timeoutSeconds: 5
         volumeMounts:
         - name: storage
           mountPath: /data
