@@ -24,7 +24,7 @@ spec:
           privileged: true
       containers:
       - name: es-master
-        image: quay.io/pires/docker-elasticsearch-kubernetes:6.2.4
+        image: quay.io/pires/docker-elasticsearch-kubernetes:6.3.0
         env:
         - name: NAMESPACE
           valueFrom:

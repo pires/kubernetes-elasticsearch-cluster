@@ -1,5 +1,5 @@
 # kubernetes-elasticsearch-cluster
-Elasticsearch (6.2.4) cluster on top of Kubernetes made easy.
+Elasticsearch (6.3.0) cluster on top of Kubernetes made easy.
 
 ### Table of Contents
 
@@ -52,7 +52,7 @@ Given this, I'm going to demonstrate how to provision a production grade scenari
 
 ## Pre-requisites
 
-* Kubernetes 1.9.3 (tested with v1.9.3 on top of [Vagrant + CoreOS](https://github.com/pires/kubernetes-vagrant-coreos-cluster)), thas's because curator is a CronJob object which comes from `batch/v2alpha1`, to enable it, just add
+* Kubernetes 1.9.x (tested with v1.10.4 on top of [Vagrant + CoreOS](https://github.com/pires/kubernetes-vagrant-coreos-cluster)), thas's because curator is a CronJob object which comes from `batch/v2alpha1`, to enable it, just add
  `--runtime-config=batch/v2alpha1=true` into your kube-apiserver options.
 * `kubectl` configured to access the cluster master API Server
 
@@ -71,70 +71,39 @@ kubectl create -f es-discovery-svc.yaml
 kubectl create -f es-svc.yaml
 kubectl create -f es-master.yaml
 kubectl rollout status -f es-master.yaml
-kubectl create -f es-client.yaml
-kubectl rollout status -f es-client.yaml
+
+kubectl create -f es-ingest-svc.yaml
+kubectl create -f es-ingest.yaml
+kubectl rollout status -f es-ingest.yaml
+
 kubectl create -f es-data.yaml
 kubectl rollout status -f es-data.yaml
 ```
 
-Check one of the Elasticsearch master nodes logs:
+Let's check if everything is working properly:
 ```shell
 kubectl get svc,deployment,pods -l component=elasticsearch
-NAME                          TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)    AGE
-svc/elasticsearch             ClusterIP   10.100.38.182   <none>        9200/TCP   53m
-svc/elasticsearch-discovery   ClusterIP   10.100.61.58    <none>        9300/TCP   53m
+NAME                              TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)    AGE
+service/elasticsearch             ClusterIP   10.100.32.137   <none>        9200/TCP   1h
+service/elasticsearch-discovery   ClusterIP   None            <none>        9300/TCP   1h
+service/elasticsearch-ingest      ClusterIP   10.100.31.141   <none>        9200/TCP   1h
 
-NAME               DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
-deploy/es-client   2         2         2            2           6m
-deploy/es-data     2         2         2            2           6m
-deploy/es-master   3         3         3            3           8m
+NAME                              DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
+deployment.extensions/es-data     2         2         2            2           4m
+deployment.extensions/es-ingest   2         2         2            2           7m
+deployment.extensions/es-master   3         3         3            3           7m
 
 NAME                            READY     STATUS    RESTARTS   AGE
-po/es-client-644b587668-llrnd   1/1       Running   0          6m
-po/es-client-644b587668-s8x65   1/1       Running   0          6m
-po/es-data-bf85b7fc-l4lks       1/1       Running   0          6m
-po/es-data-bf85b7fc-rczdp       1/1       Running   0          6m
-po/es-master-7bb68bd9d9-62w6z   1/1       Running   0          8m
-po/es-master-7bb68bd9d9-mvfqc   1/1       Running   0          8m
-po/es-master-7bb68bd9d9-z6btz   1/1       Running   0          8m
+pod/es-data-5c5969967-wb2b8     1/1       Running   0          4m
+pod/es-data-5c5969967-wrrxk     1/1       Running   0          4m
+pod/es-ingest-548b65475-6s7hg   1/1       Running   0          7m
+pod/es-ingest-548b65475-whvqx   1/1       Running   0          7m
+pod/es-master-879576496-dhnlp   1/1       Running   0          7m
+pod/es-master-879576496-jjlvf   1/1       Running   0          7m
+pod/es-master-879576496-sgwxf   1/1       Running   0          7m
 ```
 
-```shell
-kubectl logs po/es-master-7bb68bd9d9-z6btz
-[2018-03-09T19:58:59,123][INFO ][o.e.n.Node               ] [es-master-7bb68bd9d9-z6btz] initializing ...
-[2018-03-09T19:58:59,332][INFO ][o.e.e.NodeEnvironment    ] [es-master-7bb68bd9d9-z6btz] using [1] data paths, mounts [[/data (/dev/sda9)]], net usable_space [13.6gb], net total_space [15.5gb], types [ext4]
-[2018-03-09T19:58:59,332][INFO ][o.e.e.NodeEnvironment    ] [es-master-7bb68bd9d9-z6btz] heap size [247.5mb], compressed ordinary object pointers [true]
-[2018-03-09T19:58:59,334][INFO ][o.e.n.Node               ] [es-master-7bb68bd9d9-z6btz] node name [es-master-7bb68bd9d9-z6btz], node ID [VnP95Z2-QDadPP3vyc0hRA]
-[2018-03-09T19:58:59,335][INFO ][o.e.n.Node               ] [es-master-7bb68bd9d9-z6btz] version[6.2.3], pid[1], build[10b1edd/2018-02-16T19:01:30.685723Z], OS[Linux/4.15.7-coreos/amd64], JVM[Oracle Corporation/OpenJDK 64-Bit Server VM/1.8.0_151/25.151-b12]
-[2018-03-09T19:58:59,335][INFO ][o.e.n.Node               ] [es-master-7bb68bd9d9-z6btz] JVM arguments [-XX:+UseConcMarkSweepGC, -XX:CMSInitiatingOccupancyFraction=75, -XX:+UseCMSInitiatingOccupancyOnly, -XX:+DisableExplicitGC, -XX:+AlwaysPreTouch, -Xss1m, -Djava.awt.headless=true, -Dfile.encoding=UTF-8, -Djna.nosys=true, -Djdk.io.permissionsUseCanonicalPath=true, -Dio.netty.noUnsafe=true, -Dio.netty.noKeySetOptimization=true, -Dlog4j.shutdownHookEnabled=false, -Dlog4j2.disable.jmx=true, -Dlog4j.skipJansi=true, -XX:+HeapDumpOnOutOfMemoryError, -Xms256m, -Xmx256m, -Des.path.home=/elasticsearch, -Des.path.conf=/elasticsearch/config]
-[2018-03-09T19:59:01,852][INFO ][o.e.p.PluginsService     ] [es-master-7bb68bd9d9-z6btz] loaded module [aggs-matrix-stats]
-[2018-03-09T19:59:01,852][INFO ][o.e.p.PluginsService     ] [es-master-7bb68bd9d9-z6btz] loaded module [analysis-common]
-[2018-03-09T19:59:01,852][INFO ][o.e.p.PluginsService     ] [es-master-7bb68bd9d9-z6btz] loaded module [ingest-common]
-[2018-03-09T19:59:01,853][INFO ][o.e.p.PluginsService     ] [es-master-7bb68bd9d9-z6btz] loaded module [lang-expression]
-[2018-03-09T19:59:01,853][INFO ][o.e.p.PluginsService     ] [es-master-7bb68bd9d9-z6btz] loaded module [lang-mustache]
-[2018-03-09T19:59:01,853][INFO ][o.e.p.PluginsService     ] [es-master-7bb68bd9d9-z6btz] loaded module [lang-painless]
-[2018-03-09T19:59:01,854][INFO ][o.e.p.PluginsService     ] [es-master-7bb68bd9d9-z6btz] loaded module [mapper-extras]
-[2018-03-09T19:59:01,855][INFO ][o.e.p.PluginsService     ] [es-master-7bb68bd9d9-z6btz] loaded module [parent-join]
-[2018-03-09T19:59:01,855][INFO ][o.e.p.PluginsService     ] [es-master-7bb68bd9d9-z6btz] loaded module [percolator]
-[2018-03-09T19:59:01,856][INFO ][o.e.p.PluginsService     ] [es-master-7bb68bd9d9-z6btz] loaded module [rank-eval]
-[2018-03-09T19:59:01,856][INFO ][o.e.p.PluginsService     ] [es-master-7bb68bd9d9-z6btz] loaded module [reindex]
-[2018-03-09T19:59:01,856][INFO ][o.e.p.PluginsService     ] [es-master-7bb68bd9d9-z6btz] loaded module [repository-url]
-[2018-03-09T19:59:01,857][INFO ][o.e.p.PluginsService     ] [es-master-7bb68bd9d9-z6btz] loaded module [transport-netty4]
-[2018-03-09T19:59:01,857][INFO ][o.e.p.PluginsService     ] [es-master-7bb68bd9d9-z6btz] loaded module [tribe]
-[2018-03-09T19:59:01,858][INFO ][o.e.p.PluginsService     ] [es-master-7bb68bd9d9-z6btz] no plugins loaded
-[2018-03-09T19:59:09,636][INFO ][o.e.d.DiscoveryModule    ] [es-master-7bb68bd9d9-z6btz] using discovery type [zen]
-[2018-03-09T19:59:11,051][INFO ][o.e.n.Node               ] [es-master-7bb68bd9d9-z6btz] initialized
-[2018-03-09T19:59:11,051][INFO ][o.e.n.Node               ] [es-master-7bb68bd9d9-z6btz] starting ...
-[2018-03-09T19:59:11,958][INFO ][o.e.t.TransportService   ] [es-master-7bb68bd9d9-z6btz] publish_address {10.244.84.2:9300}, bound_addresses {10.244.84.2:9300}
-[2018-03-09T19:59:12,057][INFO ][o.e.b.BootstrapChecks    ] [es-master-7bb68bd9d9-z6btz] bound or publishing to a non-loopback address, enforcing bootstrap checks
-[2018-03-09T19:59:15,580][INFO ][o.e.c.s.ClusterApplierService] [es-master-7bb68bd9d9-z6btz] detected_master {es-master-7bb68bd9d9-mvfqc}{brjZXQqvSD2AY0EHCKWWvg}{iV3LbF_QScuCEmz9ydowgA}{10.244.18.3}{10.244.18.3:9300}, added {{es-master-7bb68bd9d9-mvfqc}{brjZXQqvSD2AY0EHCKWWvg}{iV3LbF_QScuCEmz9ydowgA}{10.244.18.3}{10.244.18.3:9300},{es-master-7bb68bd9d9-62w6z}{ibjHM0dtS9eyEe34BW3Sqw}{rHNfrs2ORWSgt355YFtA2w}{10.244.89.2}{10.244.89.2:9300},{es-client-644b587668-s8x65}{9KLKQPfURBmdUZqk7RRjkg}{hDUE49YFR2yGxCyiq_qXYg}{10.244.84.3}{10.244.84.3:9300},}, reason: apply cluster state (from master [master {es-master-7bb68bd9d9-mvfqc}{brjZXQqvSD2AY0EHCKWWvg}{iV3LbF_QScuCEmz9ydowgA}{10.244.18.3}{10.244.18.3:9300} committed version [4]])
-[2018-03-09T19:59:15,846][INFO ][o.e.n.Node               ] [es-master-7bb68bd9d9-z6btz] started
-[2018-03-09T19:59:16,864][INFO ][o.e.c.s.ClusterApplierService] [es-master-7bb68bd9d9-z6btz] added {{es-client-644b587668-llrnd}{jjR1flg2TDeLKogw7NMJpA}{JkCMkAQFRviPvSHjEW-hiw}{10.244.89.3}{10.244.89.3:9300},}, reason: apply cluster state (from master [master {es-master-7bb68bd9d9-mvfqc}{brjZXQqvSD2AY0EHCKWWvg}{iV3LbF_QScuCEmz9ydowgA}{10.244.18.3}{10.244.18.3:9300} committed version [5]])
-[2018-03-09T20:05:12,130][INFO ][o.e.c.s.ClusterApplierService] [es-master-7bb68bd9d9-z6btz] added {{es-data-bf85b7fc-l4lks}{0AqhT3y0RrCMMgGoFZgs2A}{HO0Fx67KR46EpLz9SESIKA}{10.244.90.2}{10.244.90.2:9300},}, reason: apply cluster state (from master [master {es-master-7bb68bd9d9-mvfqc}{brjZXQqvSD2AY0EHCKWWvg}{iV3LbF_QScuCEmz9ydowgA}{10.244.18.3}{10.244.18.3:9300} committed version [6]])
-[2018-03-09T20:05:14,180][INFO ][o.e.c.s.ClusterApplierService] [es-master-7bb68bd9d9-z6btz] added {{es-data-bf85b7fc-rczdp}{TL0w2iRxTAeWru-Op6siOQ}{YFbkMum9R--wDiEiqnxbaQ}{10.244.90.3}{10.244.90.3:9300},}, reason: apply cluster state (from master [master {es-master-7bb68bd9d9-mvfqc}{brjZXQqvSD2AY0EHCKWWvg}{iV3LbF_QScuCEmz9ydowgA}{10.244.18.3}{10.244.18.3:9300} committed version [7]])
-```
-
-As we can assert, the cluster is up and running. Easy, wasn't it?
+As we can assert, the cluster seems to be up and running. Easy, wasn't it?
 
 ### Access the service
 
@@ -145,28 +114,30 @@ As we can assert, the cluster is up and running. Easy, wasn't it?
 ```shell
 kubectl get svc elasticsearch
 NAME            TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)    AGE
-elasticsearch   ClusterIP   10.100.38.182   <none>        9200/TCP   55m
+elasticsearch   ClusterIP   10.100.32.137   <none>        9200/TCP   1h
 ```
 
 From any host on the Kubernetes cluster (that's running `kube-proxy` or similar), run:
 
 ```shell
-curl http://10.100.38.182:9200
+curl http://10.100.32.137:9200
 ```
 
 One should see something similar to the following:
 
 ```json
 {
-  "name" : "es-client-644b587668-llrnd",
+  "name" : "es-data-5c5969967-wb2b8",
   "cluster_name" : "myesdb",
-  "cluster_uuid" : "2ZGyjjM-Tm2dyUIcgqPQcg",
+  "cluster_uuid" : "qSps-b9dRI2ngGHBguJ44Q",
   "version" : {
-    "number" : "6.2.3",
-    "build_hash" : "10b1edd",
-    "build_date" : "2018-04-16T19:01:30.685723Z",
+    "number" : "6.3.0",
+    "build_flavor" : "default",
+    "build_type" : "tar",
+    "build_hash" : "424e937",
+    "build_date" : "2018-06-11T23:38:03.357887Z",
     "build_snapshot" : false,
-    "lucene_version" : "7.2.1",
+    "lucene_version" : "7.3.1",
     "minimum_wire_compatibility_version" : "5.6.0",
     "minimum_index_compatibility_version" : "5.0.0"
   },
@@ -177,7 +148,7 @@ One should see something similar to the following:
 Or if one wants to see cluster information:
 
 ```shell
-curl http://10.100.38.182:9200/_cluster/health?pretty
+curl http://10.100.32.137:9200/_cluster/health?pretty
 ```
 
 One should see something similar to the following:
@@ -272,6 +243,8 @@ The image used in this repo is very minimalist. However, one can install additio
 
 **Note:** The X-Pack plugin does not currently work with the `quay.io/pires/docker-elasticsearch-kubernetes` image. See Issue #102
 
+Various parameters of the cluster, including replica count and memory allocations, can be adjusted by editing the `helm-elasticsearch/values.yaml` file. For information about Helm, please consult the [complete Helm documentation](https://github.com/kubernetes/helm/blob/master/docs/index.md).
+
 <a id="curator">
 
 ## Clean-up with Curator
@@ -315,9 +288,7 @@ kubectl delete cronjob curator
 kubectl delete configmap curator-config
 ```
 
-Various parameters of the cluster, including replica count and memory allocations, can be adjusted by editing the `helm-elasticsearch/values.yaml` file. For information about Helm, please consult the [complete Helm documentation](https://github.com/kubernetes/helm/blob/master/docs/index.md).
-
-<a id="kibana>
+<a id="kibana">
 
 ## Kibana
 
