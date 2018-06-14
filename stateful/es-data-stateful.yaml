@@ -42,7 +42,7 @@ spec:
         - name: NODE_INGEST
           value: "false"
         - name: HTTP_ENABLE
-          value: "false"
+          value: "true"
         - name: ES_JAVA_OPTS
           value: -Xms256m -Xmx256m
         - name: PROCESSORS
