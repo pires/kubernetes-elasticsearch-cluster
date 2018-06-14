@@ -51,6 +51,8 @@ spec:
             resourceFieldRef:
               resource: limits.cpu
         resources:
+          requests:
+            cpu: 0.25
           limits:
             cpu: 1
         ports:
