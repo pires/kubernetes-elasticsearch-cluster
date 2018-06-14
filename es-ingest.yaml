@@ -1,17 +1,17 @@
 apiVersion: apps/v1beta1
 kind: Deployment
 metadata:
-  name: es-client
+  name: es-ingest
   labels:
     component: elasticsearch
-    role: client
+    role: ingest
 spec:
   replicas: 2
   template:
     metadata:
       labels:
         component: elasticsearch
-        role: client
+        role: ingest
     spec:
       initContainers:
       - name: init-sysctl
@@ -23,7 +23,7 @@ spec:
         securityContext:
           privileged: true
       containers:
-      - name: es-client
+      - name: es-ingest
         image: quay.io/pires/docker-elasticsearch-kubernetes:6.2.4
         env:
         - name: NAMESPACE
