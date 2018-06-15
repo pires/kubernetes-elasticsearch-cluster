@@ -23,10 +23,10 @@ Elasticsearch (6.3.0) cluster on top of Kubernetes made easy.
 [Elasticsearch best-practices recommend to separate nodes in three roles](https://www.elastic.co/guide/en/elasticsearch/reference/6.2/modules-node.html):
 
 * `Master` nodes - intended for clustering management only, no data, no HTTP API
-* `Client` nodes - intended for client usage, no data, with HTTP API
-* `Data` nodes - intended for storing and indexing data, no HTTP API
+* `Data` nodes - intended for client usage and data
+* `Ingest` nodes - intended for document pre-processing during ingestion
 
-Given this, I'm going to demonstrate how to provision a production grade scenario consisting of 3 master, 2 client and 2 data nodes.
+Given this, I'm going to demonstrate how to provision a production grade scenario consisting of 3 master, 2 data and 2 ingest nodes.
 
 <a id="important-notes">
 
