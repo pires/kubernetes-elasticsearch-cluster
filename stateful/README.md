@@ -1,10 +1,10 @@
 # Elasticsearch StatefulSet Data Pod
 
-This directory contains Kubernetes configurations which run elasticsearch data pods as a [`StatefulSet`](https://kubernetes.io/docs/concepts/abstractions/controllers/statefulsets/), using storage provisioned using a [`StorageClass`](http://blog.kubernetes.io/2016/10/dynamic-provisioning-and-storage-in-kubernetes.html). Be sure to read and understand the documentation in the root directory, which deploys the data pods as a `Deployment` using an `emptyDir` for storage.
+This directory contains Kubernetes configurations which run elasticsearch data and master pods as a [`StatefulSet`](https://kubernetes.io/docs/concepts/abstractions/controllers/statefulsets/), using storage provisioned using a [`StorageClass`](http://blog.kubernetes.io/2016/10/dynamic-provisioning-and-storage-in-kubernetes.html). Be sure to read and understand the documentation in the root directory, which deploys the data pods as a `Deployment` using an `emptyDir` for storage.
 
 ## Storage
 
-The [`es-data-stateful.yaml`](es-data-stateful.yaml) file contains a `volumeClaimTemplates` section which requests a 12 GB disk. This is plenty of space for a demonstration cluster, but will fill up quickly under moderate to heavy load. Consider modifying the disk size to your needs.
+The [`es-data-stateful.yaml`](es-data-stateful.yaml) and [`es-master-stateful.yaml`](es-master-stateful.yaml) files contain `volumeClaimTemplates` sections which request a 12 GB (2 GB for master pods) disks. This is plenty of space for a demonstration cluster, but will fill up quickly under moderate to heavy load. Consider modifying the disk size to your needs.
 
 ## Deploy
 The root directory contains instructions for deploying elasticsearch using a `Deployment` with transient storage for data pods. These brief instructions show a deployment using the `StatefulSet` and `StorageClass`.
@@ -12,8 +12,8 @@ The root directory contains instructions for deploying elasticsearch using a `De
 ```
 kubectl create -f ../es-discovery-svc.yaml
 kubectl create -f ../es-svc.yaml
-kubectl create -f ../es-master.yaml
-kubectl rollout status -f ../es-master.yaml
+kubectl create -f es-master-stateful.yaml
+kubectl rollout status -f es-master-stateful.yaml
 
 kubectl create -f ../es-ingest-svc.yaml
 kubectl create -f ../es-ingest.yaml
