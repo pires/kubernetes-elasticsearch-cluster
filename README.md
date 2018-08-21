@@ -28,7 +28,7 @@ Elasticsearch (6.3.2) cluster on top of Kubernetes made easy.
 
 Given this, I'm going to demonstrate how to provision a production grade scenario consisting of 3 master, 2 data and 2 ingest nodes.
 
-<a id="important-notes"\>
+<a id="important-notes">
 
 ## (Very) Important notes
 
@@ -48,14 +48,14 @@ Given this, I'm going to demonstrate how to provision a production grade scenari
 * By default, `PROCESSORS` is set to `1`. This may not be enough for some deployments, especially at startup time.
   Adjust `resources.limits.cpu` and/or `livenessProbe` accordingly if required. Note that `resources.limits.cpu` must be an integer.
 
-<a id="pre-requisites"\>
+<a id="pre-requisites">
 
 ## Pre-requisites
 
 * Kubernetes 1.11.x (tested with v1.11.2 on top of [Vagrant + CoreOS](https://github.com/pires/kubernetes-vagrant-coreos-cluster)).
 * `kubectl` configured to access the Kubernetes API.
 
-<a id="build-images"\>
+<a id="build-images">
 
 ## Build images (optional)
 
@@ -172,8 +172,7 @@ One should see something similar to the following:
   "active_shards_percent_as_number" : 100.0
 }
 ```
-
-<a id="pod-anti-affinity"\>
+<a id="pod-anti-affinity">
 
 ## Pod anti-affinity
 
@@ -208,7 +207,7 @@ spec:
   - (...)
 ```
 
-<a id="availability"\>
+<a id="availability">
 
 ## Availability
 
@@ -221,7 +220,7 @@ kubectl create -f es-data-pdb.yaml
 
 **Note:** This is an advanced subject and one should only put it in practice if one understands clearly what it means both in the Kubernetes and Elasticsearch contexts. For more information, please consult [Pod Disruptions](https://kubernetes.io/docs/concepts/workloads/pods/disruptions).
 
-<a id="helm"\>
+<a id="helm">
 
 ## Deploy with Helm
 
@@ -236,7 +235,7 @@ helm install helm-elasticsearch
 
 Various parameters of the cluster, including replica count and memory allocations, can be adjusted by editing the `helm-elasticsearch/values.yaml` file. For information about Helm, please consult the [complete Helm documentation](https://github.com/kubernetes/helm/blob/master/docs/index.md).
 
-<a id="plugins"\>
+<a id="plugins">
 
 ## Install plug-ins
 
@@ -249,7 +248,7 @@ The image used in this repo is very minimalist. However, one can install additio
 
 **Note:** The X-Pack plugin does not currently work with the `quay.io/pires/docker-elasticsearch-kubernetes` image. See Issue #102
 
-<a id="curator"\>
+<a id="curator">
 
 ## Clean-up with Curator
 
@@ -283,7 +282,7 @@ kubectl delete cronjob curator
 kubectl delete configmap curator-config
 ```
 
-<a id="kibana"\>
+<a id="kibana">
 
 ## Kibana
 
@@ -311,12 +310,10 @@ In the case one proceeds to do so, one must change the environment variable `SER
 ## FAQ
 
 ### Why does `NUMBER_OF_MASTERS` differ from number of master-replicas?
-
 The default value for this environment variable is 2, meaning a cluster will need a minimum of 2 master nodes to operate. If a cluster has 3 masters and one dies, the cluster still works. Minimum master nodes are usually `n/2 + 1`, where `n` is the number of master nodes in a cluster. If a cluster has 5 master nodes, one should have a minimum of 3, less than that and the cluster _stops_. If one scales the number of masters, make sure to update the minimum number of master nodes through the Elasticsearch API as setting environment variable will only work on cluster setup. More info: https://www.elastic.co/guide/en/elasticsearch/guide/1.x/_important_configuration_changes.html#_minimum_master_nodes
 
 
 ### How can I customize `elasticsearch.yaml`?
-
 Read a different config file by settings env var `ES_PATH_CONF=/path/to/my/config/` [(see the Elasticsearch docs for more)](https://www.elastic.co/guide/en/elasticsearch/reference/current/settings.html#config-files-location). Another option would be to build one's own image from  [this repository](https://github.com/pires/docker-elasticsearch-kubernetes)
 
 ## Troubleshooting
@@ -324,7 +321,6 @@ Read a different config file by settings env var `ES_PATH_CONF=/path/to/my/confi
 ### No up-and-running site-local
 
 One of the errors one may come across when running the setup is the following error:
-
 ```
 [2016-11-29T01:28:36,515][WARN ][o.e.b.ElasticsearchUncaughtExceptionHandler] [] uncaught exception in thread [main]
 org.elasticsearch.bootstrap.StartupException: java.lang.IllegalArgumentException: No up-and-running site-local (private) addresses found, got [name:lo (lo), name:eth0 (eth0)]
@@ -360,7 +356,6 @@ This is related to how the container binds to network ports (defaults to ``_loca
 Please see [the documentation](https://github.com/pires/docker-elasticsearch#environment-variables) for reference of options.
 
 In order to workaround this, set `NETWORK_HOST` environment variable in the pod descriptors as follows:
-
 ```yaml
 - name: "NETWORK_HOST"
   value: "_eth0_" #_p1p1_ if interface name is p1p1, _ens4_ if interface name is ens4, and so on.
@@ -372,7 +367,6 @@ Intermittent failures occur when the local network interface has both IPv4 and I
 If the IPv4 address is chosen first, Elasticsearch starts correctly.
 
 In order to workaround this, set `NETWORK_HOST` environment variable in the pod descriptors as follows:
-
 ```yaml
 - name: "NETWORK_HOST"
   value: "_eth0:ipv4_" #_p1p1:ipv4_ if interface name is p1p1, _ens4:ipv4_ if interface name is ens4, and so on.
