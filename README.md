@@ -224,6 +224,8 @@ kubectl create -f es-data-pdb.yaml
 
 ## Deploy with Helm
 
+**WARNING:** The Helm chart is maintained by someone else in the community and may not up-to-date with this repo.
+
 [Helm](https://github.com/kubernetes/helm) charts for a basic (non-stateful) ElasticSearch deployment are maintained at https://github.com/clockworksoul/helm-elasticsearch. With Helm properly installed and configured, standing up a complete cluster is almost trivial:
 
 ```shell
