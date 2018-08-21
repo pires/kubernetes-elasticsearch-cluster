@@ -1,18 +1,17 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: es-data
+  name: es-master
   labels:
     component: elasticsearch
-    role: data
+    role: master
 spec:
-  serviceName: elasticsearch-data
   replicas: 3
   template:
     metadata:
       labels:
         component: elasticsearch
-        role: data
+        role: master
     spec:
       initContainers:
       - name: init-sysctl
@@ -24,7 +23,7 @@ spec:
         securityContext:
           privileged: true
       containers:
-      - name: es-data
+      - name: es-master
         image: quay.io/pires/docker-elasticsearch-kubernetes:6.3.0
         env:
         - name: NAMESPACE
@@ -37,12 +36,16 @@ spec:
               fieldPath: metadata.name
         - name: CLUSTER_NAME
           value: myesdb
+        - name: NUMBER_OF_MASTERS
+          value: "2"
         - name: NODE_MASTER
-          value: "false"
+          value: "true"
         - name: NODE_INGEST
           value: "false"
+        - name: NODE_DATA
+          value: "false"
         - name: HTTP_ENABLE
-          value: "true"
+          value: "false"
         - name: ES_JAVA_OPTS
           value: -Xms256m -Xmx256m
         - name: PROCESSORS
@@ -55,8 +58,6 @@ spec:
           limits:
             cpu: 1
         ports:
-        - containerPort: 9200
-          name: http
         - containerPort: 9300
           name: transport
         livenessProbe:
@@ -64,12 +65,6 @@ spec:
             port: transport
           initialDelaySeconds: 20
           periodSeconds: 10
-        readinessProbe:
-          httpGet:
-            path: /_cluster/health
-            port: http
-          initialDelaySeconds: 20
-          timeoutSeconds: 5
         volumeMounts:
         - name: storage
           mountPath: /data
@@ -81,4 +76,4 @@ spec:
       accessModes: [ ReadWriteOnce ]
       resources:
         requests:
-          storage: 12Gi
+          storage: 2Gi
