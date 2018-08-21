@@ -301,8 +301,8 @@ kubectl create -f kibana-svc.yaml
 Kibana will be available through service `kibana`, and one will be able to access it from within the cluster or
 proxy it through the Kubernetes API Server, as follows:
 
-```
-https://<API_SERVER_URL>/api/v1/namespaces/default/services/kibana:http/proxy
+```shell
+curl https://<API_SERVER_URL>/api/v1/namespaces/default/services/kibana:http/proxy
 ```
 
 One can also create an Ingress to expose the service publicly or simply use the service nodeport.
