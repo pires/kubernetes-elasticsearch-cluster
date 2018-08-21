@@ -292,6 +292,15 @@ Additionally, one can also add Kibana to the mix. In order to do so, one can use
 
 ### Deploy
 
+If kibana's default setup can't fit your need, you may want to cusomized your kibana.yaml via configMaps.
+Please refer to [Configuring Kibana](https://www.elastic.co/guide/en/kibana/current/settings.html) for all available attributes.
+
+```shell
+kubectl create -f kibana-cm.yaml
+```
+
+Once the ConfigMaps for kibana is ready, you may now deploy kibana service.
+
 ```shell
 kubectl create -f kibana.yaml
 kubectl create -f kibana-svc.yaml
