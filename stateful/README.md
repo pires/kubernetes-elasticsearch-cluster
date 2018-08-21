@@ -4,7 +4,7 @@ This directory contains Kubernetes configurations which run elasticsearch data a
 
 ## Storage
 
-The [`es-data-stateful.yaml`](es-data-stateful.yaml) and [`es-master-stateful.yaml`](es-master-stateful.yaml) files contain `volumeClaimTemplates` sections which request a 12 GB (2 GB for master pods) disks. This is plenty of space for a demonstration cluster, but will fill up quickly under moderate to heavy load. Consider modifying the disk size to your needs.
+The [`es-data-stateful.yaml`](es-data-stateful.yaml) and [`es-master-stateful.yaml`](es-master-stateful.yaml) files contain `volumeClaimTemplates` sections which request 2GB volume for each master node, and 12GB volume for each data node. This is plenty of space for a demonstration cluster, but will fill up quickly under moderate to heavy load. Consider modifying the disk size to your needs.
 
 ## Deploy
 The root directory contains instructions for deploying elasticsearch using a `Deployment` with transient storage for data pods. These brief instructions show a deployment using the `StatefulSet` and `StorageClass`.
