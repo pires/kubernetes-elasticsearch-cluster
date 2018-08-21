@@ -6,6 +6,7 @@ metadata:
     component: elasticsearch
     role: master
 spec:
+  serviceName: elasticsearch-master
   replicas: 3
   template:
     metadata:
