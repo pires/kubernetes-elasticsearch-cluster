@@ -1,5 +1,5 @@
 # kubernetes-elasticsearch-cluster
-Elasticsearch (6.3.0) cluster on top of Kubernetes made easy.
+Elasticsearch (6.3.2) cluster on top of Kubernetes made easy.
 
 ### Table of Contents
 
@@ -52,9 +52,8 @@ Given this, I'm going to demonstrate how to provision a production grade scenari
 
 ## Pre-requisites
 
-* Kubernetes 1.9.x (tested with v1.10.4 on top of [Vagrant + CoreOS](https://github.com/pires/kubernetes-vagrant-coreos-cluster)), thas's because curator is a CronJob object which comes from `batch/v2alpha1`, to enable it, just add
- `--runtime-config=batch/v2alpha1=true` into your kube-apiserver options.
-* `kubectl` configured to access the cluster master API Server
+* Kubernetes 1.11.x (tested with v1.11.2 on top of [Vagrant + CoreOS](https://github.com/pires/kubernetes-vagrant-coreos-cluster)).
+* `kubectl` configured to access the Kubernetes API.
 
 <a id="build-images">
 
@@ -81,26 +80,27 @@ kubectl rollout status -f es-data.yaml
 ```
 
 Let's check if everything is working properly:
+
 ```shell
 kubectl get svc,deployment,pods -l component=elasticsearch
-NAME                              TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)    AGE
-service/elasticsearch             ClusterIP   10.100.32.137   <none>        9200/TCP   1h
-service/elasticsearch-discovery   ClusterIP   None            <none>        9300/TCP   1h
-service/elasticsearch-ingest      ClusterIP   10.100.31.141   <none>        9200/TCP   1h
+NAME                              TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)    AGE
+service/elasticsearch             ClusterIP   10.100.243.196   <none>        9200/TCP   3m
+service/elasticsearch-discovery   ClusterIP   None             <none>        9300/TCP   3m
+service/elasticsearch-ingest      ClusterIP   10.100.76.74     <none>        9200/TCP   2m
 
 NAME                              DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
-deployment.extensions/es-data     2         2         2            2           4m
-deployment.extensions/es-ingest   2         2         2            2           7m
-deployment.extensions/es-master   3         3         3            3           7m
+deployment.extensions/es-data     2         2         2            2           1m
+deployment.extensions/es-ingest   2         2         2            2           2m
+deployment.extensions/es-master   3         3         3            3           3m
 
-NAME                            READY     STATUS    RESTARTS   AGE
-pod/es-data-5c5969967-wb2b8     1/1       Running   0          4m
-pod/es-data-5c5969967-wrrxk     1/1       Running   0          4m
-pod/es-ingest-548b65475-6s7hg   1/1       Running   0          7m
-pod/es-ingest-548b65475-whvqx   1/1       Running   0          7m
-pod/es-master-879576496-dhnlp   1/1       Running   0          7m
-pod/es-master-879576496-jjlvf   1/1       Running   0          7m
-pod/es-master-879576496-sgwxf   1/1       Running   0          7m
+NAME                             READY     STATUS    RESTARTS   AGE
+pod/es-data-56f8ff8c97-642bq     1/1       Running   0          1m
+pod/es-data-56f8ff8c97-h6hpc     1/1       Running   0          1m
+pod/es-ingest-6ddd5fc689-b4s94   1/1       Running   0          2m
+pod/es-ingest-6ddd5fc689-d8rtj   1/1       Running   0          2m
+pod/es-master-68bf8f86c4-bsfrx   1/1       Running   0          3m
+pod/es-master-68bf8f86c4-g8nph   1/1       Running   0          3m
+pod/es-master-68bf8f86c4-q5khn   1/1       Running   0          3m
 ```
 
 As we can assert, the cluster seems to be up and running. Easy, wasn't it?
@@ -113,29 +113,29 @@ As we can assert, the cluster seems to be up and running. Easy, wasn't it?
 
 ```shell
 kubectl get svc elasticsearch
-NAME            TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)    AGE
-elasticsearch   ClusterIP   10.100.32.137   <none>        9200/TCP   1h
+NAME            TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)    AGE
+elasticsearch   ClusterIP   10.100.243.196   <none>        9200/TCP   3m
 ```
 
 From any host on the Kubernetes cluster (that's running `kube-proxy` or similar), run:
 
 ```shell
-curl http://10.100.32.137:9200
+curl http://10.100.243.196:9200
 ```
 
 One should see something similar to the following:
 
 ```json
 {
-  "name" : "es-data-5c5969967-wb2b8",
+  "name" : "es-data-56f8ff8c97-642bq",
   "cluster_name" : "myesdb",
-  "cluster_uuid" : "qSps-b9dRI2ngGHBguJ44Q",
+  "cluster_uuid" : "RkRkTl26TDOE7o0FhCcW_g",
   "version" : {
-    "number" : "6.3.0",
+    "number" : "6.3.2",
     "build_flavor" : "default",
     "build_type" : "tar",
-    "build_hash" : "424e937",
-    "build_date" : "2018-06-11T23:38:03.357887Z",
+    "build_hash" : "053779d",
+    "build_date" : "2018-07-20T05:20:23.451332Z",
     "build_snapshot" : false,
     "lucene_version" : "7.3.1",
     "minimum_wire_compatibility_version" : "5.6.0",
@@ -148,7 +148,7 @@ One should see something similar to the following:
 Or if one wants to see cluster information:
 
 ```shell
-curl http://10.100.32.137:9200/_cluster/health?pretty
+curl http://10.100.243.196:9200/_cluster/health?pretty
 ```
 
 One should see something similar to the following:
@@ -184,6 +184,7 @@ It is then **highly recommended**, in the context of the solution described in t
 in order to guarantee that two data pods will never run on the same node.
 
 Here's an example:
+
 ```yaml
 spec:
   affinity:
