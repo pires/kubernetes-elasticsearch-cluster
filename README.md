@@ -1,5 +1,5 @@
 # kubernetes-elasticsearch-cluster
-Elasticsearch (6.3.0) cluster on top of Kubernetes made easy.
+Elasticsearch (6.3.2) cluster on top of Kubernetes made easy.
 
 ### Table of Contents
 
@@ -52,9 +52,8 @@ Given this, I'm going to demonstrate how to provision a production grade scenari
 
 ## Pre-requisites
 
-* Kubernetes 1.9.x (tested with v1.10.4 on top of [Vagrant + CoreOS](https://github.com/pires/kubernetes-vagrant-coreos-cluster)), thas's because curator is a CronJob object which comes from `batch/v2alpha1`, to enable it, just add
- `--runtime-config=batch/v2alpha1=true` into your kube-apiserver options.
-* `kubectl` configured to access the cluster master API Server
+* Kubernetes 1.11.x (tested with v1.11.2 on top of [Vagrant + CoreOS](https://github.com/pires/kubernetes-vagrant-coreos-cluster)).
+* `kubectl` configured to access the Kubernetes API.
 
 <a id="build-images">
 
@@ -81,26 +80,27 @@ kubectl rollout status -f es-data.yaml
 ```
 
 Let's check if everything is working properly:
+
 ```shell
 kubectl get svc,deployment,pods -l component=elasticsearch
-NAME                              TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)    AGE
-service/elasticsearch             ClusterIP   10.100.32.137   <none>        9200/TCP   1h
-service/elasticsearch-discovery   ClusterIP   None            <none>        9300/TCP   1h
-service/elasticsearch-ingest      ClusterIP   10.100.31.141   <none>        9200/TCP   1h
+NAME                              TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)    AGE
+service/elasticsearch             ClusterIP   10.100.243.196   <none>        9200/TCP   3m
+service/elasticsearch-discovery   ClusterIP   None             <none>        9300/TCP   3m
+service/elasticsearch-ingest      ClusterIP   10.100.76.74     <none>        9200/TCP   2m
 
 NAME                              DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
-deployment.extensions/es-data     2         2         2            2           4m
-deployment.extensions/es-ingest   2         2         2            2           7m
-deployment.extensions/es-master   3         3         3            3           7m
+deployment.extensions/es-data     2         2         2            2           1m
+deployment.extensions/es-ingest   2         2         2            2           2m
+deployment.extensions/es-master   3         3         3            3           3m
 
-NAME                            READY     STATUS    RESTARTS   AGE
-pod/es-data-5c5969967-wb2b8     1/1       Running   0          4m
-pod/es-data-5c5969967-wrrxk     1/1       Running   0          4m
-pod/es-ingest-548b65475-6s7hg   1/1       Running   0          7m
-pod/es-ingest-548b65475-whvqx   1/1       Running   0          7m
-pod/es-master-879576496-dhnlp   1/1       Running   0          7m
-pod/es-master-879576496-jjlvf   1/1       Running   0          7m
-pod/es-master-879576496-sgwxf   1/1       Running   0          7m
+NAME                             READY     STATUS    RESTARTS   AGE
+pod/es-data-56f8ff8c97-642bq     1/1       Running   0          1m
+pod/es-data-56f8ff8c97-h6hpc     1/1       Running   0          1m
+pod/es-ingest-6ddd5fc689-b4s94   1/1       Running   0          2m
+pod/es-ingest-6ddd5fc689-d8rtj   1/1       Running   0          2m
+pod/es-master-68bf8f86c4-bsfrx   1/1       Running   0          3m
+pod/es-master-68bf8f86c4-g8nph   1/1       Running   0          3m
+pod/es-master-68bf8f86c4-q5khn   1/1       Running   0          3m
 ```
 
 As we can assert, the cluster seems to be up and running. Easy, wasn't it?
@@ -113,29 +113,29 @@ As we can assert, the cluster seems to be up and running. Easy, wasn't it?
 
 ```shell
 kubectl get svc elasticsearch
-NAME            TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)    AGE
-elasticsearch   ClusterIP   10.100.32.137   <none>        9200/TCP   1h
+NAME            TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)    AGE
+elasticsearch   ClusterIP   10.100.243.196   <none>        9200/TCP   3m
 ```
 
 From any host on the Kubernetes cluster (that's running `kube-proxy` or similar), run:
 
 ```shell
-curl http://10.100.32.137:9200
+curl http://10.100.243.196:9200
 ```
 
 One should see something similar to the following:
 
 ```json
 {
-  "name" : "es-data-5c5969967-wb2b8",
+  "name" : "es-data-56f8ff8c97-642bq",
   "cluster_name" : "myesdb",
-  "cluster_uuid" : "qSps-b9dRI2ngGHBguJ44Q",
+  "cluster_uuid" : "RkRkTl26TDOE7o0FhCcW_g",
   "version" : {
-    "number" : "6.3.0",
+    "number" : "6.3.2",
     "build_flavor" : "default",
     "build_type" : "tar",
-    "build_hash" : "424e937",
-    "build_date" : "2018-06-11T23:38:03.357887Z",
+    "build_hash" : "053779d",
+    "build_date" : "2018-07-20T05:20:23.451332Z",
     "build_snapshot" : false,
     "lucene_version" : "7.3.1",
     "minimum_wire_compatibility_version" : "5.6.0",
@@ -148,7 +148,7 @@ One should see something similar to the following:
 Or if one wants to see cluster information:
 
 ```shell
-curl http://10.100.32.137:9200/_cluster/health?pretty
+curl http://10.100.243.196:9200/_cluster/health?pretty
 ```
 
 One should see something similar to the following:
@@ -172,6 +172,7 @@ One should see something similar to the following:
   "active_shards_percent_as_number" : 100.0
 }
 ```
+
 <a id="pod-anti-affinity">
 
 ## Pod anti-affinity
@@ -184,6 +185,7 @@ It is then **highly recommended**, in the context of the solution described in t
 in order to guarantee that two data pods will never run on the same node.
 
 Here's an example:
+
 ```yaml
 spec:
   affinity:
@@ -223,6 +225,8 @@ kubectl create -f es-data-pdb.yaml
 
 ## Deploy with Helm
 
+**WARNING:** The Helm chart is maintained by someone else in the community and may not up-to-date with this repo.
+
 [Helm](https://github.com/kubernetes/helm) charts for a basic (non-stateful) ElasticSearch deployment are maintained at https://github.com/clockworksoul/helm-elasticsearch. With Helm properly installed and configured, standing up a complete cluster is almost trivial:
 
 ```shell
@@ -253,17 +257,8 @@ Additionally, one can run a [CronJob](http://kubernetes.io/docs/user-guide/cron-
 
 ```shell
 kubectl create -f es-curator-config.yaml
+kubectl create -f es-curator.yaml
 ```
-
-* Kubernetes 1.7
-  ```shell
-  kubectl create -f es-curator_v2alpha1.yaml
-  ```
-
-* Kubernetes 1.8+:
-  ```shell
-  kubectl create -f es-curator_v1beta1.yaml
-  ```
 
 Please, confirm the job has been created.
 
@@ -292,22 +287,23 @@ kubectl delete configmap curator-config
 
 ## Kibana
 
-**ATTENTION**: This is community supported so it most probably is out-of-date.
-
-Additionally, one can also add Kibana to the mix. In order to do so, one can use the Elastic upstream open source docker image without x-pack.
+**WARNING:** The Kibana section is maintained by someone else in the community and may not up-to-date with this repo.
 
 ### Deploy
 
+If Kibana defaults are not enough, one may want to customize `kibana.yaml` through a `ConfigMap`.
+Please refer to [Configuring Kibana](https://www.elastic.co/guide/en/kibana/current/settings.html) for all available attributes.
+
 ```shell
-kubectl create -f kibana.yaml
+kubectl create -f kibana-cm.yaml
 kubectl create -f kibana-svc.yaml
+kubectl create -f kibana.yaml
 ```
 
-Kibana will be available through service `kibana`, and one will be able to access it from within the cluster or
-proxy it through the Kubernetes API Server, as follows:
+Kibana will become available through service `kibana`, and one will be able to access it from within the cluster, or proxy it through the Kubernetes API as follows:
 
-```
-https://<API_SERVER_URL>/api/v1/namespaces/default/services/kibana:http/proxy
+```shell
+curl https://<API_SERVER_URL>/api/v1/namespaces/default/services/kibana:http/proxy
 ```
 
 One can also create an Ingress to expose the service publicly or simply use the service nodeport.
@@ -316,10 +312,12 @@ In the case one proceeds to do so, one must change the environment variable `SER
 ## FAQ
 
 ### Why does `NUMBER_OF_MASTERS` differ from number of master-replicas?
+
 The default value for this environment variable is 2, meaning a cluster will need a minimum of 2 master nodes to operate. If a cluster has 3 masters and one dies, the cluster still works. Minimum master nodes are usually `n/2 + 1`, where `n` is the number of master nodes in a cluster. If a cluster has 5 master nodes, one should have a minimum of 3, less than that and the cluster _stops_. If one scales the number of masters, make sure to update the minimum number of master nodes through the Elasticsearch API as setting environment variable will only work on cluster setup. More info: https://www.elastic.co/guide/en/elasticsearch/guide/1.x/_important_configuration_changes.html#_minimum_master_nodes
 
 
 ### How can I customize `elasticsearch.yaml`?
+
 Read a different config file by settings env var `ES_PATH_CONF=/path/to/my/config/` [(see the Elasticsearch docs for more)](https://www.elastic.co/guide/en/elasticsearch/reference/current/settings.html#config-files-location). Another option would be to build one's own image from  [this repository](https://github.com/pires/docker-elasticsearch-kubernetes)
 
 ## Troubleshooting
@@ -327,6 +325,7 @@ Read a different config file by settings env var `ES_PATH_CONF=/path/to/my/confi
 ### No up-and-running site-local
 
 One of the errors one may come across when running the setup is the following error:
+
 ```
 [2016-11-29T01:28:36,515][WARN ][o.e.b.ElasticsearchUncaughtExceptionHandler] [] uncaught exception in thread [main]
 org.elasticsearch.bootstrap.StartupException: java.lang.IllegalArgumentException: No up-and-running site-local (private) addresses found, got [name:lo (lo), name:eth0 (eth0)]
@@ -362,6 +361,7 @@ This is related to how the container binds to network ports (defaults to ``_loca
 Please see [the documentation](https://github.com/pires/docker-elasticsearch#environment-variables) for reference of options.
 
 In order to workaround this, set `NETWORK_HOST` environment variable in the pod descriptors as follows:
+
 ```yaml
 - name: "NETWORK_HOST"
   value: "_eth0_" #_p1p1_ if interface name is p1p1, _ens4_ if interface name is ens4, and so on.
@@ -373,6 +373,7 @@ Intermittent failures occur when the local network interface has both IPv4 and I
 If the IPv4 address is chosen first, Elasticsearch starts correctly.
 
 In order to workaround this, set `NETWORK_HOST` environment variable in the pod descriptors as follows:
+
 ```yaml
 - name: "NETWORK_HOST"
   value: "_eth0:ipv4_" #_p1p1:ipv4_ if interface name is p1p1, _ens4:ipv4_ if interface name is ens4, and so on.

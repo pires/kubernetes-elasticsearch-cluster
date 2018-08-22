@@ -24,7 +24,7 @@ spec:
           privileged: true
       containers:
       - name: es-ingest
-        image: quay.io/pires/docker-elasticsearch-kubernetes:6.3.0
+        image: quay.io/pires/docker-elasticsearch-kubernetes:6.3.2
         env:
         - name: NAMESPACE
           valueFrom:

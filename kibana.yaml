@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: kibana
-        image: docker.elastic.co/kibana/kibana-oss:6.3.0
+        image: docker.elastic.co/kibana/kibana-oss:6.3.2
         env:
         - name: CLUSTER_NAME
           value: myesdb
@@ -30,3 +30,17 @@ spec:
         ports:
         - containerPort: 5601
           name: http
+        readinessProbe:
+          httpGet:
+            path: /api/status
+            port: http
+          initialDelaySeconds: 20
+          timeoutSeconds: 5
+        volumeMounts:
+          - name: config
+            mountPath: /usr/share/kibana/config
+            readOnly: true
+      volumes:
+        - name: config
+          configMap:
+            name: kibana-config
