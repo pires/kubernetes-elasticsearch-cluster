@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: elasticsearch-data
+  labels:
+    component: elasticsearch
+    role: data
+spec:
+  ports:
+  - port: 9300
+    name: transport
+  clusterIP: None
+  selector:
+    component: elasticsearch
+    role: data
