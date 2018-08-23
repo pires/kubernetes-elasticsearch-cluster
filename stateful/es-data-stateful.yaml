@@ -6,6 +6,10 @@ metadata:
     component: elasticsearch
     role: data
 spec:
+  selector:
+    matchLabels:
+      component: elasticsearch
+      role: data
   serviceName: elasticsearch-data
   replicas: 3
   template:
