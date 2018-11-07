@@ -1,5 +1,13 @@
+# This project is no longer maintained
+
+As of November 7th, 2018, I've decided to end my commitment to maintaining this repo and related.
+
+It's been 3 years since I last used Elasticsearch, so I no longer have the motivation it takes to maintain and evolve this project. Also, other projects need all the attention I can give.
+
+It was a great run, **thank you all**.
+
 # kubernetes-elasticsearch-cluster
-Elasticsearch (6.3.2) cluster on top of Kubernetes made easy.
+Elasticsearch cluster on top of Kubernetes made easy.
 
 ### Table of Contents
 
